@@ -1,0 +1,36 @@
+plugins {
+	id 'java'
+	id 'idea'
+	id 'com.avast.gradle.docker-compose' version "${dockerComposeVersion}"
+	id 'com.github.ben-manes.versions' version "${versionManagerVersion}"
+	id 'org.springframework.boot' version "${springBootVersion}" apply false
+	id 'io.spring.dependency-management' version "${springDependencyManagementVersion}" apply false
+	id 'com.gorylenko.gradle-git-properties' version "${gitPropertiesVersion}" apply false
+	id 'com.google.cloud.tools.jib' version "${jibVersion}" apply false
+	id 'org.openapi.generator' version "${openapiGeneratorVersion}"  apply false
+	id 'io.freefair.lombok' version "${lombokVersion}" apply false
+}
+
+version = project.version
+
+allprojects {
+	sourceCompatibility = JavaVersion.VERSION_17
+	group = 'com.vroong'
+
+	repositories {
+		maven {
+			url 'https://nexus.mm.meshkorea.net/repository/maven-public/'
+			credentials {
+				username repoUser
+				password repoPass
+			}
+		}
+		mavenCentral()
+		maven { url 'https://repo.spring.io/milestone' }
+	}
+}
+
+dockerCompose {
+	useComposeFiles = ['docker/compose.yml']
+	tcpPortsToIgnoreWhenWaiting = [1099]
+}

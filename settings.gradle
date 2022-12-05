@@ -1,0 +1,4 @@
+rootProject.name = 'bootcamp'
+
+include('template')
+include('template:clients')
