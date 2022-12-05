@@ -22,10 +22,10 @@ spring:
     url: jdbc:mysql://localhost:3306/local_payment?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
     username: root
     password: secret
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    hikari:
-#      poolName: Hikari
-#      auto-commit: false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      poolName: Hikari
+      auto-commit: false
 
 #  jpa:
 #    open-in-view: false

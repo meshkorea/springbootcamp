@@ -170,4 +170,4 @@ sourceSets {
     }
 }
 
-compileJava.dependsOn('openApiGenerate')
+compileJava.dependsOn(':payment:openApiGenerate')

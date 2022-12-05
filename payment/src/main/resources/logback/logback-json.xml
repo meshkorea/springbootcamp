@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <included>
-  <logger name="com.vroong.template" level="INFO"/>
+  <logger name="com.vroong.payment" level="INFO"/>
 
   <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
     <encoder class="net.logstash.logback.encoder.LogstashEncoder" />

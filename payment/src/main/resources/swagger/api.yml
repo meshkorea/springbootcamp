@@ -227,6 +227,7 @@ components:
     PaymentIdParam:
       in: path
       name: paymentId
+      required: true
       schema:
         $ref: '#/components/schemas/LongId'
 

@@ -1,3 +1,5 @@
+USE local_payment;
+
 CREATE TABLE IF NOT EXISTS shedlock
 (
     name       varchar(64) NOT NULL,
