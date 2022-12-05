@@ -1,4 +1,4 @@
-USE local_payment;
+-- USE local_payment;
 
 CREATE TABLE IF NOT EXISTS shedlock
 (
