@@ -1,60 +1,122 @@
 openapi: '3.0.3'
 
 info:
-  title: 'template'
+  title: 'product'
   version: 0.0.1
 
 servers:
-  - url: http://localhost:8080
-    description: Development server
+  - url: http://localhost:10002
+    description: Product Server
 
-paths: 
-  /api/examples:
-    get:
-      description: List Examples
-      operationId: listExamples
+paths:
+  /api/products:
+    post:
+      description: 개별 상품 등록
+      operationId: createProduct
       tags:
-        - Example
-      parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/SizeParam'
+        - Product
+      requestBody:
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: '#/components/schemas/Product'
       responses:
         '200':
-          description: Ok
+          description: OK
           content:
-            application/vnd.vroong.private.v1+json:
+            application/json:
               schema:
-                $ref: '#/components/schemas/ExampleList'
+                $ref: '#/components/schemas/Product'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/ServerError'
 
-  /api/exceptions:
     get:
-      description: Test Exceptions
-      operationId: getException
+      description: 상품 목록 조회
+      operationId: listProducts
       tags:
-        - Example
+        - Product
       parameters:
-        - name: type
-          in: query
-          schema:
-            type: string
-            enum:
-              - ServerError
-              - NoSuchElement
+        - $ref: '#/components/parameters/SearchWordParam'
+        - $ref: '#/components/parameters/SizeParam'
+        - $ref: '#/components/parameters/PageParam'
       responses:
-        '400':
-          $ref: '#/components/responses/BadRequest'
+        '200':
+          description: OK
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: '#/components/schemas/ProductList'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/products/{productId}:
+    parameters:
+      - $ref: '#/components/parameters/ProductId'
+
+    get:
+      description: 개별 상품 조회
+      operationId: getProduct
+      tags:
+        - Product
+      responses:
+        '200':
+          description: OK
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+
+    patch:
+      description: 개별 상품 수정
+      operationId: updateProduct
+      tags:
+        - Product
+      requestBody:
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: '#/components/schemas/UpdateProduct'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      description: 개별 상품 삭제
+      operationId: deleteProduct
+      tags:
+        - Product
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/ServerError'
 
@@ -64,10 +126,27 @@ components:
     #----------------------------------------
     # API fields
     #----------------------------------------
+    Size:
+      type: object
+      properties:
+        width:
+          $ref: '#/components/schemas/Integer'
+        height:
+          $ref: '#/components/schemas/Integer'
+        depth:
+          $ref: '#/components/schemas/Integer'
 
+    #----------------------------------------
+    # Common Model
+    #----------------------------------------
     LongId:
       type: integer
       format: int64
+      example: 1
+
+    Integer:
+      type: integer
+      format: int32
       example: 1
 
     DateTime:
@@ -84,9 +163,11 @@ components:
       format: uuid
       example: c9106593-2d6c-40eb-8504-66b0ef41ad2d
 
-    #----------------------------------------
-    # Common Model
-    #----------------------------------------
+    Money:
+      type: object
+      properties:
+        value:
+          type: number
 
     LongArray:
       type: object
@@ -153,30 +234,88 @@ components:
     #----------------------------------------
     # API Model
     #----------------------------------------
-
-    Example:
+    Product:
       type: object
+      required:
+        - name
+        - price
+        - supplier
+        - size
+        - location
+        - options
       properties:
-        exampleId:
+        id:
           $ref: '#/components/schemas/LongId'
-        title:
+        name:
           $ref: '#/components/schemas/String'
-        createdAt:
+        description:
+          $ref: '#/components/schemas/String'
+        inventory:
+          $ref: '#/components/schemas/Integer'
+        price:
+          $ref: '#/components/schemas/Money'
+        supplier:
+          $ref: '#/components/schemas/String'
+        size:
+          $ref: '#/components/schemas/Size'
+        location:
+          $ref: '#/components/schemas/String'
+        options:
+          $ref: '#/components/schemas/OptionList'
+        created_at:
           $ref: '#/components/schemas/DateTime'
-        updatedAt:
+        updated_at:
           $ref: '#/components/schemas/DateTime'
-        createdBy:
-          $ref: '#/components/schemas/String'
-        updatedBy:
-          $ref: '#/components/schemas/String'
 
-    ExampleList:
+    ProductList:
       type: object
       properties:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Example'
+            $ref: '#/components/schemas/Product'
+        page:
+          $ref: '#/components/schemas/Page'
+
+    UpdateProduct:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/String'
+        description:
+          $ref: '#/components/schemas/String'
+        inventory:
+          $ref: '#/components/schemas/Integer'
+        price:
+          $ref: '#/components/schemas/Money'
+        supplier:
+          $ref: '#/components/schemas/String'
+        size:
+          $ref: '#/components/schemas/Size'
+        location:
+          $ref: '#/components/schemas/String'
+        options:
+          $ref: '#/components/schemas/OptionList'
+
+    Option:
+      type: object
+      properties:
+        optionId:
+          $ref: '#/components/schemas/LongId'
+        name:
+          $ref: '#/components/schemas/String'
+        price:
+          $ref: '#/components/schemas/Money'
+        subOptions:
+          $ref: '#/components/schemas/OptionList'
+
+    OptionList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Option'
         page:
           $ref: '#/components/schemas/Page'
 
@@ -197,6 +336,19 @@ components:
         type: integer
         format: int32
         default: 10
+
+    SearchWordParam:
+      in: query
+      name: q
+      schema:
+        $ref: '#/components/schemas/String'
+
+    ProductId:
+      in: path
+      name: productId
+      schema:
+        $ref: '#/components/schemas/LongId'
+      required: true
 
   responses:
 
