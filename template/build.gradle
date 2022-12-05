@@ -13,6 +13,8 @@ plugins {
 version = '0.0.1-SNAPSHOT'
 
 dependencies {
+    implementation project(":shared")
+
     // 의존성 관리
     implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
     implementation platform("org.zalando:logbook-bom:${logbookVersion}");
