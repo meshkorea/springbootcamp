@@ -146,8 +146,8 @@ openApiGenerate {
     generatorName = 'spring'
     inputSpec = "${projectDir}/src/main/resources/swagger/api.yml".toString()
     outputDir = "${buildDir}/openapi".toString()
-    apiPackage = 'com.vroong.template.rest'
-    modelPackage = 'com.vroong.template.rest'
+    apiPackage = 'com.vroong.order.rest'
+    modelPackage = 'com.vroong.order.rest'
     modelNameSuffix = 'Dto'
     apiFilesConstrainedTo = ['']
     modelFilesConstrainedTo = ['']
