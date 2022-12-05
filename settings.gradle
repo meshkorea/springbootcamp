@@ -2,3 +2,5 @@ rootProject.name = 'bootcamp'
 
 include('shared')
 
+include('payment')
+include('payment:clients')

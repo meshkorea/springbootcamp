@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 10004
   # @see https://www.baeldung.com/spring-boot-web-server-shutdown
   shutdown: graceful
   # @see https://github.com/zalando/logbook/issues/870
@@ -19,7 +19,7 @@ spring:
 
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/local_bootcamp?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/local_payment?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
     username: root
     password: secret
 #    driver-class-name: com.mysql.cj.jdbc.Driver
