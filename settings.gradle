@@ -2,3 +2,5 @@ rootProject.name = 'bootcamp'
 
 include('shared')
 
+include('delivery')
+include('delivery:clients')
