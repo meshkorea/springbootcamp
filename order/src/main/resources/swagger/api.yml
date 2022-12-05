@@ -9,22 +9,26 @@ servers:
     description: Development server
 
 paths: 
-  /api/examples:
-    get:
-      description: List Examples
-      operationId: listExamples
+  /orders:
+    post:
+      description: 주문한다.
+      operationId: createOrder
       tags:
-        - Example
-      parameters:
-        - $ref: '#/components/parameters/PageParam'
-        - $ref: '#/components/parameters/SizeParam'
+        - Order
+      requestBody:
+        description: createOrder model
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: '#/components/schemas/OrderLine'
       responses:
         '200':
           description: Ok
           content:
             application/vnd.vroong.private.v1+json:
               schema:
-                $ref: '#/components/schemas/ExampleList'
+                $ref: '#/components/schemas/Order'
+#                배송비, 총 결제 금액, 주문 상품 목록
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -64,6 +68,11 @@ components:
     #----------------------------------------
     # API fields
     #----------------------------------------
+
+    IntId:
+      type: integer
+      format: int32
+      example: 1
 
     LongId:
       type: integer
@@ -154,21 +163,43 @@ components:
     # API Model
     #----------------------------------------
 
-    Example:
+    OrderLine:
       type: object
       properties:
-        exampleId:
-          $ref: '#/components/schemas/LongId'
-        title:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderLineItem'
+
+    OrderLineItem:
+      type: object
+      properties:
+        product:
+          $ref: '#/components/schemas/OrderProduct'
+        quantity:
+          type: integer
+          format: int32
+          example: 10
+
+    OrderProduct  :
+      type: object
+      properties:
+        name:
           $ref: '#/components/schemas/String'
-        createdAt:
-          $ref: '#/components/schemas/DateTime'
-        updatedAt:
-          $ref: '#/components/schemas/DateTime'
-        createdBy:
-          $ref: '#/components/schemas/String'
-        updatedBy:
-          $ref: '#/components/schemas/String'
+
+    Order:
+      type: object
+      properties:
+        product:
+          $ref: '#/components/schemas/OrderProduct'
+        deliveryFee:
+          type: number
+          example: 3000
+        totalPrice:
+          type: number
+          example: 10000
+        orderLine:
+          $ref: '#/components/schemas/OrderLine'
 
     ExampleList:
       type: object
