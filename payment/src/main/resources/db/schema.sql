@@ -21,13 +21,12 @@ CREATE TABLE IF NOT EXISTS persistent_events
     KEY           IDX_STATUS_EVENTTYPE (status,event_type)*/
 );
 
-CREATE TABLE IF NOT EXISTS examples
+CREATE TABLE IF NOT EXISTS payments
 (
-    id         bigint(20) NOT NULL AUTO_INCREMENT,
-    title      varchar(255) DEFAULT NULL,
-    created_at timestamp(3) NOT NULL,
-    updated_at timestamp(3) NOT NULL,
-    created_by varchar(40)  NOT NULL,
-    updated_by varchar(40)  NOT NULL,
+    id bigint(20) NOT NULL AUTO_INCREMENT,
+    card_number varchar(40) NOT NULL,
+    approval_number varchar(40) NULL DEFAULT NULL,
+    amount decimal DEFAULT 0,
+    state varchar(10) NOT NULL,
     PRIMARY KEY (id)
 );
