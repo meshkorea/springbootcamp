@@ -9,7 +9,7 @@ servers:
     description: Development server
 
 paths: 
-  /orders:
+  /api/orders:
     post:
       description: 주문한다.
       operationId: createOrder
@@ -35,6 +35,28 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/orders/{orderId}:
+    delete:
+      description: 주문을 취소한다.
+      operationId: cancelOrder
+      tags:
+        - Order
+      parameters:
+        - $ref: '#/components/parameters/OrderIdParam'
+      responses:
+        '200':
+          description: Ok
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/ServerError'
 
@@ -181,7 +203,7 @@ components:
           format: int32
           example: 10
 
-    OrderProduct  :
+    OrderProduct:
       type: object
       properties:
         name:
@@ -228,6 +250,16 @@ components:
         type: integer
         format: int32
         default: 10
+
+    OrderIdParam:
+      in: path
+      name: orderId
+      description: Order ID
+      schema:
+        type: integer
+        format: int64
+      example: 12345
+      required: true
 
   responses:
 
