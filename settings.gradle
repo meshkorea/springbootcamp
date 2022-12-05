@@ -4,3 +4,6 @@ include('shared')
 
 include('template')
 include('template:clients')
+
+include('delivery')
+include('delivery:clients')
