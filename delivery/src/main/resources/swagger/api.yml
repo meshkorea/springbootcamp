@@ -229,6 +229,14 @@ components:
     # Common Model
     #----------------------------------------
 
+    LongArray:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/LongId'
+
     ProblemDetails:
       type: object
       properties:
