@@ -8,9 +8,9 @@ plugins {
 }
 
 version = project.version
-group = 'com.vroong.template'
-archivesBaseName = 'template-api-java-client'
-def specPath = "${parent.rootDir}/src/main/resources/swagger/api.yml"
+group = 'com.vroong.delivery'
+archivesBaseName = 'delivery-api-java-client'
+def specPath = "../src/main/resources/swagger/api.yml"
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'

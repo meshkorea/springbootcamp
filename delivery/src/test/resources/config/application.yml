@@ -1,6 +1,6 @@
 spring:
   application:
-    name: template
+    name: delivery
 
   profiles:
     active: test

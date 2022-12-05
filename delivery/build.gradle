@@ -146,15 +146,15 @@ openApiGenerate {
     generatorName = 'spring'
     inputSpec = "${projectDir}/src/main/resources/swagger/api.yml".toString()
     outputDir = "${buildDir}/openapi".toString()
-    apiPackage = 'com.vroong.template.rest'
-    modelPackage = 'com.vroong.template.rest'
+    apiPackage = 'com.vroong.delivery.rest'
+    modelPackage = 'com.vroong.delivery.rest'
     modelNameSuffix = 'Dto'
     apiFilesConstrainedTo = ['']
     modelFilesConstrainedTo = ['']
     supportingFilesConstrainedTo = ['ApiUtil.java']
     configOptions = [
             delegatePattern: 'true',
-            title: 'template',
+            title: 'delivery',
             useTags: 'true',
             dateLibrary: 'java8',
             java8: 'true',

@@ -11,16 +11,16 @@ public class HexagonalTest {
 
   static final JavaClasses importedClasses = new ClassFileImporter()
       .withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
-      .importPackages("com.vroong.template");
+      .importPackages("com.vroong.delivery");
 
   @Test
   public void domainShouldNotDependOnAnyOtherPackages() {
     noClasses()
         .that()
-        .resideInAnyPackage("com.vroong.template.domain..")
+        .resideInAnyPackage("com.vroong.delivery.domain..")
         .should()
         .dependOnClassesThat()
-        .resideInAnyPackage("com.vroong.template.application..", "com.vroong.template.adapter..")
+        .resideInAnyPackage("com.vroong.delivery.application..", "com.vroong.template.adapter..")
         .because("Domain should not depend on any other packages")
         .check(importedClasses);
   }
@@ -29,10 +29,10 @@ public class HexagonalTest {
   public void applicationShouldNotDependOnAdapter() {
     noClasses()
         .that()
-        .resideInAnyPackage("com.vroong.template.application..")
+        .resideInAnyPackage("com.vroong.delivery.application..")
         .should()
         .dependOnClassesThat()
-        .resideInAnyPackage("com.vroong.template.adapter..")
+        .resideInAnyPackage("com.vroong.delivery.adapter..")
         .because("Application should not depend on any adapter packages")
         .check(importedClasses);
   }
