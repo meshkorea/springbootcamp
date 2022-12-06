@@ -20,7 +20,7 @@ paths:
         content:
           application/vnd.vroong.private.v1+json:
             schema:
-              $ref: '#/components/schemas/OrderLine'
+              $ref: '#/components/schemas/Order'
       responses:
         '200':
           description: Ok
