@@ -38,6 +38,28 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 
+    get:
+      description: 주문 목록을 조회한다.
+      operationId: getOrders
+      tags:
+        - Order
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: '#/components/schemas/Orders'
+        #                배송비, 총 결제 금액, 주문 상품 목록
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
   /api/orders/{orderId}:
     parameters:
       - $ref: '#/components/parameters/OrderIdParam'
@@ -301,6 +323,16 @@ components:
         totalPrice:
           type: number
           example: 10000
+
+    Orders:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        page:
+          $ref: '#/components/schemas/Page'
 
   parameters:
 
