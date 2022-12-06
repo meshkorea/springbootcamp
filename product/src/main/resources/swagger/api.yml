@@ -242,7 +242,6 @@ components:
         - supplier
         - size
         - location
-        - options
       properties:
         id:
           $ref: '#/components/schemas/LongId'
@@ -260,8 +259,6 @@ components:
           $ref: '#/components/schemas/Size'
         location:
           $ref: '#/components/schemas/String'
-        options:
-          $ref: '#/components/schemas/OptionList'
         created_at:
           $ref: '#/components/schemas/DateTime'
         updated_at:
@@ -294,30 +291,6 @@ components:
           $ref: '#/components/schemas/Size'
         location:
           $ref: '#/components/schemas/String'
-        options:
-          $ref: '#/components/schemas/OptionList'
-
-    Option:
-      type: object
-      properties:
-        optionId:
-          $ref: '#/components/schemas/LongId'
-        name:
-          $ref: '#/components/schemas/String'
-        price:
-          $ref: '#/components/schemas/Money'
-        subOptions:
-          $ref: '#/components/schemas/OptionList'
-
-    OptionList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Option'
-        page:
-          $ref: '#/components/schemas/Page'
 
   parameters:
 
