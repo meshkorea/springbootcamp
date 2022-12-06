@@ -1,9 +1,15 @@
 package com.vroong.payment.adapter.in.rest;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.vroong.payment.config.Constants;
+import com.vroong.payment.rest.PaymentApiController;
+import com.vroong.payment.rest.PaymentApiDelegate;
 import com.vroong.payment.support.TestUtils;
-import com.vroong.template.rest.PaymentApiController;
-import com.vroong.template.rest.PaymentApiDelegate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,59 +20,56 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest
 @WithMockUser
 class PaymentApiDelegateImplTest {
-    private MockMvc mvc;
 
-    @Autowired
-    private PaymentApiDelegate apiDelegate;
+  private MockMvc mvc;
 
-    @BeforeEach
-    void setup() {
-        this.mvc = MockMvcBuilders
-                .standaloneSetup(new PaymentApiController(apiDelegate))
-                .addFilters(new CharacterEncodingFilter("utf-8", true))
-                .build();
-    }
+  @Autowired private PaymentApiDelegate apiDelegate;
 
-    @Test
-    void createPayment() throws Exception {
-        final ResultActions res = mvc.perform(
+  @BeforeEach
+  void setup() {
+    this.mvc =
+        MockMvcBuilders.standaloneSetup(new PaymentApiController(apiDelegate))
+            .addFilters(new CharacterEncodingFilter("utf-8", true))
+            .build();
+  }
+
+  @Test
+  void createPayment() throws Exception {
+    final ResultActions res =
+        mvc.perform(
                 post("/api/payments")
-                        .contentType(Constants.V1_MEDIA_TYPE)
-                        .content(TestUtils.convertObjectToString(PaymentFixture.aPaymentDto()))
-                        .characterEncoding("utf-8")
-        ).andDo(print());
+                    .contentType(Constants.V1_MEDIA_TYPE)
+                    .content(TestUtils.convertObjectToString(Fixtures.aPaymentDto()))
+                    .characterEncoding("utf-8"))
+            .andDo(print());
 
-        res.andExpect(status().is2xxSuccessful());
-    }
+    res.andExpect(status().is2xxSuccessful());
+  }
 
-    @Test
-    void getPayment() throws Exception {
-        final ResultActions res = mvc.perform(
+  @Test
+  void getPayment() throws Exception {
+    final ResultActions res =
+        mvc.perform(
                 get("/api/payments/{paymentId}", 1L)
-                        .accept(Constants.V1_MEDIA_TYPE)
-                        .characterEncoding("utf-8")
-        ).andDo(print());
+                    .accept(Constants.V1_MEDIA_TYPE)
+                    .characterEncoding("utf-8"))
+            .andDo(print());
 
-        res.andExpect(status().is2xxSuccessful());
-    }
+    res.andExpect(status().is2xxSuccessful());
+  }
 
-    @Test
-    void cancelPayment() throws Exception {
-        final ResultActions res = mvc.perform(
+  @Test
+  void cancelPayment() throws Exception {
+    final ResultActions res =
+        mvc.perform(
                 patch("/api/payments/{paymentId}", 1L)
-                        .accept(Constants.V1_MEDIA_TYPE)
-                        .characterEncoding("utf-8")
-        ).andDo(print());
+                    .contentType(Constants.V1_MEDIA_TYPE)
+                    .characterEncoding("utf-8"))
+            .andDo(print());
 
-        res.andExpect(status().is2xxSuccessful());
-    }
+    res.andExpect(status().is2xxSuccessful());
+  }
 }
