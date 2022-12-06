@@ -21,8 +21,8 @@ allprojects {
 		maven {
 			url 'https://nexus.mm.meshkorea.net/repository/maven-public/'
 			credentials {
-				username repoUser
-				password repoPass
+				username "deploy"
+				password "84especezUsewune"
 			}
 		}
 		mavenCentral()
