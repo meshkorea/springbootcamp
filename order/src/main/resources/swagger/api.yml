@@ -8,7 +8,7 @@ servers:
   - url: http://localhost:8080
     description: Development server
 
-paths: 
+paths:
   /api/orders:
     post:
       description: 주문한다.
@@ -206,8 +206,17 @@ components:
     OrderProduct:
       type: object
       properties:
+        productId:
+          $ref: '#/components/schemas/LongId'
         name:
           $ref: '#/components/schemas/String'
+        price:
+          type: number
+          example: 10000
+
+    OrderState:
+      type: string
+      enum: [PLACED, PAYMENT_APPROVED, DELIVERY_STARTED, DELIVERY_COMPLETED, CANCELED]
 
     Order:
       type: object
