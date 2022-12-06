@@ -10,7 +10,7 @@ plugins {
 version = project.version
 group = 'com.vroong.delivery'
 archivesBaseName = 'delivery-api-java-client'
-def specPath = "../src/main/resources/swagger/api.yml"
+def specPath = "${parent.projectDir}/src/main/resources/swagger/api.yml"
 
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
@@ -30,8 +30,8 @@ openApiGenerate {
     generatorName = "java"
     inputSpec = specPath
     outputDir = "${buildDir}/java-client"
-    apiPackage = "com.vroong.template.rest"
-    modelPackage = "com.vroong.template.rest"
+    apiPackage = "com.vroong.delivery.rest"
+    modelPackage = "com.vroong.delivery.rest"
     apiFilesConstrainedTo = [""]
     modelFilesConstrainedTo = [""]
     supportingFilesConstrainedTo = [""]
@@ -90,8 +90,8 @@ publishing {
             def snapshotsRepoUrl = "https://nexus.mm.meshkorea.net/repository/maven-snapshots/"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
-                username repoUser
-                password repoPass
+                username "deploy"
+                password "84especezUsewune"
             }
         }
     }
