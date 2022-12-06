@@ -42,6 +42,29 @@ paths:
     parameters:
       - $ref: '#/components/parameters/OrderIdParam'
 
+    get:
+      description: 개별 주문을 조회한다.
+      operationId: getOrder
+      tags:
+        - Order
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
     patch:
       description: 주문을 수정한다.
       operationId: updateOrder
