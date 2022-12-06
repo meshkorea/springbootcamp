@@ -10,34 +10,8 @@ servers:
 
 paths: 
   /api/deliveries:
-    get:
-      description: List Deliveries
-      operationId: listDeliveries
-      tags:
-        - Delivery
-      parameters:
-        - name: orderId
-          in: query
-          required: true
-          schema:
-            $ref: '#/components/schemas/OrderId'
-      responses:
-        '200':
-          description: Ok
-          content:
-            application/vnd.vroong.private.v1+json:
-              schema:
-                $ref: '#/components/schemas/DeliveryList'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '500':
-          $ref: '#/components/responses/ServerError'
     post:
-      description: Create a Delivery
+      description: 배송 생성
       operationId: createDelivery
       tags:
         - Delivery
@@ -47,19 +21,27 @@ paths:
             schema:
               $ref: '#/components/schemas/Delivery'
       responses:
-        '200':
-          description: OK
+        '201':
+          description: Created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Delivery'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
 
   /api/deliveries/{deliveryId}:
     get:
-      description: 배송 상세 정보
-      operationId: getDeliveryDetail
+      description: 배송 정보 조회
+      operationId: getDelivery
       tags:
-        - Delivery Detail
+        - Delivery
       parameters:
         - in: path
           name: deliveryId
@@ -69,7 +51,11 @@ paths:
           description: delivery id
       responses:
         '200':
-          $ref: '#/components/schemas/Delivery'
+          description: Delivery Info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -78,11 +64,12 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/ServerError'
-    delete:
-      description: 배송 취소
-      operationId: cancelDelivery
+
+    patch:
+      description: 배송 주소 업데이트
+      operationId: updateDelivery
       tags:
-        - Cancel
+        - Delivery
       parameters:
         - in: path
           name: deliveryId
@@ -90,6 +77,11 @@ paths:
             type: integer
           required: true
           description: delivery id
+      requestBody:
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: '#/components/schemas/Delivery'
       responses:
         '200':
           $ref: '#/components/responses/Accepted'
@@ -101,16 +93,20 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/ServerError'
-    patch:
-      description: 배송 정보 업데이트
-      operationId: updateDelivery
+
+  /api/deliveries/{deliveryId}/cancel:
+    post:
+      description: 배송 취소
+      operationId: cancelDelivery
       tags:
-        - Update
-      requestBody:
-        content:
-          application/vnd.vroong.private.v1+json:
-            schema:
-              $ref: '#/components/schemas/UpdateDelivery'
+        - Delivery
+      parameters:
+        - in: path
+          name: deliveryId
+          schema:
+            type: integer
+          required: true
+          description: delivery id
       responses:
         '200':
           $ref: '#/components/responses/Accepted'
@@ -125,19 +121,12 @@ paths:
 
 components:
   schemas:
-    DeliveryList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Delivery'
-        page:
-          $ref: '#/components/schemas/Page'
     Delivery:
       type: object
       properties:
         deliveryId:
+          $ref: '#/components/schemas/LongId'
+        orderId:
           $ref: '#/components/schemas/LongId'
         traceNumber:
           $ref: '#/components/schemas/UUID'
@@ -149,25 +138,10 @@ components:
           $ref: '#/components/schemas/Coordinate'
         state:
           $ref: '#/components/schemas/DeliveryState'
-        orderId:
-          $ref: '#/components/schemas/LongId'
-    UpdateDelivery:
-      type: object
-      properties:
-        sender:
-          $ref: '#/components/schemas/Sender'
-        receiver:
-          $ref: '#/components/schemas/Receiver'
 
     #----------------------------------------
     # API fields
     #----------------------------------------
-
-    OrderId:
-      type: integer
-      format: int64
-      example: 1
-
     LongId:
       type: integer
       format: int64
@@ -206,7 +180,7 @@ components:
           type: string
     DeliveryState:
       enum:
-        - PREPAIRING
+        - PREPARING
         - DELIVERING
         - COMPLETED
         - CANCELED
