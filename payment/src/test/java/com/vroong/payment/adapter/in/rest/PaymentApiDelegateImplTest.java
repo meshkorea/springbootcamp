@@ -1,7 +1,6 @@
 package com.vroong.payment.adapter.in.rest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,18 +54,6 @@ class PaymentApiDelegateImplTest {
         mvc.perform(
                 get("/api/payments/{paymentId}", 1L)
                     .accept(Constants.V1_MEDIA_TYPE)
-                    .characterEncoding("utf-8"))
-            .andDo(print());
-
-    res.andExpect(status().is2xxSuccessful());
-  }
-
-  @Test
-  void cancelPayment() throws Exception {
-    final ResultActions res =
-        mvc.perform(
-                patch("/api/payments/{paymentId}", 1L)
-                    .contentType(Constants.V1_MEDIA_TYPE)
                     .characterEncoding("utf-8"))
             .andDo(print());
 

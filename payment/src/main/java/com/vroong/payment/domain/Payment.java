@@ -32,4 +32,6 @@ public class Payment {
 
   @Enumerated(EnumType.STRING)
   private PaymentState state;
+
+  private Long orderId;
 }

@@ -13,7 +13,8 @@ public class PaymentMapper {
         .cardNumber(entity.getCardNumber())
         .approvalNumber(entity.getApprovalNumber())
         .amount(getMoneyDto(entity))
-        .state(getState(entity));
+        .state(getState(entity))
+        .orderId(entity.getOrderId());
   }
 
   private PaymentStateDto getState(Payment entity) {

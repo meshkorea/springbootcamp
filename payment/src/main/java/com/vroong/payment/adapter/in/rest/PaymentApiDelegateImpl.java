@@ -12,17 +12,12 @@ import org.springframework.stereotype.Component;
 public class PaymentApiDelegateImpl implements PaymentApiDelegate {
 
   @Override
-  public ResponseEntity<Void> cancelPayment(Long paymentId) {
-    return ResponseEntity.noContent().build();
-  }
-
-  @Override
   public ResponseEntity<Void> createPayment(PaymentDto paymentDto) {
     return ResponseEntity.created(HeaderUtils.uri("/{paymentId}", 1L)).build();
   }
 
   @Override
-  public ResponseEntity<PaymentDto> findPayment(Long paymentId) {
+  public ResponseEntity<PaymentDto> getPayment(Long paymentId) {
     return ResponseEntity.ok(aPaymentDto());
   }
 }

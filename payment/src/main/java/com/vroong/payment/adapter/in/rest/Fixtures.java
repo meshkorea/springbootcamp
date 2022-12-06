@@ -14,6 +14,7 @@ public class Fixtures {
         .cardNumber("123456789101234")
         .approvalNumber("123456789101111")
         .amount(new MoneyDto().value(new BigDecimal(100000)))
-        .state(PaymentStateDto.fromValue(PaymentState.APPROVED.name()));
+        .state(PaymentStateDto.fromValue(PaymentState.APPROVED.name()))
+        .orderId(1L);
   }
 }

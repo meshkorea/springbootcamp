@@ -34,8 +34,8 @@ paths:
 
   /api/payments/{paymentId}:
     get:
-      description: find Payment
-      operationId: findPayment
+      description: Get Payment
+      operationId: getPayment
       tags:
         - Payment
       parameters:
@@ -47,26 +47,6 @@ paths:
             application/vnd.vroong.private.v1+json:
               schema:
                 $ref: '#/components/schemas/Payment'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/ServerError'
-    patch:
-      description: cancel Payment
-      operationId: cancelPayment
-      tags:
-        - Payment
-      parameters:
-        - $ref: '#/components/parameters/PaymentIdParam'
-      responses:
-        '204':
-          $ref: '#/components/responses/NoContent'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -177,6 +157,7 @@ components:
       required:
         - cardNumber
         - amount
+        - orderId
       properties:
         paymentId:
           $ref: '#/components/schemas/LongId'
@@ -188,6 +169,8 @@ components:
           $ref: '#/components/schemas/Money'
         state:
           $ref: '#/components/schemas/PaymentState'
+        orderId:
+          $ref: '#/components/schemas/LongId'
 
     PaymentState:
       type: string
