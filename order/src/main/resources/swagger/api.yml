@@ -1,11 +1,11 @@
 openapi: '3.0.3'
 
 info:
-  title: 'template'
+  title: 'Order Application API Spec'
   version: 0.0.1
 
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:10001
     description: Development server
 
 paths:
@@ -39,13 +39,39 @@ paths:
           $ref: '#/components/responses/ServerError'
 
   /api/orders/{orderId}:
+    parameters:
+      - $ref: '#/components/parameters/OrderIdParam'
+
+    patch:
+      description: 주문을 수정한다.
+      operationId: updateOrder
+      tags:
+        - Order
+      requestBody:
+        description: updateOrder model
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: Ok
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
     delete:
       description: 주문을 취소한다.
       operationId: cancelOrder
       tags:
         - Order
-      parameters:
-        - $ref: '#/components/parameters/OrderIdParam'
       responses:
         '200':
           description: Ok
@@ -114,6 +140,11 @@ components:
       type: string
       format: uuid
       example: c9106593-2d6c-40eb-8504-66b0ef41ad2d
+
+    PhoneNumber:
+      type: string
+      pattern: ^\d{3}-\d{3,4}-\d{4}$
+      example: 010-0000-0000
 
     #----------------------------------------
     # Common Model
@@ -185,6 +216,16 @@ components:
     # API Model
     #----------------------------------------
 
+    UserInfo:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/String'
+        phoneNumber:
+          $ref: '#/components/schemas/PhoneNumber'
+        address:
+          $ref: '#/components/schemas/String'
+
     OrderLine:
       type: object
       properties:
@@ -221,26 +262,22 @@ components:
     Order:
       type: object
       properties:
-        product:
-          $ref: '#/components/schemas/OrderProduct'
+        orderId:
+          $ref: '#/components/schemas/LongId'
+        orderer:
+          $ref: '#/components/schemas/UserInfo'
+        receiver:
+          $ref: '#/components/schemas/UserInfo'
+        orderState:
+          $ref: '#/components/schemas/OrderState'
+        orderLine:
+          $ref: '#/components/schemas/OrderLine'
         deliveryFee:
           type: number
           example: 3000
         totalPrice:
           type: number
           example: 10000
-        orderLine:
-          $ref: '#/components/schemas/OrderLine'
-
-    ExampleList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Example'
-        page:
-          $ref: '#/components/schemas/Page'
 
   parameters:
 
