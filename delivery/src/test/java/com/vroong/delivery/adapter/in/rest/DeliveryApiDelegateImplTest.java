@@ -5,12 +5,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.vroong.delivery.config.Constants;
 import com.vroong.delivery.rest.DeliveryApiController;
 import com.vroong.delivery.rest.DeliveryApiDelegate;
 import com.vroong.delivery.support.TestUtils;
+import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +27,18 @@ class DeliveryApiDelegateImplTest {
 
   private MockMvc mvc;
 
+  private String deliveryDtoString;
+
   @Autowired
   private DeliveryApiDelegate deliveryApiDelegate;
 
   @BeforeEach
-  void setup() {
+  void setup() throws IOException {
     this.mvc = MockMvcBuilders
         .standaloneSetup(new DeliveryApiController(deliveryApiDelegate))
         .addFilters(new CharacterEncodingFilter("utf-8", true))
         .build();
+    deliveryDtoString = TestUtils.convertObjectToString(Fixtures.aDeliveryDto());
   }
 
   @Test
@@ -54,10 +59,11 @@ class DeliveryApiDelegateImplTest {
             post("/api/deliveries")
                 .contentType(Constants.V1_MEDIA_TYPE)
                 .characterEncoding(Constants.ENCODING)
-                .content(TestUtils.convertObjectToString(Fixtures.aDeliveryDto()))
+                .content(deliveryDtoString)
         ).andDo(print());
 
     res.andExpect(status().isCreated());
+    res.andExpect(content().string(deliveryDtoString));
   }
 
   @Test
@@ -69,6 +75,7 @@ class DeliveryApiDelegateImplTest {
         ).andDo(print());
 
     res.andExpect(status().isOk());
+    res.andExpect(content().string(deliveryDtoString));
   }
 
   @Test
@@ -78,7 +85,7 @@ class DeliveryApiDelegateImplTest {
             patch("/api/deliveries/{deliveryId}", 1L)
                 .contentType(Constants.V1_MEDIA_TYPE)
                 .characterEncoding(Constants.ENCODING)
-                .content(TestUtils.convertObjectToString(Fixtures.aDeliveryDto()))
+                .content(deliveryDtoString)
         ).andDo(print());
 
     res.andExpect(status().isNoContent());
