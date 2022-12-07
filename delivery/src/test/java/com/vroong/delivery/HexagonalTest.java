@@ -20,7 +20,7 @@ public class HexagonalTest {
         .resideInAnyPackage("com.vroong.delivery.domain..")
         .should()
         .dependOnClassesThat()
-        .resideInAnyPackage("com.vroong.delivery.application..", "com.vroong.template.adapter..")
+        .resideInAnyPackage("com.vroong.delivery.application..", "com.vroong.delivery.adapter..")
         .because("Domain should not depend on any other packages")
         .check(importedClasses);
   }

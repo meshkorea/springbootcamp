@@ -36,7 +36,7 @@ openApiGenerate {
     modelFilesConstrainedTo = [""]
     supportingFilesConstrainedTo = [""]
     configOptions = [
-            title: "template",
+            title: "delivery",
             useTags: "true",
             dateLibrary: "java8",
             java8: "true",
@@ -90,8 +90,8 @@ publishing {
             def snapshotsRepoUrl = "https://nexus.mm.meshkorea.net/repository/maven-snapshots/"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
-                username "deploy"
-                password "84especezUsewune"
+                username repoUser
+                password repoPass
             }
         }
     }
