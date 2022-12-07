@@ -30,7 +30,9 @@ allprojects {
 	}
 }
 
+def dockerComposePath = System.getProperty('os.arch').equals('aarch64')
+		? 'docker/compose-arm.yml' : 'docker/compose-intel.yml'
 dockerCompose {
-	useComposeFiles = ['docker/compose.yml']
+	useComposeFiles = [dockerComposePath]
 	tcpPortsToIgnoreWhenWaiting = [1099]
 }

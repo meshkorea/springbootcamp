@@ -37,7 +37,10 @@ kafka|alice|alice-secret
 ~ $ ./gradlew dependencyUpdates
 ```
 
-## 빌드
+## 빌드 및 구동
 
-- [Jenkins 적용 가이드](https://wiki.mm.meshkorea.net/pages/viewpage.action?pageId=95855850)에 따라 빌드합니다
-- [Jenkins BlueOcean](https://jenkins.meshtools.io/blue/organizations/jenkins/template/activity) 화면에서 빌드합니다
+```shell
+./gradlew jibDockerBuild
+./gradlew composeUp
+# MySQL 클라이언트에서 각 서비스별 DDL 적용
+```
