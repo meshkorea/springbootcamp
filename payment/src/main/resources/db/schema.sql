@@ -25,15 +25,15 @@ CREATE TABLE IF NOT EXISTS persistent_events
 
 CREATE TABLE IF NOT EXISTS payments
 (
-    id              bigint(20)   NOT NULL AUTO_INCREMENT,
-    card_number     varchar(40)  NOT NULL,
-    approval_number varchar(40)  NULL DEFAULT NULL,
-    amount          decimal           DEFAULT 0,
-    state           varchar(10)  NOT NULL,
-    orderId         bigint(20)   NOT NULL,
-    created_at      timestamp(3) NOT NULL,
-    updated_at      timestamp(3) NOT NULL,
-    created_by      varchar(40)  NOT NULL,
-    updated_by      varchar(40)  NOT NULL,
+    id              bigint(20)           NOT NULL AUTO_INCREMENT,
+    card_number     varchar(40)          NOT NULL,
+    approval_number varchar(40)          NULL     DEFAULT NULL,
+    amount          decimal                       DEFAULT 0,
+    status          tinyint(10) unsigned NOT NULL DEFAULT '0',
+    orderId         bigint(20)           NOT NULL,
+    created_at      timestamp(3)         NOT NULL,
+    updated_at      timestamp(3)         NOT NULL,
+    created_by      varchar(40)          NOT NULL,
+    updated_by      varchar(40)          NOT NULL,
     PRIMARY KEY (id)
 );

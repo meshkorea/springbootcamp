@@ -5,7 +5,7 @@ info:
   version: 0.0.1
 
 servers:
-  - url: http://localhost:8080
+  - url: http://localhost:10004
     description: Development server
 
 paths:
@@ -74,7 +74,7 @@ components:
       format: date-time
       example: "2018-12-01T10:00:00Z"
 
-    String:
+    StringField:
       type: string
       example: "foo"
 
@@ -162,17 +162,17 @@ components:
         paymentId:
           $ref: '#/components/schemas/LongId'
         cardNumber:
-          $ref: '#/components/schemas/String'
+          $ref: '#/components/schemas/StringField'
         approvalNumber:
-          $ref: '#/components/schemas/String'
+          $ref: '#/components/schemas/StringField'
         amount:
           $ref: '#/components/schemas/Money'
-        state:
-          $ref: '#/components/schemas/PaymentState'
+        status:
+          $ref: '#/components/schemas/PaymentStatus'
         orderId:
           $ref: '#/components/schemas/LongId'
 
-    PaymentState:
+    PaymentStatus:
       type: string
       enum:
         - WAITING
@@ -181,13 +181,8 @@ components:
         - CANCELED
 
     Money:
-      type: object
-      required:
-        - value
-      properties:
-        value:
-          type: number
-          example: 10000
+      type: number
+      example: 1000
 
   parameters:
 

@@ -1,9 +1,8 @@
 package com.vroong.payment.adapter.in.rest;
 
-import com.vroong.payment.domain.PaymentState;
-import com.vroong.payment.rest.MoneyDto;
+import com.vroong.payment.domain.PaymentStatus;
 import com.vroong.payment.rest.PaymentDto;
-import com.vroong.payment.rest.PaymentStateDto;
+import com.vroong.payment.rest.PaymentStatusDto;
 import java.math.BigDecimal;
 
 public class Fixtures {
@@ -11,10 +10,10 @@ public class Fixtures {
   static PaymentDto aPaymentDto() {
     return new PaymentDto()
         .paymentId(1L)
-        .cardNumber("123456789101234")
-        .approvalNumber("123456789101111")
-        .amount(new MoneyDto().value(new BigDecimal(100000)))
-        .state(PaymentStateDto.fromValue(PaymentState.APPROVED.name()))
+        .cardNumber("1234-0000-0000-5678")
+        .approvalNumber("12345678")
+        .amount(new BigDecimal(10_000))
+        .status(PaymentStatusDto.fromValue(PaymentStatus.APPROVED.name()))
         .orderId(1L);
   }
 }
