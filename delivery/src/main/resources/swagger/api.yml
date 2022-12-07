@@ -8,7 +8,7 @@ servers:
   - url: http://localhost:10003
     description: Delivery API
 
-paths: 
+paths:
   /api/deliveries:
     post:
       description: 배송 생성
@@ -24,7 +24,7 @@ paths:
         '201':
           description: Created
           content:
-            application/json:
+            application/vnd.vroong.private.v1+json:
               schema:
                 $ref: '#/components/schemas/Delivery'
         '400':
@@ -46,14 +46,14 @@ paths:
         - in: path
           name: deliveryId
           schema:
-            type: integer
+            $ref: '#/components/schemas/LongId'
           required: true
           description: delivery id
       responses:
         '200':
-          description: Delivery Info
+          description: Ok
           content:
-            application/json:
+            application/vnd.vroong.private.v1+json:
               schema:
                 $ref: '#/components/schemas/Delivery'
         '400':
@@ -76,7 +76,7 @@ paths:
         - in: path
           name: deliveryId
           schema:
-            type: integer
+            $ref: '#/components/schemas/LongId'
           required: true
           description: delivery id
       requestBody:
@@ -85,8 +85,8 @@ paths:
             schema:
               $ref: '#/components/schemas/Delivery'
       responses:
-        '200':
-          $ref: '#/components/responses/Accepted'
+        '204':
+          $ref: '#/components/responses/NoContent'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -98,8 +98,7 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 
-  /api/deliveries/{deliveryId}/cancel:
-    post:
+    delete:
       description: 배송 취소
       operationId: cancelDelivery
       tags:
@@ -108,12 +107,12 @@ paths:
         - in: path
           name: deliveryId
           schema:
-            type: integer
+            $ref: '#/components/schemas/LongId'
           required: true
           description: delivery id
       responses:
-        '200':
-          $ref: '#/components/responses/Accepted'
+        '204':
+          $ref: '#/components/responses/NoContent'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -247,8 +246,8 @@ components:
 
   responses:
 
-    Accepted:
-      description: Accepted
+    NoContent:
+      description: No Content
 
     BadRequest:
       description: Bad Request
