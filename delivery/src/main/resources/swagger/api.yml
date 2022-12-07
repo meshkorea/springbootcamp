@@ -2,7 +2,7 @@ openapi: '3.0.3'
 
 info:
   title: 'delivery'
-  version: 0.0.1
+  version: 0.0.3
 
 servers:
   - url: http://localhost:10003
@@ -62,6 +62,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/ServerError'
 
@@ -91,6 +93,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/ServerError'
 
@@ -116,6 +120,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/ServerError'
 
@@ -129,7 +135,7 @@ components:
         orderId:
           $ref: '#/components/schemas/LongId'
         traceNumber:
-          $ref: '#/components/schemas/UUID'
+          $ref: '#/components/schemas/TraceNumber'
         sender:
           $ref: '#/components/schemas/Sender'
         receiver:
@@ -139,45 +145,41 @@ components:
         state:
           $ref: '#/components/schemas/DeliveryState'
 
-    #----------------------------------------
-    # API fields
-    #----------------------------------------
-    LongId:
-      type: integer
-      format: int64
-      example: 1
-
     Sender:
       type: object
       properties:
         name:
-          type: string
+          $ref: '#/components/schemas/UserName'
         phone:
-          type: string
+          $ref: '#/components/schemas/Phone'
         address:
-          type: string
-        coordinate:
-          $ref: '#/components/schemas/Coordinate'
+          $ref: '#/components/schemas/Address'
+
     Receiver:
       type: object
       properties:
         name:
-          type: string
+          $ref: '#/components/schemas/UserName'
         phone:
-          type: string
+          $ref: '#/components/schemas/Phone'
         address:
-          type: string
-        coordinate:
-          $ref: '#/components/schemas/Coordinate'
+          $ref: '#/components/schemas/Address'
+
     Coordinate:
       type: object
       properties:
-        x:
+        latitude:
           type: string
-        y:
+          example: 37.575819
+        longitude:
           type: string
-        z:
-          type: string
+          example: 126.976834
+
+    TraceNumber:
+      type: string
+      format: uuid
+      example: c9106593-2d6c-40eb-8504-66b0ef41ad2d
+
     DeliveryState:
       enum:
         - PREPARING
@@ -185,19 +187,27 @@ components:
         - COMPLETED
         - CANCELED
 
+    UserName:
+      type: string
+      example: 홍길동
+
+    Phone:
+      type: string
+      example: 01012345678
+
+    Address:
+      type: string
+      example: 서울 종로구 효자로 12
+
     DateTime:
       type: string
       format: date-time
       example: "2018-12-01T10:00:00Z"
 
-    String:
-      type: string
-      example: "foo"
-
-    UUID:
-      type: string
-      format: uuid
-      example: c9106593-2d6c-40eb-8504-66b0ef41ad2d
+    LongId:
+      type: integer
+      format: int64
+      example: 1
 
     #----------------------------------------
     # Common Model
@@ -235,91 +245,10 @@ components:
         - NotNull
         - Size
 
-    Page:
-      type: object
-      properties:
-        size:
-          type: integer
-          format: int32
-          default: 20
-          example: 20
-        totalElements:
-          type: integer
-          format: int64
-          example: 100
-        totalPages:
-          type: integer
-          format: int32
-          example: 5
-        number:
-          type: integer
-          format: int32
-          default: 1
-          example: 1
-
-    #----------------------------------------
-    # API Model
-    #----------------------------------------
-
-    Example:
-      type: object
-      properties:
-        exampleId:
-          $ref: '#/components/schemas/LongId'
-        title:
-          $ref: '#/components/schemas/String'
-        createdAt:
-          $ref: '#/components/schemas/DateTime'
-        updatedAt:
-          $ref: '#/components/schemas/DateTime'
-        createdBy:
-          $ref: '#/components/schemas/String'
-        updatedBy:
-          $ref: '#/components/schemas/String'
-
-    ExampleList:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Example'
-        page:
-          $ref: '#/components/schemas/Page'
-
-  parameters:
-
-    PageParam:
-      in: query
-      name: page
-      schema:
-        type: integer
-        format: int32
-        default: 1
-
-    SizeParam:
-      in: query
-      name: size
-      schema:
-        type: integer
-        format: int32
-        default: 10
-
   responses:
-
-    Created:
-      description: Created
 
     Accepted:
       description: Accepted
-
-    NoContent:
-      description: No Content
-
-    EmptyContent:
-      description: No Content
-      content:
-        application/vnd.vroong.private.v1+json: { }
 
     BadRequest:
       description: Bad Request
