@@ -2,7 +2,7 @@ package com.vroong.order.adapter.in.rest;
 
 import com.vroong.order.rest.OrderApiDelegate;
 import com.vroong.order.rest.OrderDto;
-import com.vroong.order.rest.OrdersDto;
+import com.vroong.order.rest.OrderListDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -20,13 +20,13 @@ public class OrderApiDelegateImpl implements OrderApiDelegate {
   }
 
   @Override
-  public ResponseEntity<OrdersDto> getOrders() {
-    return ResponseEntity.ok(Fixture.aOrdersDto());
+  public ResponseEntity<OrderListDto> getOrderList() {
+    return ResponseEntity.ok(Fixture.aOrderListDto());
   }
 
   @Override
   public ResponseEntity<Void> updateOrder(Long orderId, OrderDto orderDto) {
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 
   @Override

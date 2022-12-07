@@ -1,7 +1,7 @@
 package com.vroong.order.adapter.in.rest;
 
 import static com.vroong.order.config.Constants.V1_MEDIA_TYPE;
-import static com.vroong.order.config.Constants.encoding;
+import static com.vroong.order.config.Constants.ENCODING;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -35,8 +35,8 @@ class OrderApiDelegateImplTest {
   void createOrder() throws Exception {
     ResultActions res = mvc.perform(post("/api/orders")
             .contentType(V1_MEDIA_TYPE)
-            .characterEncoding(encoding)
-            .content(TestUtils.convertObjectToString(Fixture.aOrdersDto()))
+            .characterEncoding(ENCODING)
+            .content(TestUtils.convertObjectToString(Fixture.aOrderListDto()))
         )
         .andDo(print());
 
@@ -48,7 +48,7 @@ class OrderApiDelegateImplTest {
   void getOrder() throws Exception {
     ResultActions res = mvc.perform(get("/api/orders/{orderId}", 1L)
             .contentType(V1_MEDIA_TYPE)
-            .characterEncoding(encoding)
+            .characterEncoding(ENCODING)
         )
         .andDo(print());
 
@@ -57,10 +57,10 @@ class OrderApiDelegateImplTest {
   }
 
   @Test
-  void getOrders() throws Exception {
+  void getOrderList() throws Exception {
     ResultActions res = mvc.perform(get("/api/orders")
             .contentType(V1_MEDIA_TYPE)
-            .characterEncoding(encoding)
+            .characterEncoding(ENCODING)
         )
         .andDo(print());
 
@@ -73,8 +73,8 @@ class OrderApiDelegateImplTest {
   void updateOrder() throws Exception {
     ResultActions res = mvc.perform(patch("/api/orders/{orderId}", 1L)
             .contentType(V1_MEDIA_TYPE)
-            .characterEncoding(encoding)
-            .content(TestUtils.convertObjectToString(Fixture.aOrdersDto()))
+            .characterEncoding(ENCODING)
+            .content(TestUtils.convertObjectToString(Fixture.aOrderListDto()))
         )
         .andDo(print());
 
@@ -85,7 +85,7 @@ class OrderApiDelegateImplTest {
   void cancelOrder() throws Exception {
     ResultActions res = mvc.perform(delete("/api/orders/{orderId}", 1L)
             .contentType(V1_MEDIA_TYPE)
-            .characterEncoding(encoding)
+            .characterEncoding(ENCODING)
         )
         .andDo(print());
 
@@ -96,7 +96,7 @@ class OrderApiDelegateImplTest {
   void setUp() {
     this.mvc = MockMvcBuilders
         .standaloneSetup(new OrderApiController(orderApiDelegate))
-        .addFilters(new CharacterEncodingFilter(encoding, true))
+        .addFilters(new CharacterEncodingFilter(ENCODING, true))
         .build();
   }
 }

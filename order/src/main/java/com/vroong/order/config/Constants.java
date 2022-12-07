@@ -2,11 +2,11 @@ package com.vroong.order.config;
 
 public class Constants {
 
-  public static final String PROJECT_NAME = "template";
+  public static final String PROJECT_NAME = "order";
   public static final String SYSTEM_ACCOUNT = "system";
   public static final String UNKNOWN_USER_ID = "00000000-0000-0000-0000-000000000000";
   public static final String V1_MEDIA_TYPE = "application/vnd.vroong.private.v1+json";
-  public static final String encoding = "utf-8";
+  public static final String ENCODING = "utf-8";
 
   public static final String TIMEZONE_SEOUL = "UTC+9";
   public static final int TIMEZONE_SEOUL_HOURS = 9;
@@ -44,8 +44,8 @@ public class Constants {
   }
 
   public static class LogKey {
-    public static final String HTTP_INBOUND_LOGGER = "com.vroong.template.http.api";
-    public static final String HTTP_OUTBOUND_LOGGER = "com.vroong.template.http.external";
+    public static final String HTTP_INBOUND_LOGGER = "com.vroong.order.http.api";
+    public static final String HTTP_OUTBOUND_LOGGER = "com.vroong.order.http.external";
     public static final String REQUEST = "request";
     public static final String RESPONSE = "response";
     public static final String USER_NAME = "userName";

@@ -64,7 +64,7 @@ spring:
       bindings:
         messageChannel:
           binder: kafka
-          destination: local-template-output
+          destination: local-order-output
           producer:
             # @see https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/3.0.10.RELEASE/reference/html/spring-cloud-stream-binder-kafka.html#kafka-producer-properties
             header-mode: headers

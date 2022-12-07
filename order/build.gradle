@@ -137,7 +137,7 @@ jib {
                 '-Dfile.encoding=UTF8',
                 '-Dsun.net.inetaddr.ttl=30'
         ]
-        ports = ['8080']
+        ports = ['10001']
         creationTime = 'USE_CURRENT_TIMESTAMP'
     }
 }
@@ -154,7 +154,7 @@ openApiGenerate {
     supportingFilesConstrainedTo = ['ApiUtil.java']
     configOptions = [
             delegatePattern: 'true',
-            title: 'template',
+            title: 'order',
             useTags: 'true',
             dateLibrary: 'java8',
             java8: 'true',

@@ -14,7 +14,7 @@ $ jenv versions
 - `docker/compose.yml` 파일을 열어 자신의 플랫폼에 맞도록 수정합니다
 - 아래 명령으로 MySQL(3306), Kafka(9092), jhipster-uaa(9999) 등을 구동합니다
 ```shell
-~/template $ ./gradlew composeUp
+~/order $ ./gradlew composeUp
 # To stop and delete the cluster, ./gradlew composeDown
 ```
 

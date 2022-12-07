@@ -3,17 +3,17 @@ package com.vroong.order.adapter.in.rest;
 import com.vroong.order.rest.OrderDto;
 import com.vroong.order.rest.OrderLineDto;
 import com.vroong.order.rest.OrderLineItemDto;
+import com.vroong.order.rest.OrderListDto;
 import com.vroong.order.rest.OrderProductDto;
 import com.vroong.order.rest.OrderStateDto;
-import com.vroong.order.rest.OrdersDto;
 import com.vroong.order.rest.PageDto;
 import com.vroong.order.rest.UserInfoDto;
 import java.math.BigDecimal;
 
 public class Fixture {
 
-  public static OrdersDto aOrdersDto() {
-    return new OrdersDto()
+  public static OrderListDto aOrderListDto() {
+    return new OrderListDto()
         .addDataItem(aOrderDto())
         .page(new PageDto()
             .number(1)
