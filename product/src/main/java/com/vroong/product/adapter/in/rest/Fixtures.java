@@ -1,9 +1,9 @@
 package com.vroong.product.adapter.in.rest;
 
-import com.vroong.template.rest.MoneyDto;
-import com.vroong.template.rest.ProductDto;
-import com.vroong.template.rest.SizeDto;
-
+import com.vroong.product.rest.PageDto;
+import com.vroong.product.rest.ProductDto;
+import com.vroong.product.rest.ProductListDto;
+import com.vroong.product.rest.SizeDto;
 import java.math.BigDecimal;
 
 public class Fixtures {
@@ -18,10 +18,20 @@ public class Fixtures {
         return new ProductDto()
                 .name(DEFAULT_PRODUCT_NAME)
                 .description(DEFAULT_PRODUCT_DESCRIPTION)
-                .price(new MoneyDto().value(new BigDecimal(500_000_000)))
+                .price(new BigDecimal(500_000_000))
                 .inventory(1)
                 .supplier(DEFAULT_PRODUCT_SUPPLIER)
                 .size(new SizeDto().width(4846).height(1939).depth(1705))
                 .location(DEFAULT_PRODUCT_LOCATION);
+    }
+
+    public static ProductListDto aProductListDto() {
+        return new ProductListDto()
+            .addDataItem(aProductDto())
+            .page(new PageDto()
+                .number(1)
+                .size(10)
+                .totalElements(1L)
+                .totalPages(1));
     }
 }
