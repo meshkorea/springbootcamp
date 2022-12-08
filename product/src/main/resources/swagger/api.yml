@@ -164,10 +164,8 @@ components:
       example: c9106593-2d6c-40eb-8504-66b0ef41ad2d
 
     Money:
-      type: object
-      properties:
-        value:
-          type: number
+      type: number
+      example: 1000
 
     LongArray:
       type: object
