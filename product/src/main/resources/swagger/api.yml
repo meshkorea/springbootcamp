@@ -9,6 +9,55 @@ servers:
     description: Product Server
 
 paths:
+  /api/examples:
+    get:
+      description: List Examples
+      operationId: listExamples
+      tags:
+        - Example
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: '#/components/schemas/ExampleList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/exceptions:
+    get:
+      description: Test Exceptions
+      operationId: getException
+      tags:
+        - Example
+      parameters:
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum:
+              - ServerError
+              - NoSuchElement
+      responses:
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
   /api/products:
     post:
       description: 개별 상품 등록
@@ -232,6 +281,33 @@ components:
     #----------------------------------------
     # API Model
     #----------------------------------------
+
+    Example:
+      type: object
+      properties:
+        exampleId:
+          $ref: '#/components/schemas/LongId'
+        title:
+          $ref: '#/components/schemas/StringField'
+        createdAt:
+          $ref: '#/components/schemas/DateTime'
+        updatedAt:
+          $ref: '#/components/schemas/DateTime'
+        createdBy:
+          $ref: '#/components/schemas/StringField'
+        updatedBy:
+          $ref: '#/components/schemas/StringField'
+
+    ExampleList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Example'
+        page:
+          $ref: '#/components/schemas/Page'
+
     Product:
       type: object
       properties:
@@ -313,6 +389,7 @@ components:
       name: productId
       schema:
         $ref: '#/components/schemas/LongId'
+      required: true
 
   responses:
 
