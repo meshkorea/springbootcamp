@@ -1,0 +1,112 @@
+asyncapi: '2.5.0'
+
+info:
+  title: Delivery Application Async API Spec
+  version: 0.0.1
+
+servers:
+  local:
+    url: localhost:9092
+    protocol: kafka-secure
+    description: Development server
+
+defaultContentType: application/json
+
+channels:
+  local-delivery-output:
+    description: Delivery 서비스에서 발행하는 도메인 메시지를 위한 토픽
+    publish:
+      message:
+        oneOf:
+          - $ref: '#/components/messages/Prepared'
+          - $ref: '#/components/messages/Started'
+          - $ref: '#/components/messages/Completed'
+
+  local-order-out:
+    description: Delivery 서비스에서 소비하는 Order 서비스 도메인 메시지를 위한 토픽
+    subscribe:
+      message:
+        oneOf:
+          - $ref: '#/components/messages/PaymentApproved'
+
+components:
+  messages:
+    Prepared:
+      title: Delivery Prepared
+      name: DELIVERY_PREPARED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Delivery'
+
+    Started:
+      title: Delivery Started
+      name: DELIVERY_STARTED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Delivery'
+    Completed:
+      title: Delivery Completed
+      name: DELIVERY_COMPLETED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Delivery'
+
+    PaymentApproved:
+      title: Payment Approved
+      name: PAYMENT_APPROVED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: '#/components/schemas/example'
+
+  schemas:
+    example:
+      type: object
+      properties:
+        orderId:
+          type: integer
+          format: int64
+          example: 1
+
+  #  securitySchemes:
+  #    saslPlain:
+  #      type: plain
+  #      description: Provide your username and password for SASL/PLAIN authentication
+
+  messageTraits:
+    commonHeaders:
+      headers:
+        type: object
+        properties:
+          partitionKey:
+            type: string
+            format: uuid
+            example: a8697999-57ce-3bf7-82b3-19112facb65f
+          messageVersion:
+            type: string
+            format: number
+            example: 1
+          messageId:
+            type: string
+            format: uuid
+            example: cce8c791-89a2-4120-a3b4-f2c67b5b0fb9
+          messageType:
+            type: string
+            example: DELIVERY_PREPARED
+          messageSource:
+            type: string
+            example: order
+          resource:
+            type: string
+            example: Order
