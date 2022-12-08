@@ -11,8 +11,8 @@ servers:
 paths:
   /api/payments:
     post:
-      description: Create Payment
-      operationId: createPayment
+      description: Checkout
+      operationId: checkout
       tags:
         - Payment
       requestBody:

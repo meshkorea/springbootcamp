@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class PaymentApiDelegateImpl implements PaymentApiDelegate {
 
   @Override
-  public ResponseEntity<Void> createPayment(PaymentDto paymentDto) {
+  public ResponseEntity<Void> checkout(PaymentDto paymentDto) {
     return ResponseEntity.created(HeaderUtils.uri("/{paymentId}", 1L)).build();
   }
 
