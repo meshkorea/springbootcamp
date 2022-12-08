@@ -307,7 +307,7 @@ components:
     Product:
       type: object
       properties:
-        id:
+        productId:
           $ref: '#/components/schemas/LongId'
         name:
           $ref: '#/components/schemas/StringField'

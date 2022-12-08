@@ -1,11 +1,15 @@
 package com.vroong.product.config;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 public class Constants {
 
   public static final String PROJECT_NAME = "product";
   public static final String SYSTEM_ACCOUNT = "system";
   public static final String UNKNOWN_USER_ID = "00000000-0000-0000-0000-000000000000";
   public static final String V1_MEDIA_TYPE = "application/vnd.vroong.private.v1+json";
+  public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
   public static final String TIMEZONE_SEOUL = "UTC+9";
   public static final int TIMEZONE_SEOUL_HOURS = 9;

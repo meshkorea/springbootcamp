@@ -1,5 +1,6 @@
 package com.vroong.product.adapter.in.rest;
 
+import static com.vroong.product.adapter.in.rest.Fixtures.DEFAULT_ID;
 import static com.vroong.product.adapter.in.rest.Fixtures.aProductDto;
 import static com.vroong.product.adapter.in.rest.Fixtures.aProductListDto;
 
@@ -9,7 +10,9 @@ import com.vroong.product.rest.ProductListDto;
 import com.vroong.product.rest.UpdateProductDto;
 import com.vroong.product.support.HeaderUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProductApiDelegateImpl implements ProductApiDelegate {
 
   @Override
@@ -21,7 +24,7 @@ public class ProductApiDelegateImpl implements ProductApiDelegate {
 
   @Override
   public ResponseEntity<ProductDto> getProduct(Long productId) {
-    return ResponseEntity.ok(aProductDto());
+    return ResponseEntity.ok(aProductDto().productId(DEFAULT_ID));
   }
 
   @Override
