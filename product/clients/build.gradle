@@ -8,8 +8,8 @@ plugins {
 }
 
 version = project.version
-group = 'com.vroong.template'
-archivesBaseName = 'template-api-java-client'
+group = 'com.vroong.prodcut'
+archivesBaseName = 'prodcut-api-java-client'
 def specPath = "${parent.projectDir}/src/main/resources/swagger/api.yml"
 
 sourceCompatibility = '1.8'
@@ -30,13 +30,13 @@ openApiGenerate {
     generatorName = "java"
     inputSpec = specPath
     outputDir = "${buildDir}/java-client"
-    apiPackage = "com.vroong.template.rest"
-    modelPackage = "com.vroong.template.rest"
+    apiPackage = "com.vroong.product.rest"
+    modelPackage = "com.vroong.product.rest"
     apiFilesConstrainedTo = [""]
     modelFilesConstrainedTo = [""]
     supportingFilesConstrainedTo = [""]
     configOptions = [
-            title: "template",
+            title: "product",
             useTags: "true",
             dateLibrary: "java8",
             java8: "true",

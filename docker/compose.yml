@@ -33,7 +33,7 @@ services:
 #    image: wurstmeister/kafka:2.13-2.6.0
     container_name: kafka
     environment:
-      KAFKA_CREATE_TOPICS: "local-template-output:1:1"
+      KAFKA_CREATE_TOPICS: "local-product-output:1:1"
       KAFKA_BROKER_ID: 1
       KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf"
       KAFKA_ADVERTISED_LISTENERS: 'SASL_PLAINTEXT://localhost:9092'

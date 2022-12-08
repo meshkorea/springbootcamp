@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 10002
   # @see https://www.baeldung.com/spring-boot-web-server-shutdown
   shutdown: graceful
   # @see https://github.com/zalando/logbook/issues/870
@@ -64,7 +64,7 @@ spring:
       bindings:
         messageChannel:
           binder: kafka
-          destination: local-template-output
+          destination: local-product-output
           producer:
             # @see https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/3.0.10.RELEASE/reference/html/spring-cloud-stream-binder-kafka.html#kafka-producer-properties
             header-mode: headers

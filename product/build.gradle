@@ -136,7 +136,7 @@ jib {
                 '-Dfile.encoding=UTF8',
                 '-Dsun.net.inetaddr.ttl=30'
         ]
-        ports = ['8080']
+        ports = ['10002']
         creationTime = 'USE_CURRENT_TIMESTAMP'
     }
 }
@@ -145,15 +145,15 @@ openApiGenerate {
     generatorName = 'spring'
     inputSpec = "${projectDir}/src/main/resources/swagger/api.yml".toString()
     outputDir = "${buildDir}/openapi".toString()
-    apiPackage = 'com.vroong.template.rest'
-    modelPackage = 'com.vroong.template.rest'
+    apiPackage = 'com.vroong.product.rest'
+    modelPackage = 'com.vroong.product.rest'
     modelNameSuffix = 'Dto'
     apiFilesConstrainedTo = ['']
     modelFilesConstrainedTo = ['']
     supportingFilesConstrainedTo = ['ApiUtil.java']
     configOptions = [
             delegatePattern: 'true',
-            title: 'template',
+            title: 'product',
             useTags: 'true',
             dateLibrary: 'java8',
             java8: 'true',
