@@ -186,11 +186,6 @@ components:
       format: uuid
       example: c9106593-2d6c-40eb-8504-66b0ef41ad2d
 
-    PhoneNumber:
-      type: string
-      pattern: ^\d{3}-\d{3,4}-\d{4}$
-      example: 010-0000-0000
-
     #----------------------------------------
     # Common Model
     #----------------------------------------
@@ -267,7 +262,7 @@ components:
         name:
           $ref: '#/components/schemas/StringField'
         phoneNumber:
-          $ref: '#/components/schemas/PhoneNumber'
+          $ref: '#/components/schemas/StringField'
         address:
           $ref: '#/components/schemas/StringField'
 
