@@ -52,8 +52,6 @@ paths:
                 $ref: '#/components/schemas/ProductList'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/ServerError'
 
@@ -130,11 +128,11 @@ components:
       type: object
       properties:
         width:
-          $ref: '#/components/schemas/Integer'
+          $ref: '#/components/schemas/IntegerField'
         height:
-          $ref: '#/components/schemas/Integer'
+          $ref: '#/components/schemas/IntegerField'
         depth:
-          $ref: '#/components/schemas/Integer'
+          $ref: '#/components/schemas/IntegerField'
 
     #----------------------------------------
     # Common Model
@@ -144,7 +142,7 @@ components:
       format: int64
       example: 1
 
-    Integer:
+    IntegerField:
       type: integer
       format: int32
       example: 1
@@ -154,7 +152,7 @@ components:
       format: date-time
       example: "2018-12-01T10:00:00Z"
 
-    String:
+    StringField:
       type: string
       example: "foo"
 
@@ -236,29 +234,23 @@ components:
     #----------------------------------------
     Product:
       type: object
-      required:
-        - name
-        - price
-        - supplier
-        - size
-        - location
       properties:
         id:
           $ref: '#/components/schemas/LongId'
         name:
-          $ref: '#/components/schemas/String'
+          $ref: '#/components/schemas/StringField'
         description:
-          $ref: '#/components/schemas/String'
+          $ref: '#/components/schemas/StringField'
         inventory:
-          $ref: '#/components/schemas/Integer'
+          $ref: '#/components/schemas/IntegerField'
         price:
           $ref: '#/components/schemas/Money'
         supplier:
-          $ref: '#/components/schemas/String'
+          $ref: '#/components/schemas/StringField'
         size:
           $ref: '#/components/schemas/Size'
         location:
-          $ref: '#/components/schemas/String'
+          $ref: '#/components/schemas/StringField'
         created_at:
           $ref: '#/components/schemas/DateTime'
         updated_at:
@@ -278,19 +270,20 @@ components:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/String'
+          $ref: '#/components/schemas/StringField'
         description:
-          $ref: '#/components/schemas/String'
+          $ref: '#/components/schemas/StringField'
         inventory:
-          $ref: '#/components/schemas/Integer'
+          $ref: '#/components/schemas/IntegerField'
         price:
           $ref: '#/components/schemas/Money'
         supplier:
-          $ref: '#/components/schemas/String'
+          $ref: '#/components/schemas/StringField'
+          $ref: '#/components/schemas/StringField'
         size:
           $ref: '#/components/schemas/Size'
         location:
-          $ref: '#/components/schemas/String'
+          $ref: '#/components/schemas/StringField'
 
   parameters:
 
@@ -314,14 +307,13 @@ components:
       in: query
       name: q
       schema:
-        $ref: '#/components/schemas/String'
+        $ref: '#/components/schemas/StringField'
 
     ProductId:
       in: path
       name: productId
       schema:
         $ref: '#/components/schemas/LongId'
-      required: true
 
   responses:
 
