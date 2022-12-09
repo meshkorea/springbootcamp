@@ -3,6 +3,8 @@ plugins {
     id 'idea'
     id 'org.springframework.boot'
     id 'io.spring.dependency-management'
+    id 'org.openapi.generator'
+    id 'com.rivancic.asyncapi-gradle-plugin'
     id 'io.freefair.lombok'
 }
 
@@ -15,4 +17,52 @@ dependencies {
 
 bootJar {
     enabled = false
+}
+
+task redoc(type:Exec) {
+    // For this to work correctly, `yarn global add redoc`
+    commandLine 'npx', 'redoc-cli', 'bundle', "${projectDir}/src/main/resources/api.yml", '-o', "${buildDir}/redoc.html"
+}
+
+openApiGenerate {
+    generatorName = 'spring'
+    inputSpec = "${projectDir}/src/main/resources/api.yml".toString()
+    outputDir = "${buildDir}/openapi".toString()
+    apiPackage = 'com.vroong.shared.rest'
+    modelPackage = 'com.vroong.shared.rest'
+    modelNameSuffix = 'Dto'
+    apiFilesConstrainedTo = ['']
+    modelFilesConstrainedTo = ['']
+    supportingFilesConstrainedTo = ['ApiUtil.java']
+    configOptions = [
+            delegatePattern: 'true',
+            title: 'order',
+            useTags: 'true',
+            dateLibrary: 'java8',
+            java8: 'true',
+            hideGenerationTimestamp: 'true'
+    ]
+    validateSpec = true
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir file("${project.buildDir.path}/openapi/src/main/java")
+        }
+    }
+}
+
+compileJava.dependsOn('openApiGenerate')
+
+asyncapi {
+    // Prerequisite: brew install node
+    version = '1.9.14'
+    asyncapi = 'src/main/resources/asyncapi.yml'
+    template = '@asyncapi/html-template'
+    output = "build/asyncapi"
+    forceWrite = true
+    parameters = [
+        'singleFile': 'true'
+    ]
 }

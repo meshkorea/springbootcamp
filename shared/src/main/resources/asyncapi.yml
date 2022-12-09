@@ -1,0 +1,46 @@
+asyncapi: '2.5.0'
+
+info:
+  title: shared
+  version: 0.0.1
+
+servers:
+  local:
+    url: localhost:9092
+    protocol: kafka-secure
+    description: Development server
+
+defaultContentType: application/json
+
+channels: {}
+
+components:
+  messages: {}
+  schemas: {}
+  securitySchemes: {}
+  messageTraits:
+    commonHeaders:
+      headers:
+        type: object
+        properties:
+          partitionKey:
+            type: string
+            format: uuid
+            example: a8697999-57ce-3bf7-82b3-19112facb65f
+          messageVersion:
+            type: string
+            format: number
+            example: 1
+          messageId:
+            type: string
+            format: uuid
+            example: cce8c791-89a2-4120-a3b4-f2c67b5b0fb9
+          messageType:
+            type: string
+            example: REGION_CREATED
+          messageSource:
+            type: string
+            example: region
+          resource:
+            type: string
+            example: Region

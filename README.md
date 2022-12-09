@@ -35,6 +35,9 @@ kafka|alice|alice-secret
 
 ```shell
 ./gradlew :{project}:redoc
+
+# Prerequisite: brew install node
+./gradlew :{project}:generate
 ```
 
 ### 서버 코드 생성
