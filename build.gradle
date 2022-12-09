@@ -9,6 +9,7 @@ plugins {
 	id 'com.google.cloud.tools.jib' version "${jibVersion}" apply false
 	id 'org.openapi.generator' version "${openapiGeneratorVersion}"  apply false
 	id 'io.freefair.lombok' version "${lombokVersion}" apply false
+	id 'com.rivancic.asyncapi-gradle-plugin' version '0.1.0' apply false
 }
 
 version = project.version
@@ -30,7 +31,8 @@ allprojects {
 	}
 }
 
+def dockerComposePath = System.getProperty('os.arch').equals('aarch64')
+		? 'docker/compose-arm.yml' : 'docker/compose-intel.yml'
 dockerCompose {
-	useComposeFiles = ['docker/compose.yml']
-	tcpPortsToIgnoreWhenWaiting = [1099]
+	useComposeFiles = [dockerComposePath]
 }

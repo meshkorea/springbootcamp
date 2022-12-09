@@ -1,0 +1,173 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'com.gorylenko.gradle-git-properties'
+    id 'com.github.ben-manes.versions'
+    id 'com.google.cloud.tools.jib'
+    id 'org.openapi.generator'
+    id 'io.freefair.lombok'
+}
+
+version = '0.0.1-SNAPSHOT'
+
+dependencies {
+    // 의존성 관리
+    implementation project(":shared")
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+    implementation platform("org.zalando:logbook-bom:${logbookVersion}");
+
+    // 개발 도구, 유틸리티
+    implementation 'org.apache.commons:commons-lang3:3.10'
+    annotationProcessor('org.springframework.boot:spring-boot-configuration-processor') {
+        exclude group: 'com.vaadin.external.google', module: 'android-json'
+    }
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+    // 헬스체크, 추적 패턴
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    implementation "net.logstash.logback:logstash-logback-encoder:${logstashLogbackEncoderVersion}"
+    implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
+    implementation 'org.zalando:logbook-spring-boot-starter'
+
+    // IPC 패턴
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
+    implementation 'org.springframework.boot:spring-boot-starter-undertow'
+    implementation 'org.springframework.cloud:spring-cloud-stream'
+    implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'
+    // RFC 7807  Problem Details for HTTP APIs
+    // @see https://github.com/zalando/problem-spring-web/tree/main/problem-spring-web
+    implementation "org.zalando:problem-spring-web-starter:${problemWebVersion}"
+    // scheduler lock @see https://github.com/lukas-krecan/ShedLock
+    implementation "net.javacrumbs.shedlock:shedlock-spring:${shedlockVersion}"
+    implementation "net.javacrumbs.shedlock:shedlock-provider-jdbc-template:${shedlockVersion}"
+
+    // 보안 패턴
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // open-api-spec support packages
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5'
+    // OpenApi Bug workaround @see https://github.com/OpenAPITools/openapi-generator/issues/3668
+    implementation 'io.swagger:swagger-annotations:1.5.17'
+
+    // Bean 유효성 검사
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // 테스트 패턴
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        exclude group: 'com.vaadin.external.google', module: 'android-json'
+    }
+    testImplementation 'com.tngtech.archunit:archunit-junit5-api:0.23.1'
+    testRuntimeOnly 'com.tngtech.archunit:archunit-junit5-engine:0.23.1'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // jpa & database drivers
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.hibernate:hibernate-jpamodelgen'
+    annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
+    implementation 'mysql:mysql-connector-java'
+    testImplementation 'com.h2database:h2'
+}
+
+compileJava {
+    options.compilerArgs = [
+            '-Amapstruct.suppressGeneratorTimestamp=true',
+            '-Amapstruct.suppressGeneratorVersionInfoComment=true',
+            '-Amapstruct.unmappedTargetPolicy=IGNORE'
+    ]
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    systemProperty('spring.profiles.active', 'test')
+    systemProperty('user.timezone', 'Asia/Seoul')
+}
+
+def getGitHash = { ->
+    def gitPropertyFile = file("${buildDir}/resources/main/git.properties")
+    // if statement used to WORKAROUND in gradle build: A problem occurred evaluating script.
+    //> .../build/resources/main/git.properties (No such file or directory)
+    if (gitPropertyFile.exists()) {
+        def props = new Properties()
+        gitPropertyFile.withInputStream { props.load(it) }
+        return props.getProperty('git.commit.id.abbrev', 'unknown')
+    }
+
+    return 'unknown'
+}
+
+task redoc(type:Exec) {
+    // For this to work correctly, `yarn global add redoc`
+    commandLine 'npx', 'redoc-cli', 'bundle', "${projectDir}/src/main/resources/swagger/api.yml", '-o', "${buildDir}/redoc.html"
+}
+
+jib {
+    from {
+        image = 'amazoncorretto:17-alpine-jdk'
+    }
+
+    to {
+        image = "${project.name}"
+        tags = ['latest', "${project.version}".toString(), getGitHash()]
+    }
+
+    containerizingMode = 'packaged'
+
+    container {
+        jvmFlags = [
+                // Java9 container support @see https://www.eclipse.org/openj9/docs/xxusecontainersupport/
+                '-XX:+UseContainerSupport',
+                // for G1GC @see https://www.oracle.com/technical-resources/articles/java/g1gc.html
+                '-XX:+UseG1GC',
+                '-XX:+HeapDumpOnOutOfMemoryError',
+                '-XX:HeapDumpPath=/tmp',
+                '-Djava.net.preferIPv4Stack=true',
+                '-Duser.timezone=Asia/Seoul',
+                '-Dfile.encoding=UTF8',
+                '-Dsun.net.inetaddr.ttl=30'
+        ]
+        ports = ['10002']
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+    }
+}
+
+openApiGenerate {
+    generatorName = 'spring'
+    inputSpec = "${projectDir}/src/main/resources/swagger/api.yml".toString()
+    outputDir = "${buildDir}/openapi".toString()
+    apiPackage = 'com.vroong.product.rest'
+    modelPackage = 'com.vroong.product.rest'
+    modelNameSuffix = 'Dto'
+    apiFilesConstrainedTo = ['']
+    modelFilesConstrainedTo = ['']
+    supportingFilesConstrainedTo = ['ApiUtil.java']
+    configOptions = [
+            delegatePattern: 'true',
+            title: 'product',
+            useTags: 'true',
+            dateLibrary: 'java8',
+            java8: 'true',
+            hideGenerationTimestamp: 'true'
+    ]
+    validateSpec = true
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir file("${project.buildDir.path}/openapi/src/main/java")
+        }
+    }
+}
+
+compileJava.dependsOn('openApiGenerate')

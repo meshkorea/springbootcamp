@@ -1,0 +1,83 @@
+server:
+  port: 10003
+  # @see https://www.baeldung.com/spring-boot-web-server-shutdown
+  shutdown: graceful
+  # @see https://github.com/zalando/logbook/issues/870
+  servlet:
+    encoding:
+      enabled: true
+      charset: UTF-8
+      force: true
+
+spring:
+  application:
+    name: delivery
+
+  profiles:
+    active: local
+
+  output:
+    ansi:
+      enabled: always
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    url: jdbc:mysql://localhost:3306/local_delivery?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: secret
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+
+  cloud:
+    stream:
+      kafka:
+        binder:
+          headers: [ "messageId", "messageType", "messageVersion", "messageSource" ]
+          auto-create-topics: false
+      bindings:
+        messageChannel:
+          binder: kafka
+          destination: local-delivery-output
+          producer:
+            # @see https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/3.0.10.RELEASE/reference/html/spring-cloud-stream-binder-kafka.html#kafka-producer-properties
+            header-mode: headers
+            partition-key-expression: headers['partitionKey']
+            partition-count: 1
+      default-binder: kafka
+
+  security:
+    oauth2:
+      client:
+        registration:
+          uaa:
+            client-id: internal
+            client-secret: internal
+            scope: web-app
+            authorization-grant-type: client_credentials
+        provider:
+          uaa:
+            token-uri: http://localhost:9999/oauth/token
+            jwk-set-uri: http://localhost:9999/.well-known/jwks.json
+
+management:
+  endpoints:
+    web:
+      base-path: /management
+      exposure:
+        include: ["health", "info"]
+  endpoint:
+    health:
+      show-details: when_authorized
+      probes:
+        enabled: true
+  info:
+    git:
+      mode: simple
+  health:
+    mail.enabled: false
+
+application:
+  version: #project.version#
+  scheduler:
+    enabled: false

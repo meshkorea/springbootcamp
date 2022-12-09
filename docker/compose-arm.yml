@@ -1,0 +1,157 @@
+services:
+
+  mysql:
+    image: appkr/mysql:5.7-arm64
+    container_name: mysql
+    volumes:
+      - $HOME/bootcamp3_data:/var/lib/mysql/
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.conf
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=secret
+    ports:
+      - 3306:3306
+    command: mysqld --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+    healthcheck:
+      test: mysql -e 'SELECT 1' 2>/dev/null || mysql -uroot -psecret -e 'SELECT 1' 2>/dev/null || exit 1
+
+#  zookeeper:
+#    image: wurstmeister/zookeeper:3.4.6
+#    platform: linux/amd64
+#    container_name: zookeeper
+#    ports:
+#      - 2181:2181
+#    healthcheck:
+#      test: nc -z localhost 2181 || exit 1
+#
+#  kafka:
+#    image: appkr/kafka:arm64
+#    container_name: kafka
+#    environment:
+#      KAFKA_CREATE_TOPICS: "local-order-output:1:1,local-product-out:1:1,local-delivery-out1:1,local-payment-out:1:1,local-3pl-out:1:1"
+#      KAFKA_LISTENERS: PLAINTEXT://kafka:9092
+#      KAFKA_ADVERTISED_HOST_NAME: localhost
+#      KAFKA_ADVERTISED_PORT: 9092
+#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+#    ports:
+#      - 9092:9092
+#    healthcheck:
+#      test: nc -z localhost 9092 || exit 1
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper
+    platform: linux/arm64
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 2
+    ports:
+      - 2181:2181
+    healthcheck:
+      test: nc -z localhost 2181 || exit 1
+
+  kafka:
+    image: confluentinc/cp-kafka
+    platform: linux/arm64
+    container_name: kafka
+    environment:
+      KAFKA_CREATE_TOPICS: "local-order-output:1:1,local-product-out:1:1,local-delivery-out1:1,local-payment-out:1:1,local-3pl-out:1:1"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_BROKER_ID: 2
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - 9092:9092
+    healthcheck:
+      test: nc -z localhost 9092 || exit 1
+
+  jhipster-uaa:
+    image: appkr/jhipster-uaa:arm64
+    container_name: jhipster-uaa
+    ports:
+      - 9999:9999
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: curl -s http://localhost:9999/management/health || exit 1
+      start_period: 90s
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/jhipster_uaa?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=secret
+
+#  order:
+#    image: order:latest
+#    container_name: order
+#    ports:
+#      - 10001:10001
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#    healthcheck:
+#      test: curl -s http://localhost:10001/management/health || exit 1
+#      start_period: 90s
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=local
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/local_order?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+#      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=secret
+#      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+#
+#  product:
+#    image: product:latest
+#    container_name: product
+#    ports:
+#      - 10002:10002
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#    healthcheck:
+#      test: curl -s http://localhost:10002/management/health || exit 1
+#      start_period: 90s
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=local
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/local_product?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+#      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=secret
+#      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+#
+#  delivery:
+#    image: delivery:latest
+#    container_name: delivery
+#    ports:
+#      - 10003:10003
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#    healthcheck:
+#      test: curl -s http://localhost:10003/management/health || exit 1
+#      start_period: 90s
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=local
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/local_delivery?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+#      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=secret
+#      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+#
+#  payment:
+#    image: payment:latest
+#    container_name: payment
+#    ports:
+#      - 10004:10004
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#    healthcheck:
+#      test: curl -s http://localhost:10004/management/health || exit 1
+#      start_period: 90s
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=local
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/local_payment?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+#      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=secret
+#      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
