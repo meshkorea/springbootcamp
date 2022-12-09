@@ -135,7 +135,7 @@ paths:
         content:
           application/vnd.vroong.private.v1+json:
             schema:
-              $ref: '#/components/schemas/UpdateProduct'
+              $ref: '#/components/schemas/Product'
       responses:
         '200':
           description: OK
@@ -337,24 +337,6 @@ components:
             $ref: '#/components/schemas/Product'
         page:
           $ref: '#/components/schemas/Page'
-
-    UpdateProduct:
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/StringField'
-        description:
-          $ref: '#/components/schemas/StringField'
-        inventory:
-          $ref: '#/components/schemas/IntegerField'
-        price:
-          $ref: '#/components/schemas/Money'
-        supplier:
-          $ref: '#/components/schemas/StringField'
-        size:
-          $ref: '#/components/schemas/Size'
-        location:
-          $ref: '#/components/schemas/StringField'
 
   parameters:
 

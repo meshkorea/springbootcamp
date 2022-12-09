@@ -38,8 +38,7 @@ public class ProductApiDelegateImpl implements ProductApiDelegate {
   }
 
   @Override
-  public ResponseEntity<ProductDto> updateProduct(Long productId,
-      UpdateProductDto updateProductDto) {
+  public ResponseEntity<ProductDto> updateProduct(Long productId, ProductDto productDto) {
     return ResponseEntity.ok(aProductDto());
   }
 }
