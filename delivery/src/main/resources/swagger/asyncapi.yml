@@ -22,13 +22,6 @@ channels:
           - $ref: '#/components/messages/Started'
           - $ref: '#/components/messages/Completed'
 
-  local-order-out:
-    description: Delivery 서비스에서 소비하는 Order 서비스 도메인 메시지를 위한 토픽
-    subscribe:
-      message:
-        oneOf:
-          - $ref: '#/components/messages/PaymentApproved'
-
 components:
   messages:
     Prepared:
@@ -59,16 +52,6 @@ components:
         - $ref: '#/components/messageTraits/commonHeaders'
       payload:
         $ref: 'api.yml#/components/schemas/Delivery'
-
-    PaymentApproved:
-      title: Payment Approved
-      name: PAYMENT_APPROVED
-      summary: ''
-      contentType: application/json
-      traits:
-        - $ref: '#/components/messageTraits/commonHeaders'
-      payload:
-        $ref: '#/components/schemas/example'
 
   schemas:
     example:
