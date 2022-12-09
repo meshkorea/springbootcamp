@@ -30,21 +30,12 @@ services:
     container_name: kafka
     environment:
       KAFKA_CREATE_TOPICS: "local-order-output:1:1,local-product-out:1:1,local-delivery-out1:1,local-payment-out:1:1,local-3pl-out:1:1"
-      KAFKA_BROKER_ID: 1
-      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf"
-      KAFKA_ADVERTISED_LISTENERS: 'SASL_PLAINTEXT://localhost:9092'
-      KAFKA_INTER_BROKER_LISTENER_NAME: SASL_PLAINTEXT
-      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
-      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
-      KAFKA_LISTENERS: SASL_PLAINTEXT://0.0.0.0:9092
+      KAFKA_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_ADVERTISED_HOST_NAME: localhost
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     ports:
       - 9092:9092
-      - 1099:1099
-    volumes:
-      - ./kafka/kafka_server_jaas.conf:/etc/kafka/kafka_server_jaas.conf
     healthcheck:
       test: nc -z localhost 9092 || exit 1
 
@@ -65,74 +56,74 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=secret
 
-  order:
-    image: order:latest
-    container_name: order
-    ports:
-      - 10001:10001
-    depends_on:
-      mysql:
-        condition: service_healthy
-    healthcheck:
-      test: curl -s http://localhost:10001/management/health || exit 1
-      start_period: 90s
-    environment:
-      - SPRING_PROFILES_ACTIVE=local
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/local_order?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=secret
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
-
-  product:
-    image: product:latest
-    container_name: product
-    ports:
-      - 10002:10002
-    depends_on:
-      mysql:
-        condition: service_healthy
-    healthcheck:
-      test: curl -s http://localhost:10002/management/health || exit 1
-      start_period: 90s
-    environment:
-      - SPRING_PROFILES_ACTIVE=local
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/local_product?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=secret
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
-
-  delivery:
-    image: delivery:latest
-    container_name: delivery
-    ports:
-      - 10003:10003
-    depends_on:
-      mysql:
-        condition: service_healthy
-    healthcheck:
-      test: curl -s http://localhost:10003/management/health || exit 1
-      start_period: 90s
-    environment:
-      - SPRING_PROFILES_ACTIVE=local
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/local_delivery?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=secret
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
-
-  payment:
-    image: payment:latest
-    container_name: payment
-    ports:
-      - 10004:10004
-    depends_on:
-      mysql:
-        condition: service_healthy
-    healthcheck:
-      test: curl -s http://localhost:10004/management/health || exit 1
-      start_period: 90s
-    environment:
-      - SPRING_PROFILES_ACTIVE=local
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/local_payment?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
-      - SPRING_DATASOURCE_USERNAME=root
-      - SPRING_DATASOURCE_PASSWORD=secret
-      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+#  order:
+#    image: order:latest
+#    container_name: order
+#    ports:
+#      - 10001:10001
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#    healthcheck:
+#      test: curl -s http://localhost:10001/management/health || exit 1
+#      start_period: 90s
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=local
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/local_order?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+#      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=secret
+#      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+#
+#  product:
+#    image: product:latest
+#    container_name: product
+#    ports:
+#      - 10002:10002
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#    healthcheck:
+#      test: curl -s http://localhost:10002/management/health || exit 1
+#      start_period: 90s
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=local
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/local_product?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+#      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=secret
+#      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+#
+#  delivery:
+#    image: delivery:latest
+#    container_name: delivery
+#    ports:
+#      - 10003:10003
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#    healthcheck:
+#      test: curl -s http://localhost:10003/management/health || exit 1
+#      start_period: 90s
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=local
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/local_delivery?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+#      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=secret
+#      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+#
+#  payment:
+#    image: payment:latest
+#    container_name: payment
+#    ports:
+#      - 10004:10004
+#    depends_on:
+#      mysql:
+#        condition: service_healthy
+#    healthcheck:
+#      test: curl -s http://localhost:10004/management/health || exit 1
+#      start_period: 90s
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=local
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/local_payment?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
+#      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=secret
+#      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092

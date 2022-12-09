@@ -64,4 +64,5 @@ kafka|alice|alice-secret
 ./gradlew jibDockerBuild
 ./gradlew composeUp
 # MySQL 클라이언트에서 각 서비스별 DDL 적용
+# see docker/init.sql
 ```
