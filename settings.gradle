@@ -4,3 +4,6 @@ include('shared')
 
 include('order')
 include('order:clients')
+
+include('product')
+include('product:clients')
