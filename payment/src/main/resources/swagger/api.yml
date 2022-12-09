@@ -156,7 +156,6 @@ components:
       type: object
       required:
         - cardNumber
-        - amount
         - orderId
       properties:
         paymentId:
