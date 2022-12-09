@@ -10,3 +10,6 @@ include('product:clients')
 
 include('delivery')
 include('delivery:clients')
+
+include('payment')
+include('payment:clients')
