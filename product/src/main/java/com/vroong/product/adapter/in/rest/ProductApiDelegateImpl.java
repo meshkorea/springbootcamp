@@ -7,7 +7,6 @@ import static com.vroong.product.adapter.in.rest.Fixtures.aProductListDto;
 import com.vroong.product.rest.ProductApiDelegate;
 import com.vroong.product.rest.ProductDto;
 import com.vroong.product.rest.ProductListDto;
-import com.vroong.product.rest.UpdateProductDto;
 import com.vroong.product.support.HeaderUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
