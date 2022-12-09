@@ -25,9 +25,9 @@ CREATE TABLE IF NOT EXISTS orders
 (
     id               bigint NOT NULL AUTO_INCREMENT,
     status           tinyint unsigned NOT NULL DEFAULT 0 COMMENT '오더 상태',
-    sender_name      varchar(32) NOT NULL COMMENT '발신자 이름',
-    sender_phone     varchar(20) NOT NULL COMMENT '발신자 전화번호',
-    sender_address   varchar(255) NOT NULL COMMENT '발신자 주소',
+    orderer_name      varchar(32) NOT NULL COMMENT '주문자 이름',
+    orderer_phone     varchar(20) NOT NULL COMMENT '주문자 전화번호',
+    orderer_address   varchar(255) NOT NULL COMMENT '주문자 주소',
     receiver_name    varchar(32) NOT NULL COMMENT '수신자 이름',
     receiver_phone   varchar(20) NOT NULL COMMENT '수신자 전화번호',
     receiver_address varchar(255) NOT NULL COMMENT '수신자 주소',
