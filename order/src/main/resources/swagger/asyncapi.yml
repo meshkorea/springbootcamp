@@ -1,0 +1,176 @@
+asyncapi: '2.5.0'
+
+info:
+  title: Order Application Async API Spec
+  version: 0.0.1
+
+servers:
+  local:
+    url: localhost:9092
+    protocol: kafka-secure
+    description: Development server
+#    security:
+#      - saslPlain: []
+
+defaultContentType: application/json
+
+channels:
+  local-order-output:
+    description: Order 서비스에서 발행하는 도메인 메시지를 위한 토픽
+    publish:
+      message:
+        oneOf:
+          - $ref: '#/components/messages/OrderPlaced'
+          - $ref: '#/components/messages/PaymentApproved'
+          - $ref: '#/components/messages/DeliveryStarted'
+          - $ref: '#/components/messages/DeliveryCompleted'
+          - $ref: '#/components/messages/Canceled'
+
+  local-delivery-out:
+    description: Order 서비스에서 소비하는 Delivery 서비스 도메인 메시지를 위한 토픽
+    subscribe:
+      message:
+        oneOf:
+          - $ref: '#/components/messages/DeliveryStartedReceive'
+          - $ref: '#/components/messages/DeliveryCompletedReceive'
+
+  local-payment-out:
+    description: Order 서비스에서 소비하는 Payment 서비스 도메인 메시지를 위한 토픽
+    subscribe:
+      message:
+        oneOf:
+          - $ref: '#/components/messages/PaymentApprovedReceive'
+          - $ref: '#/components/messages/PaymentRejectedReceive'
+
+components:
+  messages:
+    OrderPlaced:
+      title: Order Placed
+      name: ORDER_PLACED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Order'
+
+    PaymentApproved:
+      title: Payment Approved
+      name: PAYMENT_APPROVED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Order'
+
+    DeliveryStarted:
+      title: Delivery Started
+      name: DELIVERY_STARTED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Order'
+
+    DeliveryCompleted:
+      title: Delivery Completed
+      name: DELIVERY_COMPLETED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Order'
+
+    Canceled:
+      title: Canceled
+      name: CANCELED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Order'
+
+    DeliveryStartedReceive:
+      title: Delivery Started Receive
+      name: DELIVERY_STARTED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: '#/components/schemas/example'
+
+    DeliveryCompletedReceive:
+      title: Delivery Completed Receive
+      name: DELIVERY_COMPLETED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: '#/components/schemas/example'
+
+    PaymentApprovedReceive:
+      title: Payment Approved Receive
+      name: PAYMENT_APPROVED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: '#/components/schemas/example'
+
+    PaymentRejectedReceive:
+      title: Payment Rejected Receive
+      name: PAYMENT_REJECTED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: '#/components/schemas/example'
+
+  schemas:
+    example:
+      type: object
+      properties:
+        orderId:
+          type: integer
+          format: int64
+          example: 1
+
+#  securitySchemes:
+#    saslPlain:
+#      type: plain
+#      description: Provide your username and password for SASL/PLAIN authentication
+
+  messageTraits:
+    commonHeaders:
+      headers:
+        type: object
+        properties:
+          partitionKey:
+            type: string
+            format: uuid
+            example: a8697999-57ce-3bf7-82b3-19112facb65f
+          messageVersion:
+            type: string
+            format: number
+            example: 1
+          messageId:
+            type: string
+            format: uuid
+            example: cce8c791-89a2-4120-a3b4-f2c67b5b0fb9
+          messageType:
+            type: string
+            example: ORDER_CREATED
+          messageSource:
+            type: string
+            example: order
+          resource:
+            type: string
+            example: Order
