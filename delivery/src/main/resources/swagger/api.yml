@@ -1,0 +1,307 @@
+openapi: '3.0.3'
+
+info:
+  title: 'delivery'
+  version: 0.0.3
+
+servers:
+  - url: http://localhost:10003
+    description: Delivery API
+
+paths:
+  /api/deliveries:
+    post:
+      description: 배송 생성
+      operationId: createDelivery
+      tags:
+        - Delivery
+      requestBody:
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: '#/components/schemas/Delivery'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /api/deliveries/{deliveryId}:
+    get:
+      description: 배송 정보 조회
+      operationId: getDelivery
+      tags:
+        - Delivery
+      parameters:
+        - in: path
+          name: deliveryId
+          schema:
+            $ref: '#/components/schemas/LongId'
+          required: true
+          description: delivery id
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    patch:
+      description: 배송 주소 업데이트
+      operationId: updateDelivery
+      tags:
+        - Delivery
+      parameters:
+        - in: path
+          name: deliveryId
+          schema:
+            $ref: '#/components/schemas/LongId'
+          required: true
+          description: delivery id
+      requestBody:
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: '#/components/schemas/Delivery'
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      description: 배송 취소
+      operationId: cancelDelivery
+      tags:
+        - Delivery
+      parameters:
+        - in: path
+          name: deliveryId
+          schema:
+            $ref: '#/components/schemas/LongId'
+          required: true
+          description: delivery id
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    Delivery:
+      type: object
+      properties:
+        deliveryId:
+          $ref: '#/components/schemas/LongId'
+        orderId:
+          $ref: '#/components/schemas/LongId'
+        traceNumber:
+          $ref: '#/components/schemas/TraceNumber'
+        sender:
+          $ref: '#/components/schemas/Sender'
+        receiver:
+          $ref: '#/components/schemas/Receiver'
+        currentLocation:
+          $ref: '#/components/schemas/Coordinate'
+        state:
+          $ref: '#/components/schemas/DeliveryState'
+
+    Sender:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/UserName'
+        phone:
+          $ref: '#/components/schemas/Phone'
+        address:
+          $ref: '#/components/schemas/Address'
+
+    Receiver:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/UserName'
+        phone:
+          $ref: '#/components/schemas/Phone'
+        address:
+          $ref: '#/components/schemas/Address'
+
+    Coordinate:
+      type: object
+      properties:
+        latitude:
+          type: string
+          example: 37.575819
+        longitude:
+          type: string
+          example: 126.976834
+
+    TraceNumber:
+      type: string
+      format: uuid
+      example: c9106593-2d6c-40eb-8504-66b0ef41ad2d
+
+    DeliveryState:
+      enum:
+        - PREPARING
+        - DELIVERING
+        - COMPLETED
+        - CANCELED
+
+    UserName:
+      type: string
+      example: 홍길동
+
+    Phone:
+      type: string
+      example: 01012345678
+
+    Address:
+      type: string
+      example: 서울 종로구 효자로 12
+
+    DateTime:
+      type: string
+      format: date-time
+      example: "2018-12-01T10:00:00Z"
+
+    LongId:
+      type: integer
+      format: int64
+      example: 1
+
+    #----------------------------------------
+    # Common Model
+    #----------------------------------------
+
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+          example: template/constraint-violation
+        title:
+          type: string
+          example: 제출한 요청이 유효하지 않습니다
+        detail:
+          type: string
+        fieldErrors:
+          type: array
+          nullable: true
+          items:
+            $ref: '#/components/schemas/FieldError'
+
+    FieldError:
+      type: object
+      properties:
+        field:
+          type: string
+        message:
+          $ref: '#/components/schemas/ErrorCode'
+
+    ErrorCode:
+      type: string
+      example:
+        - NotNull
+        - Size
+
+  responses:
+
+    NoContent:
+      description: No Content
+
+    BadRequest:
+      description: Bad Request
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    Forbidden:
+      description: Forbidden
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    NotFound:
+      description: Not Found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    Conflict:
+      description: Conflict
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+    ServerError:
+      description: Internal Server Error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+  securitySchemes:
+    'jhipster-uaa':
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: http://localhost:9999/uaa/oauth/token
+          refreshUrl: http://localhost:9999/uaa/oauth/token
+          scopes: {}
+        clientCredentials:
+          tokenUrl: http://localhost:9999/uaa/oauth/token
+          scopes: {}
+
+security:
+  - jhipster-uaa: []

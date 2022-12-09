@@ -7,3 +7,6 @@ include('order:clients')
 
 include('product')
 include('product:clients')
+
+include('delivery')
+include('delivery:clients')
