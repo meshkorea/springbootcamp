@@ -19,7 +19,7 @@ spring:
 
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:mysql://localhost:3306/local_bootcamp?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/local_product?useUnicode=yes&characterEncoding=UTF-8&useSSL=false
     username: root
     password: secret
 
