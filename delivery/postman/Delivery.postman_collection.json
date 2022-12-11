@@ -46,7 +46,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "{{\bcontentType}}"
+								"value": "{{contentType}}"
 							}
 						],
 						"body": {
@@ -125,7 +125,7 @@
 						"header": [
 							{
 								"key": "Content-Type",
-								"value": "{{\bcontentType}}"
+								"value": "{{contentType}}"
 							}
 						],
 						"body": {
