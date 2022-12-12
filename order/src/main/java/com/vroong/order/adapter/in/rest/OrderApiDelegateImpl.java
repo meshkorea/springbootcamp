@@ -1,17 +1,26 @@
 package com.vroong.order.adapter.in.rest;
 
+import com.vroong.order.adapter.in.rest.mapper.OrderDtoMapper;
+import com.vroong.order.application.port.in.OrderUsecase;
+import com.vroong.order.domain.Order;
 import com.vroong.order.rest.OrderApiDelegate;
 import com.vroong.order.rest.OrderDto;
 import com.vroong.order.rest.OrderListDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class OrderApiDelegateImpl implements OrderApiDelegate {
+
+  private final OrderUsecase orderUsecase;
 
   @Override
   public ResponseEntity<OrderDto> createOrder(OrderDto orderDto) {
-    return ResponseEntity.ok(Fixture.aOrderDto());
+    final Order response = orderUsecase.createOrder(OrderDtoMapper.toEntity(orderDto));
+
+    return ResponseEntity.ok(OrderDtoMapper.toDto(response));
   }
 
   @Override

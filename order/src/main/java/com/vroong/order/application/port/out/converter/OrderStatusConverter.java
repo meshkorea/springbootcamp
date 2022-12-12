@@ -1,5 +1,6 @@
-package com.vroong.order.domain;
+package com.vroong.order.application.port.out.converter;
 
+import com.vroong.order.domain.OrderStatus;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
