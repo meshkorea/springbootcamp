@@ -1,5 +1,6 @@
 package com.vroong.order.domain;
 
+import java.util.Arrays;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,5 +15,12 @@ public enum OrderStatus {
   DELIVERY_COMPLETED(40),
   ORDER_CANCELED(50);
 
-  private Integer value;
+  private Integer statusCode;
+
+  public static OrderStatus fromStatusCode(Integer dbData) {
+    return Arrays.stream(OrderStatus.values())
+        .filter(orderStatus -> orderStatus.getStatusCode().equals(dbData))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("주문 상태 코드 " + dbData + "가 존재하지 않습니다."));
+  }
 }
