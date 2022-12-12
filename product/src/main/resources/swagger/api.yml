@@ -230,22 +230,6 @@ components:
     # API Model
     #----------------------------------------
 
-    Example:
-      type: object
-      properties:
-        exampleId:
-          $ref: '#/components/schemas/LongId'
-        title:
-          $ref: '#/components/schemas/StringField'
-        createdAt:
-          $ref: '#/components/schemas/DateTime'
-        updatedAt:
-          $ref: '#/components/schemas/DateTime'
-        createdBy:
-          $ref: '#/components/schemas/StringField'
-        updatedBy:
-          $ref: '#/components/schemas/StringField'
-
     Product:
       type: object
       properties:
