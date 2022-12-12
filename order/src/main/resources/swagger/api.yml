@@ -2,7 +2,7 @@ openapi: '3.0.3'
 
 info:
   title: 'Order Application API Spec'
-  version: 0.0.1
+  version: 0.0.2
 
 servers:
   - url: http://localhost:10001
@@ -297,7 +297,7 @@ components:
 
     OrderState:
       type: string
-      enum: [PLACED, PAYMENT_APPROVED, DELIVERY_STARTED, DELIVERY_COMPLETED, CANCELED]
+      enum: [ORDER_PLACED, ORDER_UPDATED, PAYMENT_APPROVED, DELIVERY_STARTED, DELIVERY_COMPLETED, ORDER_CANCELED]
 
     Order:
       type: object

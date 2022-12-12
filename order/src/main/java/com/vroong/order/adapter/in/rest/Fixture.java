@@ -28,7 +28,7 @@ public class Fixture {
         .orderId(1L)
         .orderer(aUserInfoDto())
         .receiver(aUserInfoDto())
-        .orderState(OrderStateDto.PLACED)
+        .orderState(OrderStateDto.ORDER_PLACED)
         .orderLine(aOrderLineDto())
         .deliveryFee(BigDecimal.valueOf(3500))
         .totalPrice(BigDecimal.valueOf(43500));
