@@ -4,12 +4,14 @@ import static com.vroong.order.domain.OrderStatus.ORDER_PLACED;
 
 import com.vroong.shared.AuditableEntity;
 import com.vroong.shared.Money;
+import com.vroong.shared.MoneyConverter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,10 +41,15 @@ public class Order extends AuditableEntity {
   private OrderStatus orderStatus = ORDER_PLACED;
 
   @Column(columnDefinition = "decimal(20, 0) unsigned", nullable = false)
+  @Convert(converter = MoneyConverter.class)
   private Money totalPrice;
 
   @Column(columnDefinition = "decimal(20, 0) unsigned", nullable = false)
+  @Convert(converter = MoneyConverter.class)
   private Money deliveryFee;
+
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<OrderItem> orderItems = new ArrayList<>();
 
   @Embedded
   @AttributeOverrides(value = {
@@ -60,6 +67,34 @@ public class Order extends AuditableEntity {
   })
   private Receiver receiver;
 
-  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-  private List<OrderItem> orderItems = new ArrayList<>();
+  public static Order placeOrder(
+      Orderer orderer,
+      Receiver receiver,
+      List<OrderItem> orderLine,
+      Money deliveryFee
+  ) {
+    final Money totalPrice = calcProductPrice(orderLine).add(deliveryFee);
+
+    return new Order(orderer, receiver, orderLine, deliveryFee, totalPrice);
+  }
+
+  private static Money calcProductPrice(List<OrderItem> orderLine) {
+    return orderLine.stream()
+        .map(OrderItem::calcPrice)
+        .reduce(Money.ZERO, Money::add);
+  }
+
+  private Order(
+      Orderer orderer,
+      Receiver receiver,
+      List<OrderItem> orderItems,
+      Money deliveryFee,
+      Money totalPrice
+  ) {
+    this.orderer = orderer;
+    this.receiver = receiver;
+    this.orderItems = orderItems;
+    this.deliveryFee = deliveryFee;
+    this.totalPrice = totalPrice;
+  }
 }

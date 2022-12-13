@@ -1,7 +1,9 @@
 package com.vroong.order.adapter.in.rest;
 
-import static com.vroong.order.config.Constants.V1_MEDIA_TYPE;
 import static com.vroong.order.config.Constants.ENCODING;
+import static com.vroong.order.config.Constants.V1_MEDIA_TYPE;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -10,6 +12,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.vroong.order.application.port.in.OrderUsecase;
+import com.vroong.order.domain.Orderer;
+import com.vroong.order.domain.Receiver;
 import com.vroong.order.rest.OrderApiController;
 import com.vroong.order.rest.OrderApiDelegate;
 import com.vroong.order.support.TestUtils;
@@ -17,6 +22,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -30,13 +37,19 @@ class OrderApiDelegateImplTest {
   @Autowired
   OrderApiDelegate orderApiDelegate;
 
+  @MockBean
+  OrderUsecase orderUsecase;
 
   @Test
+  @WithAnonymousUser
   void createOrder() throws Exception {
+    given(orderUsecase.createOrder(any(Orderer.class), any(Receiver.class), any()))
+        .willReturn(Fixture.aOrder());
+
     ResultActions res = mvc.perform(post("/api/orders")
             .contentType(V1_MEDIA_TYPE)
             .characterEncoding(ENCODING)
-            .content(TestUtils.convertObjectToString(Fixture.aOrderListDto()))
+            .content(TestUtils.convertObjectToString(Fixture.aOrderDto()))
         )
         .andDo(print());
 

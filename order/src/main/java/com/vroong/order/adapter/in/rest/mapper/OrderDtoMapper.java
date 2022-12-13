@@ -26,12 +26,6 @@ public class OrderDtoMapper {
         .totalPrice(entity.getTotalPrice().getValue());
   }
 
-  public static Order toEntity(OrderDto dto) {
-    System.out.println("=========================");
-    System.out.println(dto);
-    return null;
-  }
-
   private static UserInfoDto toDto(Orderer orderer) {
     return new UserInfoDto()
         .name(orderer.getName())

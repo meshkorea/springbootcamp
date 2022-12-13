@@ -1,5 +1,10 @@
 package com.vroong.order.adapter.in.rest;
 
+import com.vroong.order.domain.Order;
+import com.vroong.order.domain.OrderItem;
+import com.vroong.order.domain.OrderStatus;
+import com.vroong.order.domain.Orderer;
+import com.vroong.order.domain.Receiver;
 import com.vroong.order.rest.OrderDto;
 import com.vroong.order.rest.OrderLineDto;
 import com.vroong.order.rest.OrderLineItemDto;
@@ -8,7 +13,9 @@ import com.vroong.order.rest.OrderProductDto;
 import com.vroong.order.rest.OrderStateDto;
 import com.vroong.order.rest.PageDto;
 import com.vroong.order.rest.UserInfoDto;
+import com.vroong.shared.Money;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class Fixture {
 
@@ -65,5 +72,20 @@ public class Fixture {
             .price(BigDecimal.valueOf(5000))
         )
         .quantity(2);
+  }
+
+  public static Order aOrder() {
+    return new Order(
+        1L,
+        OrderStatus.ORDER_PLACED,
+        new Money(3500),
+        new Money(43500),
+        List.of(
+            new OrderItem(1L, null, 1L, "축구공", new Money(30000), 1),
+            new OrderItem(2L, null, 2L, "호미", new Money(5000), 2)
+        ),
+        Orderer.of("소농민", "010-1234-5678", "영국 런던 대저택"),
+        Receiver.of("소농민", "010-1234-5678", "영국 런던 대저택")
+    );
   }
 }
