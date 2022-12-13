@@ -3,24 +3,24 @@
  */
 package com.vroong.order.application;
 
+import static com.vroong.order.config.Constants.PROJECT_NAME;
+import static com.vroong.order.config.MessagingConfiguration.PRODUCER_CHANNEL;
+
 import com.vroong.order.config.Constants.MessageKey;
-import com.vroong.order.config.Constants.MessagePolicy;
 import com.vroong.order.domain.PersistentEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.messaging.Message;
-import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
-
-import static com.vroong.order.config.Constants.PROJECT_NAME;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class MessageProducer {
 
-  private final MessageChannel messageChannel;
+  private final StreamBridge streamBridge;
 
   public boolean produce(PersistentEvent persistentEvent) {
     final String body = persistentEvent.getBody();
@@ -34,6 +34,6 @@ public class MessageProducer {
         .setHeader(MessageKey.PARTITION_KEY, persistentEvent.getPartitionKey())
         .build();
 
-    return messageChannel.send(message, MessagePolicy.DEFAULT_TIMEOUT);
+    return streamBridge.send(PRODUCER_CHANNEL, message);
   }
 }

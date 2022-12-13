@@ -2,8 +2,10 @@ package com.vroong.order.application;
 
 import com.vroong.order.application.port.in.OrderUsecase;
 import com.vroong.order.application.port.out.OrderRepository;
+import com.vroong.order.application.port.out.event.OrderEvent;
 import com.vroong.order.domain.Order;
 import com.vroong.order.domain.OrderItem;
+import com.vroong.order.domain.OrderStatus;
 import com.vroong.order.domain.Orderer;
 import com.vroong.order.domain.Receiver;
 import com.vroong.shared.Money;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class OrderService implements OrderUsecase {
 
   private final OrderRepository orderRepository;
+  private final PersistentEventCreator eventCreator;
 
   @Override
   public Order createOrder(Orderer orderer, Receiver receiver, List<OrderItem> orderItems) {
@@ -24,7 +27,7 @@ public class OrderService implements OrderUsecase {
     final Order newOrder = Order.placeOrder(orderer, receiver, orderItems, deliveryFee);
 
     orderRepository.save(newOrder);
-    // 이벤트 발행
+    eventCreator.create(OrderStatus.ORDER_PLACED.name(), new OrderEvent(newOrder));
 
     return newOrder;
   }
