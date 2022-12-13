@@ -1,5 +1,6 @@
 package com.vroong.product.application;
 
+import com.vroong.product.adapter.in.rest.error.ProductNotFoundException;
 import com.vroong.product.domain.Product;
 import com.vroong.product.domain.ProductRepository;
 import com.vroong.product.domain.Size;
@@ -33,5 +34,9 @@ public class ProductService {
 
   public Page<Product> listProducts(String q, Integer size, Integer page) {
     return productRepository.findByName(q, PageRequest.of(page, size));
+  }
+
+  public Product getProduct(Long productId) {
+    return productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
   }
 }

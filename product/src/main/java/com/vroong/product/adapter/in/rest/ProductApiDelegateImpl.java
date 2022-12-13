@@ -33,6 +33,7 @@ public class ProductApiDelegateImpl implements ProductApiDelegate {
 
   @Override
   public ResponseEntity<ProductDto> getProduct(Long productId) {
+    Product product = productService.getProduct(productId);
     return ResponseEntity.ok(aProductDto().productId(DEFAULT_ID));
   }
 
