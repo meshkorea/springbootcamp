@@ -3,15 +3,12 @@ package com.vroong.order.application;
 import com.vroong.order.application.port.in.OrderUsecase;
 import com.vroong.order.application.port.out.OrderRepository;
 import com.vroong.order.application.port.out.event.OrderEvent;
-import com.vroong.order.domain.Order;
-import com.vroong.order.domain.OrderItem;
-import com.vroong.order.domain.OrderStatus;
-import com.vroong.order.domain.Orderer;
-import com.vroong.order.domain.Receiver;
+import com.vroong.order.domain.*;
 import com.vroong.shared.Money;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,11 +31,11 @@ public class OrderService implements OrderUsecase {
 
   @Override
   public void cancelOrder(Long orderId) {
-    //로그인 유저의 오더인지 확인
 
     Order order = orderRepository.getReferenceById(orderId);
+    order.updateStatus(OrderStatus.ORDER_CANCELED);
     orderRepository.save(order);
 
-    // 이벤트 발행
+    eventCreator.create(OrderStatus.ORDER_CANCELED.name(), new OrderEvent(order));
   }
 }

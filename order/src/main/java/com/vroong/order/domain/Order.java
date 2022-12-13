@@ -1,29 +1,15 @@
 package com.vroong.order.domain;
 
-import static com.vroong.order.domain.OrderStatus.ORDER_PLACED;
-
 import com.vroong.shared.AuditableEntity;
 import com.vroong.shared.Money;
 import com.vroong.shared.MoneyConverter;
+import lombok.*;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import static com.vroong.order.domain.OrderStatus.ORDER_PLACED;
 
 @Entity
 @Table(name = "orders")
@@ -76,6 +62,10 @@ public class Order extends AuditableEntity {
     final Money totalPrice = calcProductPrice(orderLine).add(deliveryFee);
 
     return new Order(orderer, receiver, orderLine, deliveryFee, totalPrice);
+  }
+
+  public void updateStatus(OrderStatus orderStatus) {
+    this.orderStatus = orderStatus;
   }
 
   private static Money calcProductPrice(List<OrderItem> orderLine) {
