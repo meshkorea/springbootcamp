@@ -5,4 +5,7 @@ import com.vroong.order.domain.Order;
 public interface OrderUsecase {
 
   Order createOrder(Order command);
+
+  void cancelOrder(Long orderId);
+
 }

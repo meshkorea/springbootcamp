@@ -40,6 +40,7 @@ public class OrderApiDelegateImpl implements OrderApiDelegate {
 
   @Override
   public ResponseEntity<Void> cancelOrder(Long orderId) {
+    orderUsecase.cancelOrder(orderId);
     return ResponseEntity.ok().build();
   }
 }
