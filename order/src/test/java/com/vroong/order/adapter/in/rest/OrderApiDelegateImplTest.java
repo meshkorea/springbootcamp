@@ -1,17 +1,5 @@
 package com.vroong.order.adapter.in.rest;
 
-import static com.vroong.order.config.Constants.ENCODING;
-import static com.vroong.order.config.Constants.V1_MEDIA_TYPE;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.vroong.order.application.port.in.OrderUsecase;
 import com.vroong.order.domain.Orderer;
 import com.vroong.order.domain.Receiver;
@@ -28,6 +16,15 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
+
+import static com.vroong.order.config.Constants.ENCODING;
+import static com.vroong.order.config.Constants.V1_MEDIA_TYPE;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 class OrderApiDelegateImplTest {
@@ -59,7 +56,10 @@ class OrderApiDelegateImplTest {
 
   @Test
   void getOrder() throws Exception {
-    ResultActions res = mvc.perform(get("/api/orders/{orderId}", 1L)
+    Long givenOrderId = 1L;
+    given(orderUsecase.getOrder(givenOrderId)).willReturn(Fixture.aOrder());
+
+    ResultActions res = mvc.perform(get("/api/orders/{orderId}", givenOrderId)
             .contentType(V1_MEDIA_TYPE)
             .characterEncoding(ENCODING)
         )

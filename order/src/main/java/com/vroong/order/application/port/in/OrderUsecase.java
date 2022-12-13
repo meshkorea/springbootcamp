@@ -10,5 +10,7 @@ public interface OrderUsecase {
 
   Order createOrder(Orderer orderer, Receiver receiver, List<OrderItem> orderItems);
 
+  Order getOrder(Long orderId);
+
   void cancelOrder(Long orderId);
 }

@@ -30,6 +30,11 @@ public class OrderService implements OrderUsecase {
   }
 
   @Override
+  public Order getOrder(Long orderId) {
+    return orderRepository.getReferenceById(orderId);
+  }
+
+  @Override
   public void cancelOrder(Long orderId) {
 
     Order order = orderRepository.getReferenceById(orderId);
