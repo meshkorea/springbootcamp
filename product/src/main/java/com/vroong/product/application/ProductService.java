@@ -2,7 +2,7 @@ package com.vroong.product.application;
 
 import com.vroong.product.adapter.in.rest.error.ProductNotFoundException;
 import com.vroong.product.domain.Product;
-import com.vroong.product.domain.ProductRepository;
+import com.vroong.product.application.port.out.ProductRepository;
 import com.vroong.product.domain.Size;
 import com.vroong.product.rest.ProductDto;
 import com.vroong.product.rest.SizeDto;
@@ -23,15 +23,18 @@ public class ProductService {
     public Product createProduct(ProductDto dto) {
 
         SizeDto size = dto.getSize();
-        return new Product(
-                dto.getName(),
-                dto.getDescription(),
-                new Money(dto.getPrice()),
-                dto.getInventory(),
-                dto.getSupplier(),
-                new Size(size.getWidth(), size.getHeight(), size.getDepth()),
-                dto.getLocation()
+        Product product = new Product(
+            dto.getName(),
+            dto.getDescription(),
+            new Money(dto.getPrice()),
+            dto.getInventory(),
+            dto.getSupplier(),
+            new Size(size.getWidth(), size.getHeight(), size.getDepth()),
+            dto.getLocation()
         );
+
+        productRepository.save(product);
+        return product;
     }
 
     public Page<Product> listProducts(String q, Integer size, Integer page) {

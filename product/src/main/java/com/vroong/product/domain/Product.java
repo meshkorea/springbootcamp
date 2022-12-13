@@ -5,19 +5,24 @@ import java.time.Instant;
 import javax.persistence.*;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@Table
+@Table(name = "products")
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Product {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "product_id")
   private Long ProductId;
 

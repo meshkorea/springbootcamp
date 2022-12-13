@@ -272,7 +272,7 @@ components:
       schema:
         type: integer
         format: int32
-        default: 1
+        default: 0
 
     SizeParam:
       in: query

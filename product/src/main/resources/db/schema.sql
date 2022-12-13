@@ -35,5 +35,5 @@ CREATE TABLE IF NOT EXISTS products
     store_location varchar(255) NOT NULL,
     created_at  timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at  timestamp(3) NULL DEFAULT NULL,
-    PRIMARY KEY (id)
+    PRIMARY KEY (product_id)
 );

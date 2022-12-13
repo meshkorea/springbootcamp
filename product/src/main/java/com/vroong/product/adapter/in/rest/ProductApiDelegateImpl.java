@@ -1,9 +1,7 @@
 package com.vroong.product.adapter.in.rest;
 
-import static com.vroong.product.adapter.in.rest.Fixtures.DEFAULT_ID;
-import static com.vroong.product.adapter.in.rest.Fixtures.aProductDto;
-
 import com.vroong.product.adapter.in.rest.mapper.ProductListMapper;
+import com.vroong.product.adapter.in.rest.mapper.ProductMapper;
 import com.vroong.product.application.ProductService;
 import com.vroong.product.domain.Product;
 import com.vroong.product.rest.ProductApiDelegate;
@@ -21,6 +19,7 @@ public class ProductApiDelegateImpl implements ProductApiDelegate {
 
   private final ProductService productService;
   private final ProductListMapper pageDtoListMapper;
+  private final ProductMapper productMapper;
 
   @Override
   public ResponseEntity<Void> createProduct(ProductDto productDto) {
@@ -34,7 +33,7 @@ public class ProductApiDelegateImpl implements ProductApiDelegate {
   @Override
   public ResponseEntity<ProductDto> getProduct(Long productId) {
     Product product = productService.getProduct(productId);
-    return ResponseEntity.ok(aProductDto().productId(DEFAULT_ID));
+    return ResponseEntity.ok(productMapper.toDto(product));
   }
 
   @Override
@@ -48,11 +47,15 @@ public class ProductApiDelegateImpl implements ProductApiDelegate {
 
   @Override
   public ResponseEntity<Void> deleteProduct(Long productId) {
+    productService.deleteProduct(productId);
+
     return ResponseEntity.noContent().build();
   }
 
   @Override
   public ResponseEntity<ProductDto> updateProduct(Long productId, ProductDto productDto) {
-    return ResponseEntity.ok(aProductDto());
+    Product product = productService.updateProduct(productId, productDto);
+
+    return ResponseEntity.ok(productMapper.toDto(product));
   }
 }
