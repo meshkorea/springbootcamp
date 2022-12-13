@@ -2,12 +2,8 @@ package com.vroong.product.domain;
 
 import com.vroong.shared.Money;
 import java.time.Instant;
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -42,6 +38,11 @@ public class Product {
   private String supplier;
 
   @Embedded
+  @AttributeOverrides({
+      @AttributeOverride(name = "width", column = @Column(name = "product_width")),
+      @AttributeOverride(name = "height", column = @Column(name = "product_height")),
+      @AttributeOverride(name = "depth", column = @Column(name = "product_depth"))
+  })
   private Size size;
 
   @Column(name = "store_location")
