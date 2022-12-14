@@ -16,4 +16,6 @@ public interface OrderUsecase {
   OrderList getOrderList(Integer page, Integer size);
 
   void cancelOrder(Long orderId);
+
+  void updateOrder(Long orderId, Receiver receiver, List<OrderItem> orderItems);
 }

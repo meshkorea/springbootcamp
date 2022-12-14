@@ -61,6 +61,20 @@ public class OrderApiDelegateImpl implements OrderApiDelegate {
 
   @Override
   public ResponseEntity<Void> updateOrder(Long orderId, OrderDto orderDto) {
+    final UserInfoDto receiverDto = orderDto.getReceiver();
+    final Receiver receiver = Receiver.of(receiverDto.getName(), receiverDto.getPhoneNumber(), receiverDto.getAddress());
+
+    final List<OrderItem> orderItems = orderDto.getOrderLine().getData().stream()
+        .map(orderItemDto -> OrderItem.of(
+            orderItemDto.getProduct().getProductId(),
+            orderItemDto.getProduct().getName(),
+            new Money(orderItemDto.getProduct().getPrice()),
+            orderItemDto.getQuantity()
+        ))
+        .toList();
+
+    orderUsecase.updateOrder(orderId, receiver, orderItems);
+
     return ResponseEntity.noContent().build();
   }
 

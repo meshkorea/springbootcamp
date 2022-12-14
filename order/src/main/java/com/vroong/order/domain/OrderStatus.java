@@ -23,4 +23,8 @@ public enum OrderStatus {
         .findFirst()
         .orElseThrow(() -> new IllegalArgumentException("주문 상태 코드 " + dbData + "가 존재하지 않습니다."));
   }
+
+  public boolean canChangeOrder() {
+    return this == ORDER_PLACED || this == ORDER_UPDATED || this == PAYMENT_APPROVED;
+  }
 }

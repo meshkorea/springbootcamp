@@ -1,15 +1,29 @@
 package com.vroong.order.domain;
 
+import static com.vroong.order.domain.OrderStatus.ORDER_PLACED;
+
 import com.vroong.shared.AuditableEntity;
 import com.vroong.shared.Money;
 import com.vroong.shared.MoneyConverter;
-import lombok.*;
-
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.vroong.order.domain.OrderStatus.ORDER_PLACED;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "orders")
@@ -59,7 +73,10 @@ public class Order extends AuditableEntity {
       List<OrderItem> orderLine,
       Money deliveryFee
   ) {
-    final Money totalPrice = calcProductPrice(orderLine).add(deliveryFee);
+    final Money productPrice = calcProductPrice(orderLine);
+    verifyMinOrderPrice(productPrice);
+
+    final Money totalPrice = productPrice.add(deliveryFee);
 
     return new Order(orderer, receiver, orderLine, deliveryFee, totalPrice);
   }
@@ -68,10 +85,34 @@ public class Order extends AuditableEntity {
     this.orderStatus = orderStatus;
   }
 
+  public void updateOrder(Receiver receiver, List<OrderItem> orderItems, Money deliveryFee) {
+    if (!orderStatus.canChangeOrder()) {
+      throw new IllegalStateException("주문 변경 가능한 상태가 아닙니다.");
+    }
+    final Money productPrice = calcProductPrice(orderItems);
+    verifyMinOrderPrice(productPrice);
+
+    final Money totalPrice = productPrice.add(deliveryFee);
+
+    this.receiver = receiver;
+    associateOrderItems(orderItems);
+    this.deliveryFee = deliveryFee;
+    this.totalPrice = totalPrice;
+    this.orderStatus = OrderStatus.ORDER_UPDATED;
+  }
+
   private static Money calcProductPrice(List<OrderItem> orderLine) {
     return orderLine.stream()
         .map(OrderItem::calcPrice)
         .reduce(Money.ZERO, Money::add);
+  }
+
+  private static void verifyMinOrderPrice(Money productPrice) {
+    final int minPrice = 10_000;
+
+    if (!productPrice.isGreaterThanOrEqualTo(new Money(minPrice))) {
+      throw new IllegalArgumentException("최소 주문 금액은" + minPrice + "원 입니다.");
+    }
   }
 
   private Order(
@@ -83,8 +124,14 @@ public class Order extends AuditableEntity {
   ) {
     this.orderer = orderer;
     this.receiver = receiver;
-    this.orderItems = orderItems;
+    associateOrderItems(orderItems);
     this.deliveryFee = deliveryFee;
     this.totalPrice = totalPrice;
+  }
+
+  private void associateOrderItems(List<OrderItem> orderItems) {
+    this.orderItems.clear();
+    this.orderItems.addAll(orderItems);
+    orderItems.forEach(orderItem -> orderItem.associateOrder(this));
   }
 }

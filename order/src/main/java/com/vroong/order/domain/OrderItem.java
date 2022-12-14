@@ -56,6 +56,10 @@ public class OrderItem {
     return new OrderItem(productId, productName, productPrice, quantity);
   }
 
+  void associateOrder(Order order) {
+    this.order = order;
+  }
+
   private OrderItem(
       Long productId,
       String productName,
