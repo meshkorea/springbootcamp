@@ -43,6 +43,9 @@ paths:
       operationId: getOrderList
       tags:
         - Order
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/SizeParam'
       responses:
         '200':
           description: Ok

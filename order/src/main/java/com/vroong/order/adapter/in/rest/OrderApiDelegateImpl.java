@@ -4,6 +4,7 @@ import com.vroong.order.adapter.in.rest.mapper.OrderDtoMapper;
 import com.vroong.order.application.port.in.OrderUsecase;
 import com.vroong.order.domain.Order;
 import com.vroong.order.domain.OrderItem;
+import com.vroong.order.domain.OrderList;
 import com.vroong.order.domain.Orderer;
 import com.vroong.order.domain.Receiver;
 import com.vroong.order.rest.OrderApiDelegate;
@@ -11,11 +12,10 @@ import com.vroong.order.rest.OrderDto;
 import com.vroong.order.rest.OrderListDto;
 import com.vroong.order.rest.UserInfoDto;
 import com.vroong.shared.Money;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -47,13 +47,16 @@ public class OrderApiDelegateImpl implements OrderApiDelegate {
 
   @Override
   public ResponseEntity<OrderDto> getOrder(Long orderId) {
-    Order order = orderUsecase.getOrder(orderId);
+    final Order order = orderUsecase.getOrder(orderId);
+
     return ResponseEntity.ok(OrderDtoMapper.toDto(order));
   }
 
   @Override
-  public ResponseEntity<OrderListDto> getOrderList() {
-    return ResponseEntity.ok(Fixture.aOrderListDto());
+  public ResponseEntity<OrderListDto> getOrderList(Integer page, Integer size) {
+    final OrderList orderList = orderUsecase.getOrderList(page, size);
+
+    return ResponseEntity.ok(OrderDtoMapper.toDto(orderList));
   }
 
   @Override
