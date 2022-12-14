@@ -2,9 +2,9 @@ package com.vroong.delivery.adapter.in.rest;
 
 import com.vroong.delivery.rest.CoordinateDto;
 import com.vroong.delivery.rest.DeliveryDto;
-import com.vroong.delivery.rest.DeliveryStateDto;
-import com.vroong.delivery.rest.ReceiverDto;
-import com.vroong.delivery.rest.SenderDto;
+import com.vroong.delivery.rest.DeliveryStatusDto;
+import com.vroong.delivery.rest.UserInfoDto;
+
 import java.util.UUID;
 
 public class Fixtures {
@@ -14,10 +14,10 @@ public class Fixtures {
         .deliveryId(1L)
         .orderId(1L)
         .traceNumber(aTraceNumberDto())
-        .sender(aSenderDto())
-        .receiver(aReceiverDto())
+        .sender(aUserInfoDto())
+        .receiver(aUserInfoDto())
         .currentLocation(aCoordinateDto())
-        .state(DeliveryStateDto.PREPARING);
+        .status(DeliveryStatusDto.PREPARING);
   }
 
   public static CoordinateDto aCoordinateDto() {
@@ -26,18 +26,11 @@ public class Fixtures {
         .longitude("126.976834");
   }
 
-  public static ReceiverDto aReceiverDto() {
-    return new ReceiverDto()
-        .name("김철수")
-        .address("서울 강남구 테헤란로 418 다봉빌딩 13층")
-        .phone("01012345678");
-  }
-
-  public static SenderDto aSenderDto() {
-    return new SenderDto()
-        .name("고영희")
-        .address("서울 영등포구 의사당대로 1")
-        .phone("01056781234");
+  public static UserInfoDto aUserInfoDto() {
+    return new UserInfoDto()
+            .name("김철수")
+            .address("서울 강남구 테헤란로 418 다봉빌딩 13층")
+            .phone("01012345678");
   }
 
   public static UUID aTraceNumberDto() {
