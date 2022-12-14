@@ -87,7 +87,7 @@ public class OrderService implements OrderUsecase {
       throw new IllegalArgumentException("자신의 주문만 취소할 수 있습니다.");
     }
 
-    order.updateStatus(OrderStatus.ORDER_CANCELED);
+    order.cancelOrder();
     orderRepository.save(order);
 
     eventCreator.create(OrderStatus.ORDER_CANCELED.name(), new OrderEvent(order));
