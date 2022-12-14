@@ -1,0 +1,152 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+    id 'com.gorylenko.gradle-git-properties'
+    id 'com.google.cloud.tools.jib'
+    id 'org.openapi.generator'
+}
+
+version = '0.0.1-SNAPSHOT'
+
+dependencies {
+    implementation project(":shared")
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    // 의존성 관리
+    implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
+    implementation platform("org.zalando:logbook-bom:${logbookVersion}");
+
+    // 개발 도구, 유틸리티
+    implementation 'org.apache.commons:commons-lang3:3.10'
+    annotationProcessor('org.springframework.boot:spring-boot-configuration-processor') {
+        exclude group: 'com.vaadin.external.google', module: 'android-json'
+    }
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // 헬스체크, 추적 패턴
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+
+    // IPC 패턴
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-reactor-resilience4j'
+
+    // 보안 패턴
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // open-api-spec support packages
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.1'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate5'
+    // OpenApi Bug workaround @see https://github.com/OpenAPITools/openapi-generator/issues/3668
+    implementation 'io.swagger:swagger-annotations:1.5.17'
+
+    // Bean 유효성 검사
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // 테스트 패턴
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        exclude group: 'com.vaadin.external.google', module: 'android-json'
+    }
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'io.projectreactor:reactor-test'
+
+    // WORKAROUND for apple silicon
+    // ERROR [,,] 50545 --- [           main] i.n.r.d.DnsServerAddressStreamProviders  :
+    // Unable to load io.netty.resolver.dns.macos.MacOSDnsServerAddressStreamProvider, fallback to system defaults. This may result in incorrect DNS resolutions on MacOS.
+    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.77.Final:osx-aarch_64'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+    systemProperty('spring.profiles.active', 'test')
+    systemProperty('user.timezone', 'Asia/Seoul')
+}
+
+def getGitHash = { ->
+    def gitPropertyFile = file("${buildDir}/resources/main/git.properties")
+    // if statement used to WORKAROUND in gradle build: A problem occurred evaluating script.
+    //> .../build/resources/main/git.properties (No such file or directory)
+    if (gitPropertyFile.exists()) {
+        def props = new Properties()
+        gitPropertyFile.withInputStream { props.load(it) }
+        return props.getProperty('git.commit.id.abbrev', 'unknown')
+    }
+
+    return 'unknown'
+}
+
+task redoc(type:Exec) {
+    // For this to work correctly, `yarn global add redoc`
+    commandLine 'npx', 'redoc-cli', 'bundle', "${projectDir}/src/main/resources/swagger/api.yml", '-o', "${buildDir}/redoc.html"
+}
+
+jib {
+    from {
+        image = 'amazoncorretto:17-alpine-jdk'
+    }
+
+    to {
+        image = "${project.name}"
+        tags = ['latest', "${project.version}".toString(), getGitHash()]
+    }
+
+    containerizingMode = 'packaged'
+
+    container {
+        jvmFlags = [
+                // Java9 container support @see https://www.eclipse.org/openj9/docs/xxusecontainersupport/
+                '-XX:+UseContainerSupport',
+                // for G1GC @see https://www.oracle.com/technical-resources/articles/java/g1gc.html
+                '-XX:+UseG1GC',
+                '-XX:+HeapDumpOnOutOfMemoryError',
+                '-XX:HeapDumpPath=/tmp',
+                '-Djava.net.preferIPv4Stack=true',
+                '-Duser.timezone=Asia/Seoul',
+                '-Dfile.encoding=UTF8',
+                '-Dsun.net.inetaddr.ttl=30'
+        ]
+        ports = ['8080']
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+    }
+}
+
+openApiGenerate {
+    generatorName = 'spring'
+    inputSpec = "${projectDir}/src/main/resources/swagger/api.yml".toString()
+    outputDir = "${buildDir}/openapi".toString()
+    apiPackage = 'com.vroong.edge.rest'
+    modelPackage = 'com.vroong.edge.rest'
+    configOptions = [
+            reactive: 'true',
+            delegatePattern: 'true',
+            title: 'edge',
+            useTags: 'true',
+            dateLibrary: 'java8',
+            java8: 'true',
+            hideGenerationTimestamp: 'true'
+    ]
+    validateSpec = true
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir file("${project.buildDir.path}/openapi/src/main/java")
+        }
+    }
+}
+
+compileJava.dependsOn('openApiGenerate')
+
+springBoot {
+    // Execution failed for task ':edge:bootJarMainClassName': Unable to find a single main class from the following candidates
+    mainClass = 'com.vroong.edge.EdgeApplication'
+}

@@ -1,0 +1,32 @@
+openapi: '3.0.3'
+
+info:
+  title: 'edge'
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:8080
+    description: Development server
+
+paths: {}
+
+components:
+  schemas: {}
+
+  parameters: {}
+
+  responses: {}
+
+  securitySchemes:
+    'jhipster-uaa':
+      type: oauth2
+      flows:
+        password:
+          tokenUrl: http://localhost:9999/uaa/oauth/token
+          refreshUrl: http://localhost:9999/uaa/oauth/token
+          scopes: {}
+        clientCredentials:
+          tokenUrl: http://localhost:9999/uaa/oauth/token
+          scopes: {}
+
+security: []
