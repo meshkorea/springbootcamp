@@ -3,15 +3,9 @@ package com.vroong.order.application;
 import com.vroong.order.application.port.in.OrderUsecase;
 import com.vroong.order.application.port.out.OrderRepository;
 import com.vroong.order.application.port.out.event.OrderEvent;
-import com.vroong.order.domain.Order;
-import com.vroong.order.domain.OrderItem;
-import com.vroong.order.domain.OrderList;
-import com.vroong.order.domain.OrderStatus;
-import com.vroong.order.domain.Orderer;
-import com.vroong.order.domain.Receiver;
+import com.vroong.order.domain.*;
 import com.vroong.order.support.SecurityUtils;
 import com.vroong.shared.Money;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +56,12 @@ public class OrderService implements OrderUsecase {
   @Override
   @Transactional(readOnly = true)
   public Order getOrder(Long orderId) {
-    return orderRepository.getReferenceById(orderId);
+    final Order order = orderRepository.getReferenceById(orderId);
+    if (!getCurrentUsername().equals(order.getCreatedBy())) {
+      throw new IllegalArgumentException("자신의 주문만 조회할 수 있습니다.");
+    }
+
+    return order;
   }
 
   @Override
@@ -82,6 +83,10 @@ public class OrderService implements OrderUsecase {
   @Transactional
   public void cancelOrder(Long orderId) {
     final Order order = orderRepository.getReferenceById(orderId);
+    if (!getCurrentUsername().equals(order.getCreatedBy())) {
+      throw new IllegalArgumentException("자신의 주문만 취소할 수 있습니다.");
+    }
+
     order.updateStatus(OrderStatus.ORDER_CANCELED);
     orderRepository.save(order);
 
