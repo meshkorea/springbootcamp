@@ -10,13 +10,14 @@ import org.springframework.messaging.Message;
 @Slf4j
 public class MessagingConfiguration {
 
-  public static final String PRODUCER_CHANNEL = "local-order-output";
+  public static final String PRODUCER_CHANNEL = "produceMessage-out-0";
+  public static final String CONSUMER_CHANNEL = "consumeMessage-in-0";
 
   @Bean
   public Consumer<Message<?>> consumeMessage() {
     return data -> {
       // Add business logic here
-      log.info("A message received: {}", data.getPayload());
+      log.info("A message received: {}", new String((byte[]) data.getPayload()));
     };
   }
 }

@@ -3,8 +3,8 @@ package com.vroong.order.application;
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
 import com.vroong.order.application.port.out.PersistentEventRepository;
+import com.vroong.order.application.port.out.message.MessageProducer;
 import com.vroong.order.domain.PersistentEvent;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;

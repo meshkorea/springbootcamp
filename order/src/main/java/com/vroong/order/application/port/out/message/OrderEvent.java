@@ -1,4 +1,4 @@
-package com.vroong.order.application.port.out.event;
+package com.vroong.order.application.port.out.message;
 
 import com.vroong.order.domain.Order;
 import com.vroong.order.domain.OrderStatus;

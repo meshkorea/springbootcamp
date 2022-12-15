@@ -1,11 +1,12 @@
 /**
  * MessageSchema spec: @see https://wiki.mm.meshkorea.net/display/MES/Message+Schema
  */
-package com.vroong.order.application;
+package com.vroong.order.adapter.out.message;
 
 import static com.vroong.order.config.Constants.PROJECT_NAME;
 import static com.vroong.order.config.MessagingConfiguration.PRODUCER_CHANNEL;
 
+import com.vroong.order.application.port.out.message.MessageProducer;
 import com.vroong.order.config.Constants.MessageKey;
 import com.vroong.order.domain.PersistentEvent;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +19,11 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class MessageProducer {
+public class StreamBridgeMessageProducer implements MessageProducer {
 
   private final StreamBridge streamBridge;
 
+  @Override
   public boolean produce(PersistentEvent persistentEvent) {
     final String body = persistentEvent.getBody();
     Message<?> message = MessageBuilder
