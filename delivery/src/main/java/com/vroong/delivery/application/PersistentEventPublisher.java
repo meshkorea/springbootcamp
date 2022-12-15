@@ -1,13 +1,8 @@
 package com.vroong.delivery.application;
 
-import static net.logstash.logback.argument.StructuredArguments.kv;
-
 import com.vroong.delivery.application.port.out.PersistentEventRepository;
+import com.vroong.delivery.application.port.out.message.MessageProducer;
 import com.vroong.delivery.domain.PersistentEvent;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
@@ -17,36 +12,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * When: a new record being created in persistent_event table
- *
- * Then:
- * ```
- * $ kafkactl consume local-template-output --from-beginning --print-headers
- * b3:c1fd9ecc53fc2d81-160976621383d9fb-0,
- * contentType:"application/json",
- * messageId:"cb970d49-465e-493b-8c1b-da90856412e0",
- * messageSource:template,
- * messageType:ExampleCreated,
- * messageVersion:1,
- * nativeHeaders:{"b3":["c1fd9ecc53fc2d81-160976621383d9fb-0"]},
- * partitionKey:"cb970d49-465e-493b-8c1b-da90856412e0",
- * resource:String,
- * scst_partition:0,
- * spring_json_header_types:{
- *   "b3": "java.lang.String",
- *   "nativeHeaders": "org.springframework.util.LinkedMultiValueMap",
- *   "messageType": "java.lang.String",
- *   "partitionKey": "java.util.UUID",
- *   "resource": "java.lang.String",
- *   "messageId": "java.util.UUID",
- *   "messageSource": "java.lang.String",
- *   "scst_partition": "java.lang.Integer",
- *   "messageVersion": "java.lang.Integer",
- *   "contentType": "java.lang.String"
- * }#{JSON BODY}
- * ```
- */
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+
+import static net.logstash.logback.argument.StructuredArguments.kv;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
