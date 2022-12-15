@@ -13,6 +13,7 @@ plugins {
 version = '0.0.1-SNAPSHOT'
 
 dependencies {
+    implementation project(":order:clients")
     implementation project(":shared")
 
     // 의존성 관리

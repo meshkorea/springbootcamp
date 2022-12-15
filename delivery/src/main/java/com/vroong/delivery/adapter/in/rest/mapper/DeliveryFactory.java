@@ -22,7 +22,6 @@ public class DeliveryFactory {
 
         DeliveryUserInfo userInfo = createDeliveryUserInfo(dto.getSender(), dto.getReceiver());
 
-        userInfo.setDelivery(delivery);
         delivery.setDeliveryUserInfo(userInfo);
 
         return delivery;

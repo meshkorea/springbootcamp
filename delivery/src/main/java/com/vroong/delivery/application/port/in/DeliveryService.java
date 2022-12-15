@@ -20,7 +20,6 @@ public class DeliveryService {
     private final PersistentEventCreator eventCreator;
 
     public Delivery createDelivery(Delivery delivery) {
-        // TODO: 값 채워 넣기
         final Delivery result = deliveryRepository.save(delivery);
 
         eventCreator.create("DELIVERY_PREPARED", new DeliveryStatusChangedEvent(result));

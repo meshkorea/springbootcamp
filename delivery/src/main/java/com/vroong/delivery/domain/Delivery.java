@@ -38,10 +38,24 @@ public class Delivery extends AuditableEntity {
     }
 
     public void setDeliveryUserInfo(DeliveryUserInfo deliveryUserInfo) {
+        deliveryUserInfo.setDelivery(this);
         this.deliveryUserInfo = deliveryUserInfo;
     }
 
     public void cancel() {
         this.status = DeliveryStatus.CANCELED;
     }
+
+    public void setTraceNumber(UUID traceNumber) {
+        this.traceNumber = traceNumber;
+    }
+
+    public void updateLocation(Coordinate location) {
+        this.location = location;
+    }
+
+    public void setStatus(DeliveryStatus status) {
+        this.status = status;
+    }
+
 }
