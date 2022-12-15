@@ -1,8 +1,8 @@
 package com.vroong.product.application;
 
 import com.vroong.product.adapter.in.rest.error.ProductNotFoundException;
-import com.vroong.product.domain.Product;
 import com.vroong.product.application.port.out.ProductRepository;
+import com.vroong.product.domain.Product;
 import com.vroong.product.domain.Size;
 import com.vroong.product.rest.ProductDto;
 import com.vroong.product.rest.SizeDto;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ProductService {
+public class OrderPlacedService {
 
     private final ProductRepository productRepository;
 
@@ -75,18 +75,6 @@ public class ProductService {
             product.setLocation(dto.getLocation());
         }
 
-        return product;
-    }
-
-    public Product decreaseInventory(Long productId, Integer quantity) {
-        Product product = getProduct(productId);
-        product.decreaseInventory(quantity);
-        return product;
-    }
-
-    public Product increaseInventory(Long productId, Integer quantity) {
-        Product product = getProduct(productId);
-        product.increaseInventory(quantity);
         return product;
     }
 }

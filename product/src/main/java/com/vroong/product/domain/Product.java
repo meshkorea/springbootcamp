@@ -71,4 +71,12 @@ public class Product {
     this.size = size;
     this.location = location;
   }
+
+    public void decreaseInventory(Integer quantity) {
+        this.inventory -= quantity;
+    }
+
+  public void increaseInventory(Integer quantity) {
+    this.inventory += quantity;
+  }
 }
