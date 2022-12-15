@@ -40,7 +40,7 @@ public class OrderItem {
   @Column(nullable = false, length = 60)
   private String productName;
 
-  @Column(columnDefinition = "decimal(20, 0) unsigned", nullable = false)
+  @Column(columnDefinition = "decimal(20, 0)", nullable = false)
   @Convert(converter = MoneyConverter.class)
   private Money productPrice;
 

@@ -2,8 +2,10 @@ package com.vroong.order.adapter.in.rest;
 
 import com.vroong.order.domain.Order;
 import com.vroong.order.domain.OrderItem;
+import com.vroong.order.domain.OrderList;
 import com.vroong.order.domain.OrderStatus;
 import com.vroong.order.domain.Orderer;
+import com.vroong.order.domain.Page;
 import com.vroong.order.domain.Receiver;
 import com.vroong.order.rest.OrderDto;
 import com.vroong.order.rest.OrderLineDto;
@@ -86,6 +88,13 @@ public class Fixture {
         ),
         Orderer.of("소농민", "010-1234-5678", "영국 런던 대저택"),
         Receiver.of("소농민", "010-1234-5678", "영국 런던 대저택")
+    );
+  }
+
+  public static OrderList aOrderList() {
+    return new OrderList(
+        List.of(aOrder()),
+        Page.SOLE
     );
   }
 }

@@ -25,8 +25,8 @@ CREATE TABLE IF NOT EXISTS orders
 (
     id               bigint NOT NULL AUTO_INCREMENT,
     order_status     tinyint unsigned NOT NULL DEFAULT 0 COMMENT '오더 상태',
-    total_price      decimal(20, 0) unsigned NOT NULL COMMENT '결제 금액',
-    delivery_fee     decimal(20, 0) unsigned NOT NULL COMMENT '배송 금액',
+    total_price      decimal(20, 0) NOT NULL COMMENT '결제 금액',
+    delivery_fee     decimal(20, 0) NOT NULL COMMENT '배송 금액',
     orderer_name     varchar(32) NOT NULL COMMENT '주문자 이름',
     orderer_phone    varchar(20) NOT NULL COMMENT '주문자 전화번호',
     orderer_address  varchar(255) NOT NULL COMMENT '주문자 주소',
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS order_items
     order_id         bigint NOT NULL COMMENT '주문 번호',
     product_id       bigint NOT NULL COMMENT '상품 번호',
     product_name     varchar(60) NOT NULL COMMENT '상품명',
-    product_price    decimal(20, 0) unsigned NOT NULL COMMENT '상품 금액',
+    product_price    decimal(20, 0) NOT NULL COMMENT '상품 금액',
     quantity         smallint NOT NULL COMMENT '수량',
     PRIMARY KEY (id)
 );
