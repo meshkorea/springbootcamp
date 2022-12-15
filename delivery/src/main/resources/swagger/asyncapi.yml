@@ -21,6 +21,7 @@ channels:
           - $ref: '#/components/messages/Prepared'
           - $ref: '#/components/messages/Started'
           - $ref: '#/components/messages/Completed'
+          - $ref: '#/components/messages/Canceled'
 
 components:
   messages:
@@ -32,7 +33,7 @@ components:
       traits:
         - $ref: '#/components/messageTraits/commonHeaders'
       payload:
-        $ref: 'api.yml#/components/schemas/Delivery'
+        $ref: '#/components/schemas/DeliveryStatusChangedPayload'
 
     Started:
       title: Delivery Started
@@ -42,7 +43,7 @@ components:
       traits:
         - $ref: '#/components/messageTraits/commonHeaders'
       payload:
-        $ref: 'api.yml#/components/schemas/Delivery'
+        $ref: '#/components/schemas/DeliveryStatusChangedPayload'
     Completed:
       title: Delivery Completed
       name: DELIVERY_COMPLETED
@@ -51,16 +52,27 @@ components:
       traits:
         - $ref: '#/components/messageTraits/commonHeaders'
       payload:
-        $ref: 'api.yml#/components/schemas/Delivery'
+        $ref: '#/components/schemas/DeliveryStatusChangedPayload'
+    Canceled:
+      title: Delivery Canceled
+      name: DELIVERY_CANCELED
+      summary: ''
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: '#/components/schemas/DeliveryStatusChangedPayload'
 
   schemas:
-    example:
+    DeliveryStatusChangedPayload:
       type: object
       properties:
+        deliveryId:
+          $ref: 'api.yml#/components/schemas/LongId'
         orderId:
-          type: integer
-          format: int64
-          example: 1
+          $ref: 'api.yml#/components/schemas/LongId'
+        status:
+          $ref: 'api.yml#/components/schemas/DeliveryStatus'
 
   #  securitySchemes:
   #    saslPlain:
