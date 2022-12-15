@@ -28,7 +28,7 @@ public class DeliveryFactory {
         return delivery;
     }
 
-    private DeliveryUserInfo createDeliveryUserInfo(UserInfoDto senderDto, UserInfoDto receiverDto) {
+    public DeliveryUserInfo createDeliveryUserInfo(UserInfoDto senderDto, UserInfoDto receiverDto) {
         return DeliveryUserInfo.builder()
                 .sender(createUserInfo(senderDto))
                 .receiver(createUserInfo(receiverDto))
