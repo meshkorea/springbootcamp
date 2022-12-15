@@ -33,11 +33,11 @@ spring:
           headers: [ "messageId", "messageType", "messageVersion", "messageSource" ]
           auto-create-topics: false
       bindings:
-        consumeMessage-in-0:
+        messageConsumer-in-0:
           group: order-consumer-group
           destination: local-payment-output,local-delivery-output
           binder: kafka
-        produceMessage-out-0:
+        messageProducer-out-0:
           destination: local-order-output
           header-mode: headers
           binder: kafka

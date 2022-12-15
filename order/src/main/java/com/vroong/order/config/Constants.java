@@ -27,6 +27,9 @@ public class Constants {
     public static final String B3_FLAGS = "X-B3-Flags";
   }
 
+  public static final String PRODUCER_CHANNEL = "messageProducer-out-0";
+  public static final String CONSUMER_CHANNEL = "messageConsumer-in-0";
+
   /**
    * MessageSchema spec: @see https://wiki.mm.meshkorea.net/display/MES/Message+Schema
    */

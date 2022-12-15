@@ -3,8 +3,8 @@
  */
 package com.vroong.order.adapter.out.message;
 
+import static com.vroong.order.config.Constants.PRODUCER_CHANNEL;
 import static com.vroong.order.config.Constants.PROJECT_NAME;
-import static com.vroong.order.config.MessagingConfiguration.PRODUCER_CHANNEL;
 
 import com.vroong.order.application.port.out.message.MessageProducer;
 import com.vroong.order.config.Constants.MessageKey;
