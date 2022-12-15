@@ -104,18 +104,18 @@ public class Order extends AuditableEntity {
     this.orderStatus = OrderStatus.ORDER_UPDATED;
   }
 
-  private static Money calcProductPrice(List<OrderItem> orderLine) {
-    return orderLine.stream()
-        .map(OrderItem::calcPrice)
-        .reduce(Money.ZERO, Money::add);
+  public void startDelivery() {
+    this.orderStatus = OrderStatus.DELIVERY_STARTED;
   }
 
-  private static void verifyMinOrderPrice(Money productPrice) {
-    final int minPrice = 10_000;
+  public void completeDelivery() {
+    this.orderStatus = OrderStatus.DELIVERY_COMPLETED;
+  }
 
-    if (!productPrice.isGreaterThanOrEqualTo(new Money(minPrice))) {
-      throw new IllegalArgumentException("최소 주문 금액은" + minPrice + "원 입니다.");
-    }
+  private void associateOrderItems(List<OrderItem> orderItems) {
+    this.orderItems.clear();
+    this.orderItems.addAll(orderItems);
+    orderItems.forEach(orderItem -> orderItem.associateOrder(this));
   }
 
   private Order(
@@ -132,9 +132,17 @@ public class Order extends AuditableEntity {
     this.totalPrice = totalPrice;
   }
 
-  private void associateOrderItems(List<OrderItem> orderItems) {
-    this.orderItems.clear();
-    this.orderItems.addAll(orderItems);
-    orderItems.forEach(orderItem -> orderItem.associateOrder(this));
+  private static Money calcProductPrice(List<OrderItem> orderLine) {
+    return orderLine.stream()
+        .map(OrderItem::calcPrice)
+        .reduce(Money.ZERO, Money::add);
+  }
+
+  private static void verifyMinOrderPrice(Money productPrice) {
+    final int minPrice = 10_000;
+
+    if (!productPrice.isGreaterThanOrEqualTo(new Money(minPrice))) {
+      throw new IllegalArgumentException("최소 주문 금액은" + minPrice + "원 입니다.");
+    }
   }
 }
