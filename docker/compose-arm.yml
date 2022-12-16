@@ -57,7 +57,7 @@ services:
     platform: linux/arm64
     container_name: kafka
     environment:
-      KAFKA_CREATE_TOPICS: "local-order-output:1:1,local-product-out:1:1,local-delivery-out1:1,local-payment-out:1:1,local-3pl-out:1:1"
+      KAFKA_CREATE_TOPICS: "local-order-output:1:1,local-product-output:1:1,local-delivery-output:1:1,local-payment-output:1:1,local-3pl-output:1:1"
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_BROKER_ID: 2

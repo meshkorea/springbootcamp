@@ -29,7 +29,7 @@ services:
     image: wurstmeister/kafka:2.13-2.6.0
     container_name: kafka
     environment:
-      KAFKA_CREATE_TOPICS: "local-order-output:1:1,local-product-out:1:1,local-delivery-out1:1,local-payment-out:1:1,local-3pl-out:1:1"
+      KAFKA_CREATE_TOPICS: "local-order-output:1:1,local-product-output:1:1,local-delivery-output:1:1,local-payment-output:1:1,local-3pl-output:1:1"
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
       KAFKA_ADVERTISED_HOST_NAME: localhost
       KAFKA_ADVERTISED_PORT: 9092
