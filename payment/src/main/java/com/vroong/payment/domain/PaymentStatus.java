@@ -1,5 +1,6 @@
 package com.vroong.payment.domain;
 
+import java.util.Arrays;
 import lombok.Getter;
 
 @Getter
@@ -13,5 +14,12 @@ public enum PaymentStatus {
 
   PaymentStatus(Integer code) {
     this.code = code;
+  }
+
+  public static PaymentStatus fromCode(Integer dbData) {
+    return Arrays.stream(PaymentStatus.values())
+        .filter(paymentStatus -> paymentStatus.getCode().equals(dbData))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("결제 상태 코드 " + dbData + "가 존재하지 않습니다."));
   }
 }
