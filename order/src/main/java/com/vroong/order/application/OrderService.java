@@ -10,7 +10,7 @@ import com.vroong.order.domain.OrderStatus;
 import com.vroong.order.domain.Orderer;
 import com.vroong.order.domain.Receiver;
 import com.vroong.order.support.SecurityUtils;
-import com.vroong.shared.Money;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,8 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,9 +29,7 @@ public class OrderService implements OrderUsecase {
   @Override
   @Transactional
   public Order createOrder(Orderer orderer, Receiver receiver, List<OrderItem> orderItems) {
-    final Money deliveryFee = new Money(3500); // 고정값 사용, 외부값 사용시 port/adapter.out에 구현
-
-    final Order newOrder = Order.placeOrder(orderer, receiver, orderItems, deliveryFee);
+    final Order newOrder = Order.placeOrder(orderer, receiver, orderItems);
 
     orderRepository.save(newOrder);
     eventCreator.create(OrderStatus.ORDER_PLACED.name(), new OrderEvent(newOrder));
@@ -77,9 +73,7 @@ public class OrderService implements OrderUsecase {
       throw new IllegalArgumentException("자신의 주문만 변경할 수 있습니다.");
     }
 
-    final Money deliveryFee = new Money(3500);
-
-    order.updateOrder(receiver, orderItems, deliveryFee);
+    order.updateOrder(receiver, orderItems);
 
     eventCreator.create(OrderStatus.ORDER_UPDATED.name(), new OrderEvent(order));
   }

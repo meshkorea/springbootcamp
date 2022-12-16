@@ -19,6 +19,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -28,10 +29,13 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "orders")
 @Getter
-@EqualsAndHashCode(of = "id")
+@EqualsAndHashCode(of = "id", callSuper = false)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Order extends AuditableEntity {
+
+  @Transient
+  public static final Money defaultDeliveryFee = new Money(3500);
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -70,15 +74,14 @@ public class Order extends AuditableEntity {
   public static Order placeOrder(
       Orderer orderer,
       Receiver receiver,
-      List<OrderItem> orderLine,
-      Money deliveryFee
+      List<OrderItem> orderLine
   ) {
     final Money productPrice = calcProductPrice(orderLine);
     verifyMinOrderPrice(productPrice);
 
-    final Money totalPrice = productPrice.add(deliveryFee);
+    final Money totalPrice = productPrice.add(defaultDeliveryFee);
 
-    return new Order(orderer, receiver, orderLine, deliveryFee, totalPrice);
+    return new Order(orderer, receiver, orderLine, defaultDeliveryFee, totalPrice);
   }
 
   public void cancelOrder() {
@@ -88,18 +91,18 @@ public class Order extends AuditableEntity {
     this.orderStatus = OrderStatus.ORDER_CANCELED;
   }
 
-  public void updateOrder(Receiver receiver, List<OrderItem> orderItems, Money deliveryFee) {
+  public void updateOrder(Receiver receiver, List<OrderItem> orderItems) {
     if (!orderStatus.canChangeOrder()) {
       throw new IllegalStateException("주문 변경 가능한 상태가 아닙니다.");
     }
     final Money productPrice = calcProductPrice(orderItems);
     verifyMinOrderPrice(productPrice);
 
-    final Money totalPrice = productPrice.add(deliveryFee);
+    final Money totalPrice = productPrice.add(defaultDeliveryFee);
 
     this.receiver = receiver;
     associateOrderItems(orderItems);
-    this.deliveryFee = deliveryFee;
+    this.deliveryFee = defaultDeliveryFee;
     this.totalPrice = totalPrice;
     this.orderStatus = OrderStatus.ORDER_UPDATED;
   }
