@@ -49,14 +49,6 @@ components:
         - $ref: '#/components/messageTraits/commonHeaders'
       payload:
         $ref: 'api.yml#/components/schemas/Payment'
-    PaymentCancelFailed:
-      title: Payment cancel failed
-      name: PAYMENT_CANCEL_FAILED
-      contentType: application/json
-      traits:
-        - $ref: '#/components/messageTraits/commonHeaders'
-      payload:
-        $ref: 'api.yml#/components/schemas/Payment'
 
   securitySchemes:
     saslPlain:
