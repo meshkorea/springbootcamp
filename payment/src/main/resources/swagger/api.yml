@@ -32,10 +32,10 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 
-  /api/payments/{paymentId}:
+  /api/payments/{orderId}:
     get:
-      description: Get Payment
-      operationId: getPayment
+      description: Get Payment list
+      operationId: getPaymentList
       tags:
         - Payment
       parameters:
@@ -46,7 +46,7 @@ paths:
           content:
             application/vnd.vroong.private.v1+json:
               schema:
-                $ref: '#/components/schemas/Payment'
+                $ref: '#/components/schemas/PaymentList'
         '400':
           $ref: '#/components/responses/BadRequest'
         '401':
@@ -152,6 +152,15 @@ components:
     #----------------------------------------
     # API Model
     #----------------------------------------
+    PaymentList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Payment'
+        # 결제 결과에 대한 목록은 많지 않다고 가정하고 paging은 구현 x
+
     Payment:
       type: object
       required:
