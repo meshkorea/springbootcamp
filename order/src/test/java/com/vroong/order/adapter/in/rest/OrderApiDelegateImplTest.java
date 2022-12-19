@@ -1,6 +1,5 @@
 package com.vroong.order.adapter.in.rest;
 
-import static com.vroong.order.config.Constants.ENCODING;
 import static com.vroong.order.config.Constants.V1_MEDIA_TYPE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -13,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.vroong.order.application.port.in.OrderUsecase;
+import com.vroong.order.config.Constants;
 import com.vroong.order.domain.Orderer;
 import com.vroong.order.domain.Receiver;
 import com.vroong.order.rest.OrderApiController;
@@ -39,6 +39,8 @@ class OrderApiDelegateImplTest {
 
   @MockBean
   OrderUsecase orderUsecase;
+
+  static final String ENCODING = Constants.DEFAULT_CHARSET.name();
 
   @Test
   @WithAnonymousUser

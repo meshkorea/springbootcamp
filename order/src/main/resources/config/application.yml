@@ -78,3 +78,7 @@ application:
   version: #project.version#
   scheduler:
     enabled: false
+  kafka:
+    topic:
+      delivery: local-delivery-output
+      payment: local-payment-output

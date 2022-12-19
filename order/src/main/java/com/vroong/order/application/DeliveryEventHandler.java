@@ -1,8 +1,5 @@
 package com.vroong.order.application;
 
-import static com.vroong.order.domain.DeliveryEvent.DeliveryState.COMPLETED;
-import static com.vroong.order.domain.DeliveryEvent.DeliveryState.DELIVERING;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vroong.order.application.port.in.EventHandler;
@@ -12,7 +9,6 @@ import com.vroong.order.config.Constants;
 import com.vroong.order.domain.DeliveryEvent;
 import com.vroong.order.domain.DeliveryEvent.DeliveryState;
 import com.vroong.order.domain.Order;
-import java.io.UnsupportedEncodingException;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,10 +29,8 @@ public class DeliveryEventHandler implements EventHandler {
     DeliveryEvent deliveryEvent = null;
 
     try {
-      final String messageString = new String((byte[]) message.getPayload(), Constants.ENCODING);
+      final String messageString = new String((byte[]) message.getPayload(), Constants.DEFAULT_CHARSET);
       deliveryEvent = objectMapper.readValue(messageString, DeliveryEvent.class);
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException("메시지 인코딩을 실패했습니다: " + message);
     } catch (JsonProcessingException e) {
       throw new RuntimeException("메시지 역직렬화를 실패했습니다: " + message);
     }
@@ -47,13 +41,15 @@ public class DeliveryEventHandler implements EventHandler {
 
     final DeliveryState deliveryState = deliveryEvent.getDeliveryState();
     switch (deliveryState) {
-      case DELIVERING -> order.startDelivery();
-      case COMPLETED -> order.completeDelivery();
+      case DELIVERING -> {
+        order.startDelivery();
+        eventCreator.create(order.getOrderStatus().name(), new OrderEvent(order));
+      }
+      case COMPLETED -> {
+        order.completeDelivery();
+        eventCreator.create(order.getOrderStatus().name(), new OrderEvent(order));
+      }
       case CANCELED, PREPARING -> {}
-    }
-
-    if (deliveryState == DELIVERING || deliveryState == COMPLETED) {
-      eventCreator.create(order.getOrderStatus().name(), new OrderEvent(order));
     }
   }
 }
