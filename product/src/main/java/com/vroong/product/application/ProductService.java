@@ -1,9 +1,10 @@
 package com.vroong.product.application;
 
 import com.vroong.product.adapter.in.rest.error.ProductNotFoundException;
-import com.vroong.product.domain.Product;
 import com.vroong.product.application.port.out.ProductRepository;
+import com.vroong.product.domain.Product;
 import com.vroong.product.domain.Size;
+import com.vroong.product.domain.exception.NotInventoryEnoughException;
 import com.vroong.product.rest.ProductDto;
 import com.vroong.product.rest.SizeDto;
 import com.vroong.shared.Money;
@@ -18,75 +19,81 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ProductService {
 
-    private final ProductRepository productRepository;
+  private final ProductRepository productRepository;
+  private final PersistentEventCreator eventCreator;
 
-    public Product createProduct(ProductDto dto) {
+  public Product createProduct(ProductDto dto) {
 
-        SizeDto size = dto.getSize();
-        Product product = new Product(
-            dto.getName(),
-            dto.getDescription(),
-            new Money(dto.getPrice()),
-            dto.getInventory(),
-            dto.getSupplier(),
-            new Size(size.getWidth(), size.getHeight(), size.getDepth()),
-            dto.getLocation()
-        );
+    SizeDto size = dto.getSize();
+    Product product = new Product(
+        dto.getName(),
+        dto.getDescription(),
+        new Money(dto.getPrice()),
+        dto.getInventory(),
+        dto.getSupplier(),
+        new Size(size.getWidth(), size.getHeight(), size.getDepth()),
+        dto.getLocation()
+    );
 
-        productRepository.save(product);
-        return product;
+    productRepository.save(product);
+    return product;
+  }
+
+  public Page<Product> listProducts(String q, Integer size, Integer page) {
+    return productRepository.findByName(q, PageRequest.of(page, size));
+  }
+
+  public Product getProduct(Long productId) {
+    return productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
+  }
+
+  public void deleteProduct(Long productId) {
+    productRepository.deleteById(productId);
+  }
+
+  public Product updateProduct(Long productId, ProductDto dto) {
+    Product product = getProduct(productId);
+
+    if (dto.getName() != null) {
+      product.setName(dto.getName());
+    }
+    if (dto.getDescription() != null) {
+      product.setDescription(dto.getDescription());
+    }
+    if (dto.getPrice() != null) {
+      product.setPrice(new Money(dto.getPrice()));
+    }
+    if (dto.getInventory() != null) {
+      product.setInventory(dto.getInventory());
+    }
+    if (dto.getSupplier() != null) {
+      product.setSupplier(dto.getSupplier());
+    }
+    if (dto.getSize() != null) {
+      SizeDto size = dto.getSize();
+      product.setSize(new Size(size.getWidth(), size.getHeight(), size.getDepth()));
+    }
+    if (dto.getLocation() != null) {
+      product.setLocation(dto.getLocation());
     }
 
-    public Page<Product> listProducts(String q, Integer size, Integer page) {
-        return productRepository.findByName(q, PageRequest.of(page, size));
+    return product;
+  }
+
+  public void decreaseInventory(Long productId, Integer quantity) {
+    Product product = getProduct(productId);
+    try {
+      product.decreaseInventory(quantity);
+      eventCreator.create("INVENTORY_UPDATED", product);
+    } catch (NotInventoryEnoughException e) {
+      eventCreator.create("INVENTORY_UPDATE_FAILED", product);
     }
+  }
 
-    public Product getProduct(Long productId) {
-        return productRepository.findById(productId).orElseThrow(ProductNotFoundException::new);
-    }
+  public void increaseInventory(Long productId, Integer quantity) {
+    Product product = getProduct(productId);
+    product.increaseInventory(quantity);
 
-    public void deleteProduct(Long productId) {
-        productRepository.deleteById(productId);
-    }
-
-    public Product updateProduct(Long productId, ProductDto dto) {
-        Product product = getProduct(productId);
-
-        if (dto.getName() != null) {
-            product.setName(dto.getName());
-        }
-        if (dto.getDescription() != null) {
-            product.setDescription(dto.getDescription());
-        }
-        if (dto.getPrice() != null) {
-            product.setPrice(new Money(dto.getPrice()));
-        }
-        if (dto.getInventory() != null) {
-            product.setInventory(dto.getInventory());
-        }
-        if (dto.getSupplier() != null) {
-            product.setSupplier(dto.getSupplier());
-        }
-        if (dto.getSize() != null) {
-            SizeDto size = dto.getSize();
-            product.setSize(new Size(size.getWidth(), size.getHeight(), size.getDepth()));
-        }
-        if (dto.getLocation() != null) {
-            product.setLocation(dto.getLocation());
-        }
-
-        return product;
-    }
-
-    public Product decreaseInventory(Long productId, Integer quantity) {
-        Product product = getProduct(productId);
-        product.decreaseInventory(quantity);
-        return product;
-    }
-
-    public Product increaseInventory(Long productId, Integer quantity) {
-        Product product = getProduct(productId);
-        product.increaseInventory(quantity);
-        return product;
-    }
+    eventCreator.create("INVENTORY_UPDATED", product);
+  }
 }

@@ -1,0 +1,71 @@
+asyncapi: '2.5.0'
+
+info:
+  title: Product Application Async API Spec
+  version: 0.0.1
+
+servers:
+  local:
+    url: localhost:9092
+    protocol: kafka-secure
+    description: Development server
+
+defaultContentType: applicaiton/json
+
+channels:
+  local-product-output:
+    description: Proudct 서비스에서 발행하는 도메인 메시지를 위한 토픽
+    publish:
+      message:
+        oneOf:
+          - $ref: '#/components/messages/InventoryUpdated'
+          - $ref: '#/components/messages/InventoryUpdateFailed'
+
+components:
+  messages:
+    InventoryUpdated:
+      title: Inventory Updated
+      name: INVENTORY_UPDATED
+      summary: ''
+      contentType: application/vnd.vroong.private.v1+json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Product'
+
+    InventoryUpdateFailed:
+      title: Inventory Updated Failed
+      name: INVENTORY_UPDATED_FAILED
+      summary: ''
+      contentType: application/vnd.vroong.private.v1+json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Product'
+
+  messageTraits:
+    commonHeaders:
+      headers:
+        type: object
+        properties:
+          partitionKey:
+            type: string
+            format: uuid
+            example: a8697999-57ce-3bf7-82b3-19112facb65f
+          messageVersion:
+            type: string
+            format: number
+            example: 1
+          messageId:
+            type: string
+            format: uuid
+            example: cce8c791-89a2-4120-a3b4-f2c67b5b0fb9
+          messageType:
+            type: string
+            example: ORDER_CREATED
+          messageSource:
+            type: string
+            example: order
+          resource:
+            type: string
+            example: Order

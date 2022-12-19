@@ -1,9 +1,18 @@
 package com.vroong.product.domain;
 
+import com.vroong.product.domain.exception.NotInventoryEnoughException;
 import com.vroong.shared.Money;
 import java.time.Instant;
-import javax.persistence.*;
-
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -72,9 +81,13 @@ public class Product {
     this.location = location;
   }
 
-    public void decreaseInventory(Integer quantity) {
-        this.inventory -= quantity;
+  public void decreaseInventory(Integer quantity) {
+    if (inventory > quantity) {
+      inventory -= quantity;
+    } else {
+      throw new NotInventoryEnoughException();
     }
+  }
 
   public void increaseInventory(Integer quantity) {
     this.inventory += quantity;
