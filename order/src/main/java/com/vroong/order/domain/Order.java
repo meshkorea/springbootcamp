@@ -35,7 +35,7 @@ import lombok.NoArgsConstructor;
 public class Order extends AuditableEntity {
 
   @Transient
-  public static final Money defaultDeliveryFee = new Money(3500);
+  public static final Money DEFAULT_DELIVERY_FEE = new Money(3500);
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -79,9 +79,9 @@ public class Order extends AuditableEntity {
     final Money productPrice = calcProductPrice(orderLine);
     verifyMinOrderPrice(productPrice);
 
-    final Money totalPrice = productPrice.add(defaultDeliveryFee);
+    final Money totalPrice = productPrice.add(DEFAULT_DELIVERY_FEE);
 
-    return new Order(orderer, receiver, orderLine, defaultDeliveryFee, totalPrice);
+    return new Order(orderer, receiver, orderLine, DEFAULT_DELIVERY_FEE, totalPrice);
   }
 
   public void cancelOrder() {
@@ -98,11 +98,11 @@ public class Order extends AuditableEntity {
     final Money productPrice = calcProductPrice(orderItems);
     verifyMinOrderPrice(productPrice);
 
-    final Money totalPrice = productPrice.add(defaultDeliveryFee);
+    final Money totalPrice = productPrice.add(DEFAULT_DELIVERY_FEE);
 
     this.receiver = receiver;
     associateOrderItems(orderItems);
-    this.deliveryFee = defaultDeliveryFee;
+    this.deliveryFee = DEFAULT_DELIVERY_FEE;
     this.totalPrice = totalPrice;
     this.orderStatus = OrderStatus.ORDER_UPDATED;
   }

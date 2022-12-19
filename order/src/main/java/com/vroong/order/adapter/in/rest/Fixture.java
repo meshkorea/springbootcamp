@@ -17,6 +17,7 @@ import com.vroong.order.rest.PageDto;
 import com.vroong.order.rest.UserInfoDto;
 import com.vroong.shared.Money;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Fixture {
@@ -52,11 +53,11 @@ public class Fixture {
 
   public static OrderLineDto aOrderLineDto() {
     return new OrderLineDto()
-        .addDataItem(aOrderLineItemDto1())
-        .addDataItem(aOrderLineItemDto2());
+        .addDataItem(aOrderItemDto1())
+        .addDataItem(aOrderItemDto2());
   }
 
-  public static OrderLineItemDto aOrderLineItemDto1() {
+  public static OrderLineItemDto aOrderItemDto1() {
     return new OrderLineItemDto()
         .product(new OrderProductDto()
             .productId(1L)
@@ -66,7 +67,7 @@ public class Fixture {
         .quantity(1);
   }
 
-  public static OrderLineItemDto aOrderLineItemDto2() {
+  public static OrderLineItemDto aOrderItemDto2() {
     return new OrderLineItemDto()
         .product(new OrderProductDto()
             .productId(1L)
@@ -80,15 +81,42 @@ public class Fixture {
     return new Order(
         1L,
         OrderStatus.ORDER_PLACED,
-        new Money(3500),
         new Money(43500),
-        List.of(
-            new OrderItem(1L, null, 1L, "축구공", new Money(30000), 1),
-            new OrderItem(2L, null, 2L, "호미", new Money(5000), 2)
-        ),
-        Orderer.of("소농민", "010-1234-5678", "영국 런던 대저택"),
-        Receiver.of("소농민", "010-1234-5678", "영국 런던 대저택")
+        new Money(3500),
+        aOrderItemList1(),
+        aOrderer(),
+        aReceiver()
     );
+  }
+
+  public static List<OrderItem> aOrderItemList1() {
+    List<OrderItem> orderItemList = new ArrayList<>();
+    orderItemList.add(new OrderItem(1L, null, 1L, "축구공", new Money(30000), 1));
+    orderItemList.add(new OrderItem(2L, null, 2L, "호미", new Money(5000), 2));
+
+    return orderItemList;
+  }
+
+  public static List<OrderItem> aOrderItemList2() {
+    List<OrderItem> orderItemList = new ArrayList<>();
+    orderItemList.add(new OrderItem(1L, null, 1L, "축구공", new Money(10000), 1));
+
+    return orderItemList;
+  }
+
+  public static List<OrderItem> aOrderItemList3() {
+    List<OrderItem> orderItemList = new ArrayList<>();
+    orderItemList.add(    new OrderItem(2L, null, 2L, "호미", new Money(3333), 3));
+
+    return orderItemList;
+  }
+
+  public static Receiver aReceiver() {
+    return Receiver.of("소농민", "010-1234-5678", "영국 런던 대저택");
+  }
+
+  public static Orderer aOrderer() {
+    return Orderer.of("소농민", "010-1234-5678", "영국 런던 대저택");
   }
 
   public static OrderList aOrderList() {
