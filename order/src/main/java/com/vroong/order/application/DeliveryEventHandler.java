@@ -29,7 +29,8 @@ public class DeliveryEventHandler implements EventHandler {
     DeliveryEvent deliveryEvent = null;
 
     try {
-      final String messageString = new String((byte[]) message.getPayload(), Constants.DEFAULT_CHARSET);
+      final String messageString = new String((byte[]) message.getPayload(),
+          Constants.DEFAULT_CHARSET);
       deliveryEvent = objectMapper.readValue(messageString, DeliveryEvent.class);
     } catch (JsonProcessingException e) {
       throw new RuntimeException("메시지 역직렬화를 실패했습니다: " + message);
@@ -49,7 +50,6 @@ public class DeliveryEventHandler implements EventHandler {
         order.completeDelivery();
         eventCreator.create(order.getOrderStatus().name(), new OrderEvent(order));
       }
-      case CANCELED, PREPARING -> {}
     }
   }
 }

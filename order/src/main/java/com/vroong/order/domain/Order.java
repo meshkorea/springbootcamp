@@ -115,6 +115,14 @@ public class Order extends AuditableEntity {
     this.orderStatus = OrderStatus.DELIVERY_COMPLETED;
   }
 
+  public void approvePayment() {
+    this.orderStatus = OrderStatus.PAYMENT_APPROVED;
+  }
+
+  public void rejectPayment() {
+    this.orderStatus = OrderStatus.ORDER_CANCELED;
+  }
+
   private void associateOrderItems(List<OrderItem> orderItems) {
     this.orderItems.clear();
     this.orderItems.addAll(orderItems);
