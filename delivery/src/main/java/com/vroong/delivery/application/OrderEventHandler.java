@@ -32,12 +32,8 @@ public class OrderEventHandler implements EventHandler {
         OrderMessage orderMessage = getOrderMessage(message);
 
         switch (eventType) {
-            case "PAYMENT_APPROVED":
-                createDelivery(orderMessage);
-                break;
-            case "ORDER_CANCELED":
-                cancelDelivery(orderMessage);
-                break;
+            case "PAYMENT_APPROVED" -> createDelivery(orderMessage);
+            case "ORDER_CANCELED" -> cancelDelivery(orderMessage);
         }
     }
 

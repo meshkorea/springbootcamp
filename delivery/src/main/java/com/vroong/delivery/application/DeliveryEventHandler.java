@@ -28,7 +28,6 @@ public class DeliveryEventHandler implements EventHandler {
     private final ObjectMapper objectMapper;
     private final DeliveryService deliveryService;
     private final DeliveryRepository deliveryRepository;
-    private final PersistentEventCreator eventCreator;
 
     @Override
     public void handle(Message<?> message) {
