@@ -34,7 +34,6 @@ components:
         - $ref: '#/components/messageTraits/commonHeaders'
       payload:
         $ref: '#/components/schemas/DeliveryStatusChangedPayload'
-
     Started:
       title: Delivery Started
       name: DELIVERY_STARTED

@@ -38,7 +38,7 @@ spring:
       bindings:
         messageConsumer-in-0:
           group: order-consumer-group
-          destination: local-delivery-output
+          destination: local-delivery-output, local-order-output
           binder: kafka
         messageProducer-out-0:
           destination: local-delivery-output
