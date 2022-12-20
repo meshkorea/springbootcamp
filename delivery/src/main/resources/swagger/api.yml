@@ -136,25 +136,15 @@ components:
         traceNumber:
           $ref: '#/components/schemas/TraceNumber'
         sender:
-          $ref: '#/components/schemas/Sender'
+          $ref: '#/components/schemas/UserInfo'
         receiver:
-          $ref: '#/components/schemas/Receiver'
+          $ref: '#/components/schemas/UserInfo'
         currentLocation:
           $ref: '#/components/schemas/Coordinate'
-        state:
-          $ref: '#/components/schemas/DeliveryState'
+        status:
+          $ref: '#/components/schemas/DeliveryStatus'
 
-    Sender:
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/UserName'
-        phone:
-          $ref: '#/components/schemas/Phone'
-        address:
-          $ref: '#/components/schemas/Address'
-
-    Receiver:
+    UserInfo:
       type: object
       properties:
         name:
@@ -179,7 +169,7 @@ components:
       format: uuid
       example: c9106593-2d6c-40eb-8504-66b0ef41ad2d
 
-    DeliveryState:
+    DeliveryStatus:
       enum:
         - PREPARING
         - DELIVERING
