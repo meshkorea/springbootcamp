@@ -7,9 +7,9 @@ plugins {
     id 'maven-publish'
 }
 
-version = '0.0.6-SNAPSHOT'
+version = '0.0.7-SNAPSHOT'
 group = 'com.vroong.bootcamp'
-archivesBaseName = 'prodcut-api-java-client'
+archivesBaseName = 'product-api-java-client'
 def specPath = "${parent.projectDir}/src/main/resources/swagger/api.yml"
 
 sourceCompatibility = '1.8'
