@@ -8,7 +8,7 @@ plugins {
 }
 
 version = project.version
-group = 'com.vroong.order'
+group = 'com.vroong.bootcamp'
 archivesBaseName = 'order-api-java-client'
 def specPath = "${parent.projectDir}/src/main/resources/swagger/api.yml"
 
