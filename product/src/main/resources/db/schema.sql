@@ -21,13 +21,19 @@ CREATE TABLE IF NOT EXISTS persistent_events
     KEY           IDX_STATUS_EVENTTYPE (status,event_type)*/
 );
 
-CREATE TABLE IF NOT EXISTS examples
+CREATE TABLE IF NOT EXISTS products
 (
-    id         bigint(20) NOT NULL AUTO_INCREMENT,
-    title      varchar(255) DEFAULT NULL,
-    created_at timestamp(3) NOT NULL,
-    updated_at timestamp(3) NOT NULL,
-    created_by varchar(40)  NOT NULL,
-    updated_by varchar(40)  NOT NULL,
-    PRIMARY KEY (id)
+    product_id          bigint(20) NOT NULL AUTO_INCREMENT,
+    product_name        varchar(255) NOT NULL,
+    description varchar(255) NOT NULL,
+    price       int(10) NOT NULL,
+    inventory  int(11) NOT NULL,
+    supplier varchar(255) NOT NULL,
+    product_width       int(4) NOT NULL,
+    product_height      int(4) NOT NULL,
+    product_depth       int(4) NOT NULL,
+    store_location varchar(255) NOT NULL,
+    created_at  timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  timestamp(3) NULL DEFAULT NULL,
+    PRIMARY KEY (product_id)
 );
