@@ -31,9 +31,9 @@ CREATE TABLE IF NOT EXISTS payments
     amount          decimal                       DEFAULT 0,
     status          tinyint(10) unsigned NOT NULL DEFAULT '0',
     orderId         bigint(20)           NOT NULL,
-    created_at      timestamp(3)         NOT NULL,
-    updated_at      timestamp(3)         NOT NULL,
     created_by      varchar(40)          NOT NULL,
+    created_at      timestamp(3)         NOT NULL,
     updated_by      varchar(40)          NOT NULL,
+    updated_at      timestamp(3)         NOT NULL,
     PRIMARY KEY (id)
 );

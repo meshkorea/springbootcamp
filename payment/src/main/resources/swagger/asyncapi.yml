@@ -1,0 +1,77 @@
+asyncapi: '2.5.0'
+
+info:
+  title: 'payment kafka'
+  version: 0.0.1
+
+servers:
+  local:
+    url: localhost:9092
+    description: Local development server
+    protocol: kafka-secure
+
+defaultContentType: application/json
+
+channels:
+  local-payment-output:
+    description: Payment 서비스에서 발행되는 메시지를 위한 토픽
+    publish:
+      message:
+        oneOf:
+          - $ref: '#/components/messages/PaymentApproved'
+          - $ref: '#/components/messages/PaymentRejected'
+          - $ref: '#/components/messages/PaymentCanceled'
+          - $ref: '#/components/messages/PaymentCancelFailed'
+
+components:
+  messages:
+    PaymentApproved:
+      title: Payment approved
+      name: PAYMENT_APPROVED
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Payment'
+    PaymentRejected:
+      title: Payment rejected
+      name: PAYMENT_REJECTED
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Payment'
+    PaymentCanceled:
+      title: Payment canceled
+      name: PAYMENT_CANCELED
+      contentType: application/json
+      traits:
+        - $ref: '#/components/messageTraits/commonHeaders'
+      payload:
+        $ref: 'api.yml#/components/schemas/Payment'
+
+  securitySchemes:
+    saslPlain:
+      type: plain
+      description: Provide your username and password for SASL/PLAIN authentication
+
+  messageTraits:
+    commonHeaders:
+      headers:
+        type: object
+        properties:
+          messageId:
+            type: string
+            format: uuid
+          messageType:
+            type: string
+          messageVersion:
+            type: string
+            format: number
+          messageSource:
+            type: string
+          resource:
+            type: string
+          partitionKey:
+            type: string
+            format: uuid

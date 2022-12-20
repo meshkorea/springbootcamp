@@ -49,10 +49,10 @@ class PaymentApiDelegateImplTest {
   }
 
   @Test
-  void getPayment() throws Exception {
+  void getPaymentList() throws Exception {
     final ResultActions res =
         mvc.perform(
-                get("/api/payments/{paymentId}", 1L)
+                get("/api/payments/{orderId}", 1L)
                     .accept(Constants.V1_MEDIA_TYPE)
                     .characterEncoding("utf-8"))
             .andDo(print());

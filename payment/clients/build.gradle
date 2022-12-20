@@ -8,7 +8,7 @@ plugins {
 }
 
 version = project.version
-group = 'com.vroong.payment'
+group = 'com.vroong.bootcamp'
 archivesBaseName = 'payment-api-java-client'
 def specPath = "${parent.projectDir}/src/main/resources/swagger/api.yml"
 
