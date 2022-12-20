@@ -10,7 +10,7 @@ plugins {
     id 'io.freefair.lombok'
 }
 
-version = '0.0.1-SNAPSHOT'
+version = '0.0.6-SNAPSHOT'
 
 dependencies {
     // 의존성 관리
