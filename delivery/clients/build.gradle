@@ -8,7 +8,7 @@ plugins {
 }
 
 version = project.version
-group = 'com.vroong.delivery'
+group = 'com.vroong.bootcamp'
 archivesBaseName = 'delivery-api-java-client'
 def specPath = "${parent.projectDir}/src/main/resources/swagger/api.yml"
 
