@@ -13,9 +13,27 @@ public class ApplicationProperties {
 
   private Scheduler scheduler = new Scheduler();
 
+  private Kafka kafka = new Kafka();
+
   @Getter
   @Setter
-  class Scheduler {
+  public static class Scheduler {
+
     private Boolean enabled;
+  }
+
+  @Getter
+  @Setter
+  public static class Kafka {
+
+    private Topic topic;
+
+    @Getter
+    @Setter
+    public static class Topic {
+
+      private String delivery;
+      private String payment;
+    }
   }
 }

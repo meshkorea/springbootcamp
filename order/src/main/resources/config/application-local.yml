@@ -5,7 +5,24 @@ spring:
   jpa:
     show-sql: true
     properties.hibernate.format_sql: true
+    hibernate:
+      ddl-auto: create
+  cloud:
+    stream:
+      kafka:
+        binder:
+          headers: [ "messageId", "messageType", "messageVersion", "messageSource" ]
+          auto-create-topics: false
+      bindings:
+        messageConsumer-in-0:
+          destination: local-delivery-output,local-payment-output
+        messageProducer-out-0:
+          destination: local-order-output
 
 application:
   scheduler:
     enabled: true
+  kafka:
+    topic:
+      delivery: local-delivery-output
+      payment: local-payment-output

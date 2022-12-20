@@ -2,7 +2,7 @@ asyncapi: '2.5.0'
 
 info:
   title: Order Application Async API Spec
-  version: 0.0.1
+  version: 0.0.2
 
 servers:
   local:
@@ -26,22 +26,6 @@ channels:
           - $ref: '#/components/messages/DeliveryCompleted'
           - $ref: '#/components/messages/Canceled'
 
-  local-delivery-out:
-    description: Order 서비스에서 소비하는 Delivery 서비스 도메인 메시지를 위한 토픽
-    subscribe:
-      message:
-        oneOf:
-          - $ref: '#/components/messages/DeliveryStartedReceive'
-          - $ref: '#/components/messages/DeliveryCompletedReceive'
-
-  local-payment-out:
-    description: Order 서비스에서 소비하는 Payment 서비스 도메인 메시지를 위한 토픽
-    subscribe:
-      message:
-        oneOf:
-          - $ref: '#/components/messages/PaymentApprovedReceive'
-          - $ref: '#/components/messages/PaymentRejectedReceive'
-
 components:
   messages:
     OrderPlaced:
@@ -52,7 +36,7 @@ components:
       traits:
         - $ref: '#/components/messageTraits/commonHeaders'
       payload:
-        $ref: 'api.yml#/components/schemas/Order'
+        $ref: '#/components/schemas/OrderMessage'
 
     PaymentApproved:
       title: Payment Approved
@@ -62,7 +46,7 @@ components:
       traits:
         - $ref: '#/components/messageTraits/commonHeaders'
       payload:
-        $ref: 'api.yml#/components/schemas/Order'
+        $ref: '#/components/schemas/OrderMessage'
 
     DeliveryStarted:
       title: Delivery Started
@@ -72,7 +56,7 @@ components:
       traits:
         - $ref: '#/components/messageTraits/commonHeaders'
       payload:
-        $ref: 'api.yml#/components/schemas/Order'
+        $ref: '#/components/schemas/OrderMessage'
 
     DeliveryCompleted:
       title: Delivery Completed
@@ -82,66 +66,28 @@ components:
       traits:
         - $ref: '#/components/messageTraits/commonHeaders'
       payload:
-        $ref: 'api.yml#/components/schemas/Order'
+        $ref: '#/components/schemas/OrderMessage'
 
     Canceled:
-      title: Canceled
-      name: CANCELED
+      title: Order Canceled
+      name: ORDER_CANCELED
       summary: ''
       contentType: application/json
       traits:
         - $ref: '#/components/messageTraits/commonHeaders'
       payload:
-        $ref: 'api.yml#/components/schemas/Order'
-
-    DeliveryStartedReceive:
-      title: Delivery Started Receive
-      name: DELIVERY_STARTED
-      summary: ''
-      contentType: application/json
-      traits:
-        - $ref: '#/components/messageTraits/commonHeaders'
-      payload:
-        $ref: '#/components/schemas/example'
-
-    DeliveryCompletedReceive:
-      title: Delivery Completed Receive
-      name: DELIVERY_COMPLETED
-      summary: ''
-      contentType: application/json
-      traits:
-        - $ref: '#/components/messageTraits/commonHeaders'
-      payload:
-        $ref: '#/components/schemas/example'
-
-    PaymentApprovedReceive:
-      title: Payment Approved Receive
-      name: PAYMENT_APPROVED
-      summary: ''
-      contentType: application/json
-      traits:
-        - $ref: '#/components/messageTraits/commonHeaders'
-      payload:
-        $ref: '#/components/schemas/example'
-
-    PaymentRejectedReceive:
-      title: Payment Rejected Receive
-      name: PAYMENT_REJECTED
-      summary: ''
-      contentType: application/json
-      traits:
-        - $ref: '#/components/messageTraits/commonHeaders'
-      payload:
-        $ref: '#/components/schemas/example'
+        $ref: '#/components/schemas/OrderMessage'
 
   schemas:
-    example:
+    OrderMessage:
       type: object
       properties:
         orderId:
           type: integer
           format: int64
           example: 1
+        orderState:
+          $ref: 'api.yml#/components/schemas/OrderState'
 
 #  securitySchemes:
 #    saslPlain:

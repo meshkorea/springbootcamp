@@ -17,11 +17,11 @@ public class SearchCriteria {
 
   public enum Operator {
     IN,
-        GTE,
-        GT,
-        LTE,
-        LT,
-        LIKE,
-        EQ
+    GTE,
+    GT,
+    LTE,
+    LT,
+    LIKE,
+    EQ
   }
 }
