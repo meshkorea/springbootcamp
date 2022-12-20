@@ -1,8 +1,9 @@
 package com.vroong.order.application;
 
+import static com.vroong.order.config.Constants.DELIVERY_PROJECT_NAME;
+import static com.vroong.order.config.Constants.PAYMENT_PROJECT_NAME;
+
 import com.vroong.order.application.port.in.EventHandler;
-import com.vroong.order.config.ApplicationProperties;
-import com.vroong.order.config.ApplicationProperties.Kafka.Topic;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,28 +12,22 @@ public class EventHandlerFactory {
   private final EventHandler idempotentDeliveryEventHandler;
   private final EventHandler idempotentPaymentEventHandler;
 
-  private final ApplicationProperties properties;
-
   public EventHandlerFactory(
       EventHandler idempotentDeliveryEventHandler,
-      EventHandler idempotentPaymentEventHandler,
-      ApplicationProperties properties
+      EventHandler idempotentPaymentEventHandler
   ) {
     this.idempotentDeliveryEventHandler = idempotentDeliveryEventHandler;
     this.idempotentPaymentEventHandler = idempotentPaymentEventHandler;
-    this.properties = properties;
   }
 
-  public EventHandler createFor(String topicName) {
-    final Topic topic = properties.getKafka().getTopic();
-
-    if (topicName.equals(topic.getDelivery())) {
+  public EventHandler createFor(String source) {
+    if (source.equals(DELIVERY_PROJECT_NAME)) {
       return idempotentDeliveryEventHandler;
     }
-    if (topicName.equals(topic.getPayment())) {
+    if (source.equals(PAYMENT_PROJECT_NAME)) {
       return idempotentPaymentEventHandler;
     }
 
-    throw new IllegalArgumentException("등록되지 않은 토픽입니다: " + topicName);
+    throw new IllegalArgumentException("등록되지 않은 서비스입니다: " + source);
   }
 }

@@ -33,6 +33,9 @@ public class Constants {
   public static final String PRODUCER_CHANNEL = "messageProducer-out-0";
   public static final String CONSUMER_CHANNEL = "messageConsumer-in-0";
 
+  public static final String PAYMENT_PROJECT_NAME = "payment";
+  public static final String DELIVERY_PROJECT_NAME = "delivery";
+
   /**
    * MessageSchema spec: @see https://wiki.mm.meshkorea.net/display/MES/Message+Schema
    */
