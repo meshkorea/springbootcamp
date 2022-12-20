@@ -6,7 +6,6 @@ import com.vroong.order.application.port.out.message.OrderEvent;
 import com.vroong.order.domain.Order;
 import com.vroong.order.domain.OrderItem;
 import com.vroong.order.domain.OrderList;
-import com.vroong.order.domain.OrderStatus;
 import com.vroong.order.domain.Orderer;
 import com.vroong.order.domain.Receiver;
 import com.vroong.order.support.SecurityUtils;
@@ -32,7 +31,7 @@ public class OrderService implements OrderUsecase {
     final Order newOrder = Order.placeOrder(orderer, receiver, orderItems);
 
     orderRepository.save(newOrder);
-    eventCreator.create(OrderStatus.ORDER_PLACED.name(), new OrderEvent(newOrder));
+    eventCreator.create(newOrder.getOrderStatus().name(), new OrderEvent(newOrder));
 
     return newOrder;
   }
@@ -75,7 +74,7 @@ public class OrderService implements OrderUsecase {
 
     order.updateOrder(receiver, orderItems);
 
-    eventCreator.create(OrderStatus.ORDER_UPDATED.name(), new OrderEvent(order));
+    eventCreator.create(order.getOrderStatus().name(), new OrderEvent(order));
   }
 
   @Override
@@ -89,11 +88,11 @@ public class OrderService implements OrderUsecase {
     order.cancelOrder();
     orderRepository.save(order);
 
-    eventCreator.create(OrderStatus.ORDER_CANCELED.name(), new OrderEvent(order));
+    eventCreator.create(order.getOrderStatus().name(), new OrderEvent(order));
   }
 
   private String getCurrentUsername() {
     return SecurityUtils.getCurrentUserLogin()
-        .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다.."));
+        .orElseThrow(() -> new IllegalArgumentException("사용자 정보가 존재하지 않습니다."));
   }
 }
