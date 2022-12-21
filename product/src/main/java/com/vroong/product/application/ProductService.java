@@ -1,6 +1,6 @@
 package com.vroong.product.application;
 
-import com.vroong.product.application.port.in.ProductNotFoundException;
+import com.vroong.product.application.exception.ProductNotFoundException;
 import com.vroong.product.application.port.out.ProductRepository;
 import com.vroong.product.domain.Product;
 import com.vroong.product.domain.Size;
