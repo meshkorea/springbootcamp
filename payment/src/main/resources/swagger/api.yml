@@ -39,7 +39,7 @@ paths:
       tags:
         - Payment
       parameters:
-        - $ref: '#/components/parameters/PaymentIdParam'
+        - $ref: '#/components/parameters/OrderIdParam'
       responses:
         '200':
           description: Ok
@@ -210,9 +210,9 @@ components:
         format: int32
         default: 10
 
-    PaymentIdParam:
+    OrderIdParam:
       in: path
-      name: paymentId
+      name: orderId
       required: true
       schema:
         $ref: '#/components/schemas/LongId'
