@@ -10,6 +10,9 @@ import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import com.vroong.order.WithMockJwt;
+import com.vroong.order.WithMockJwtSecurityContextFactory.AuthoritiesType;
+import com.vroong.order.WithMockJwtSecurityContextFactory.ClientIdType;
 import com.vroong.order.adapter.in.rest.Fixture;
 import com.vroong.order.application.port.out.OrderRepository;
 import com.vroong.order.domain.Order;
@@ -27,7 +30,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @DisplayName("OrderService 테스트")
@@ -57,11 +59,11 @@ class OrderServiceTest {
   }
 
   @Test
-  @WithAnonymousUser
+  @WithMockJwt
   void 주문_목록을_조회한다() {
     int size = 10;
     int page = 0;
-    String username = "anonymous";
+    String username = "user";
     Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
     Page<Order> orderPage = new PageImpl<>(List.of(Fixture.aOrder()), pageable, 1);
     given(orderRepository.findAllByCreatedBy(username, pageable)).willReturn(orderPage);
@@ -75,10 +77,10 @@ class OrderServiceTest {
   }
 
   @Test
-  @WithAnonymousUser
+  @WithMockJwt
   void 주문을_조회한다() {
     long orderId = 1L;
-    String username = "anonymous";
+    String username = "user";
     Order orderFixture = Fixture.aOrder();
     orderFixture.setCreatedBy(username);
     given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
@@ -90,12 +92,12 @@ class OrderServiceTest {
   }
 
   @Test
-  @WithAnonymousUser
+  @WithMockJwt
   void 자신의_주문만_조회할_수_있다() {
     long orderId = 1L;
-    String username = "other_user";
+    String resourceUsername = "other_user";
     Order orderFixture = Fixture.aOrder();
-    orderFixture.setCreatedBy(username);
+    orderFixture.setCreatedBy(resourceUsername);
     given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
 
     assertThatThrownBy(() -> orderService.getOrder(orderId))
@@ -103,10 +105,25 @@ class OrderServiceTest {
   }
 
   @Test
-  @WithAnonymousUser
+  @WithMockJwt(username = "system", clientId = ClientIdType.INTERNAL, authorities = AuthoritiesType.ROLE_ADMIN)
+  void 내부_서비스는_주문을_조회할_수_있다() {
+    long orderId = 1L;
+    String resourceUsername = "other_user";
+    Order orderFixture = Fixture.aOrder();
+    orderFixture.setCreatedBy(resourceUsername);
+    given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
+
+    Order order = orderService.getOrder(orderId);
+
+    verify(orderRepository, times(1)).getReferenceById(orderId);
+    assertThat(order.getId()).isNotNull();
+  }
+
+  @Test
+  @WithMockJwt
   void 주문을_변경한다() {
     long orderId = 1L;
-    String username = "anonymous";
+    String username = "user";
     Order orderFixture = Fixture.aOrder();
     orderFixture.setCreatedBy(username);
     Money totalPriceBefore = orderFixture.getTotalPrice();
@@ -121,12 +138,12 @@ class OrderServiceTest {
   }
 
   @Test
-  @WithAnonymousUser
+  @WithMockJwt
   void 자신의_주문만_변경할_수_있다() {
     long orderId = 1L;
-    String username = "other_user";
+    String resourceUsername = "other_user";
     Order orderFixture = Fixture.aOrder();
-    orderFixture.setCreatedBy(username);
+    orderFixture.setCreatedBy(resourceUsername);
     given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
 
     assertThatThrownBy(() -> orderService.updateOrder(orderId, Fixture.aReceiver(), Fixture.aOrderItemList2()))
@@ -134,10 +151,10 @@ class OrderServiceTest {
   }
 
   @Test
-  @WithAnonymousUser
+  @WithMockJwt
   void 주문을_취소한다() {
     long orderId = 1L;
-    String username = "anonymous";
+    String username = "user";
     Order orderFixture = Fixture.aOrder();
     orderFixture.setCreatedBy(username);
     given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
@@ -150,12 +167,12 @@ class OrderServiceTest {
   }
 
   @Test
-  @WithAnonymousUser
+  @WithMockJwt
   void 자신의_주문만_취소할_수_있다() {
     long orderId = 1L;
-    String username = "other_user";
+    String resourceUsername = "other_user";
     Order orderFixture = Fixture.aOrder();
-    orderFixture.setCreatedBy(username);
+    orderFixture.setCreatedBy(resourceUsername);
     given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
 
     assertThatThrownBy(() -> orderService.cancelOrder(orderId))
