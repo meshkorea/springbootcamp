@@ -1,4 +1,4 @@
-package com.vroong.product.adapter.in.rest.error;
+package com.vroong.product.application.port.in;
 
 public class ProductNotFoundException extends RuntimeException {
 
