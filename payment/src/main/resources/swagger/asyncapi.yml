@@ -21,7 +21,6 @@ channels:
           - $ref: '#/components/messages/PaymentApproved'
           - $ref: '#/components/messages/PaymentRejected'
           - $ref: '#/components/messages/PaymentCanceled'
-          - $ref: '#/components/messages/PaymentCancelFailed'
 
 components:
   messages:
