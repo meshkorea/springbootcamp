@@ -82,7 +82,7 @@ public class Product {
   }
 
   public void decreaseInventory(Integer quantity) {
-    if (inventory > quantity) {
+    if (inventory >= quantity) {
       inventory -= quantity;
     } else {
       throw new NotInventoryEnoughException();

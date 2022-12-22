@@ -1,5 +1,10 @@
 package com.vroong.product.adapter.in.rest;
 
+import com.vroong.order.rest.Order;
+import com.vroong.order.rest.OrderLine;
+import com.vroong.order.rest.OrderLineItem;
+import com.vroong.order.rest.OrderProduct;
+import com.vroong.product.application.port.in.OrderEvent;
 import com.vroong.product.domain.Product;
 import com.vroong.product.domain.Size;
 import com.vroong.product.rest.PageDto;
@@ -48,5 +53,26 @@ public class Fixtures {
                 .size(10)
                 .totalElements(1L)
                 .totalPages(1));
+    }
+
+    public static Order Order(Long productId, Integer quantity) {
+        OrderProduct orderProduct = new OrderProduct();
+        orderProduct.setProductId(productId == null ? 1L : productId);
+
+        OrderLineItem orderLineItem = new OrderLineItem();
+        orderLineItem.setProduct(orderProduct);
+        orderLineItem.setQuantity(quantity == null ? 1 : quantity);
+
+        OrderLine orderLine = new OrderLine();
+        orderLine.addDataItem(orderLineItem);
+
+        Order order = new Order();
+        order.setOrderLine(orderLine);
+
+        return order;
+    }
+
+    public static OrderEvent anOrderEvent() {
+        return new OrderEvent(1L, "ORDER_CREATED");
     }
 }
