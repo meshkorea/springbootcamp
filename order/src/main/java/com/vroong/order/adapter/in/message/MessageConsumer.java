@@ -1,6 +1,7 @@
 package com.vroong.order.adapter.in.message;
 
 import com.vroong.order.application.EventHandlerFactory;
+import com.vroong.order.config.Constants.MessageKey;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +19,8 @@ public class MessageConsumer implements Consumer<Message<?>> {
   public void accept(Message<?> message) {
     log.info("A message received: {}", new String((byte[]) message.getPayload()));
 
-    final String topicName = String.valueOf(message.getHeaders().get("kafka_receivedTopic"));
+    final String source = String.valueOf(message.getHeaders().get(MessageKey.SOURCE));
 
-    eventHandlerFactory.createFor(topicName).handle(message);
+    eventHandlerFactory.createFor(source).handle(message);
   }
 }

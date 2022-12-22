@@ -62,4 +62,16 @@ public class SecurityUtils {
             .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authority)))
         .orElse(false);
   }
+
+  public static boolean isClientIdInternal() {
+    final SecurityContext securityContext = SecurityContextHolder.getContext();
+    final Object principal = securityContext.getAuthentication().getPrincipal();
+    if (principal instanceof Jwt jwt) {
+      final String clientId = String.valueOf(jwt.getClaims().get("client_id"));
+
+      return clientId.equals("internal");
+    }
+
+    return false;
+  }
 }

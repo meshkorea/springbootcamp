@@ -57,7 +57,7 @@ public class OrderService implements OrderUsecase {
   @Transactional(readOnly = true)
   public Order getOrder(Long orderId) {
     final Order order = orderRepository.getReferenceById(orderId);
-    if (!getCurrentUsername().equals(order.getCreatedBy())) {
+    if (!SecurityUtils.isClientIdInternal() && !getCurrentUsername().equals(order.getCreatedBy())) {
       throw new IllegalArgumentException("자신의 주문만 조회할 수 있습니다.");
     }
 
