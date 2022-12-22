@@ -26,6 +26,75 @@ spring:
             token-uri: http://localhost:9999/oauth/token
             jwk-set-uri: http://localhost:9999/.well-known/jwks.json
 
+  cloud:
+    gateway:
+      default-filters:
+        - TokenRelay
+      routes:
+#       제품(목록)을 조회한다
+        - id: listProducts
+          uri: http://localhost:10002
+          predicates:
+            - Path=/products/**
+            - Method=GET
+          filters:
+            - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
+
+#       주문한다
+        - id: createOrder
+          uri: http://localhost:10001
+          predicates:
+            - Path=/bootcamp/orders
+            - Method=POST
+          filters:
+            - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
+
+#       체크아웃한다
+        - id: checkout
+          uri: http://localhost:10004
+          predicates:
+            - Path=/bootcamp/payments
+            - Method=POST
+          filters:
+            - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
+            - RedirectTo=302, http://localhost:8080/orders
+
+#       주문을 조회한다, 단건 조회는 order api와 payment api를 aggregate
+        - id: getOrderList
+          uri: http://localhost:10001
+          predicates:
+            - Path=/bootcamp/orders/**
+            - Method=GET
+          filters:
+            - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
+
+#       주문을 변경한다
+        - id: updateOrder
+          uri: http://localhost:10001
+          predicates:
+            - Path=/bootcamp/orders/**
+            - Method=POST
+          filters:
+            - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
+
+#       주문을 취소한다
+        - id: cancelOrder
+          uri: http://localhost:10001
+          predicates:
+            - Path=/bootcamp/orders/**
+            - Method=DELETE
+          filters:
+            - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
+
+#       배송 상태를 조회한다
+        - id: getDelivery
+          uri: http://localhost:10003
+          predicates:
+            - Path=/bootcamp/deliveries/**
+            - Method=GET
+          filters:
+            - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
+
 management:
   endpoints:
     web:
