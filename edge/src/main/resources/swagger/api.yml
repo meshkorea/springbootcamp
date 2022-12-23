@@ -8,7 +8,183 @@ servers:
   - url: http://localhost:8080
     description: Development server
 
-paths: {}
+paths:
+  /products:
+    get:
+      description: 상품 목록 조회
+      security: [ ]
+      operationId: listProducts
+      tags:
+        - Product
+      parameters:
+        - $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/product/src/main/resources/swagger/api.yml#/components/parameters/SearchWordParam'
+        - $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/product/src/main/resources/swagger/api.yml#/components/parameters/SizeParam'
+        - $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/product/src/main/resources/swagger/api.yml#/components/parameters/PageParam'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/product/src/main/resources/swagger/api.yml#/components/schemas/ProductList'
+        '401':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/product/src/main/resources/swagger/api.yml#/components/responses/Unauthorized'
+        '500':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/product/src/main/resources/swagger/api.yml#/components/responses/ServerError'
+
+  /orders:
+    post:
+      description: 주문한다.
+      operationId: createOrder
+      tags:
+        - Order
+      requestBody:
+        description: createOrder model
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/schemas/Order'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/schemas/Order'
+        '400':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/BadRequest'
+        '401':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/Unauthorized'
+        '403':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/Forbidden'
+        '500':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/ServerError'
+
+    get:
+      description: 주문 목록을 조회한다.
+      operationId: getOrderList
+      tags:
+        - Order
+      parameters:
+        - $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/parameters/PageParam'
+        - $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/parameters/SizeParam'
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/schemas/OrderList'
+        '400':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/BadRequest'
+        '401':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/Unauthorized'
+        '403':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/Forbidden'
+        '500':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/ServerError'
+
+  /orders/{orderId}:
+    parameters:
+      - $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/parameters/OrderIdParam'
+
+    patch:
+      description: 주문을 수정한다.
+      operationId: updateOrder
+      tags:
+        - Order
+      requestBody:
+        description: updateOrder model
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/schemas/Order'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/BadRequest'
+        '401':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/Unauthorized'
+        '403':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/Forbidden'
+        '404':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/NotFound'
+        '500':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/ServerError'
+
+    delete:
+      description: 주문을 취소한다.
+      operationId: cancelOrder
+      tags:
+        - Order
+      responses:
+        '200':
+          description: Ok
+        '400':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/BadRequest'
+        '401':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/Unauthorized'
+        '403':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/Forbidden'
+        '404':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/NotFound'
+        '500':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/order/src/main/resources/swagger/api.yml#/components/responses/ServerError'
+
+  /payments:
+    post:
+      description: Checkout
+      operationId: checkout
+      tags:
+        - Payment
+      requestBody:
+        content:
+          application/vnd.vroong.private.v1+json:
+            schema:
+              $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/payment/src/main/resources/swagger/api.yml#/components/schemas/Payment'
+      responses:
+        '201':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/payment/src/main/resources/swagger/api.yml#/components/responses/Created'
+        '400':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/payment/src/main/resources/swagger/api.yml#/components/responses/BadRequest'
+        '401':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/payment/src/main/resources/swagger/api.yml#/components/responses/Unauthorized'
+        '403':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/payment/src/main/resources/swagger/api.yml#/components/responses/Forbidden'
+        '500':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/payment/src/main/resources/swagger/api.yml#/components/responses/ServerError'
+
+  /deliveries/{deliveryId}:
+    get:
+      description: 배송 정보 조회
+      operationId: getDelivery
+      tags:
+        - Delivery
+      parameters:
+        - in: path
+          name: deliveryId
+          schema:
+            $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/delivery/src/main/resources/swagger/api.yml#/components/schemas/LongId'
+          required: true
+          description: delivery id
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/vnd.vroong.private.v1+json:
+              schema:
+                $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/delivery/src/main/resources/swagger/api.yml#/components/schemas/Delivery'
+        '400':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/delivery/src/main/resources/swagger/api.yml#/components/responses/BadRequest'
+        '401':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/delivery/src/main/resources/swagger/api.yml#/components/responses/Unauthorized'
+        '403':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/delivery/src/main/resources/swagger/api.yml#/components/responses/Forbidden'
+        '404':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/delivery/src/main/resources/swagger/api.yml#/components/responses/NotFound'
+        '500':
+          $ref: 'https://raw.githubusercontent.com/meshkorea/springbootcamp/master/delivery/src/main/resources/swagger/api.yml#/components/responses/ServerError'
 
 components:
   schemas: {}
