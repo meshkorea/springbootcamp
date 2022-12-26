@@ -35,7 +35,7 @@ spring:
         - id: listProducts
           uri: http://localhost:10002
           predicates:
-            - Path=/products/**
+            - Path=/bootcamp/products/**
             - Method=GET
           filters:
             - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}

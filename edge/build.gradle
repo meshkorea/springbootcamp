@@ -12,6 +12,9 @@ version = '0.0.1-SNAPSHOT'
 
 dependencies {
     implementation project(":shared")
+    implementation 'com.vroong.bootcamp:payment-api-java-client:0.0.1-SNAPSHOT'
+    implementation 'com.vroong.bootcamp:order-api-java-client:0.0.1-SNAPSHOT'
+
     implementation 'org.springframework.boot:spring-boot-starter'
 
     // 의존성 관리
