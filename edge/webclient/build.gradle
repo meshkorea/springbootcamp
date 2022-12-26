@@ -8,7 +8,7 @@ plugins {
 }
 
 version = project.version
-group = 'com.vroong.edge'
+group = 'com.vroong.bootcamp'
 archivesBaseName = 'edge-api-webclient-client'
 def specPath = "${parent.projectDir}/src/main/resources/swagger/api.yml"
 

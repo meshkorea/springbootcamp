@@ -144,7 +144,7 @@ sourceSets {
     }
 }
 
-compileJava.dependsOn('openApiGenerate')
+//compileJava.dependsOn('openApiGenerate')
 
 springBoot {
     // Execution failed for task ':edge:bootJarMainClassName': Unable to find a single main class from the following candidates
