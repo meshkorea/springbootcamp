@@ -10,6 +10,20 @@ plugins {
     id 'io.freefair.lombok'
 }
 
+repositories {
+    mavenLocal()
+    maven { url "https://repo.osgeo.org/repository/release/" }
+    maven {
+        url "https://nexus.mm.meshkorea.net/repository/maven-public/"
+
+        credentials {
+            username repoUser
+            password repoPass
+        }
+    }
+    mavenCentral()
+}
+
 version = '0.0.1-SNAPSHOT'
 
 dependencies {
@@ -77,6 +91,9 @@ dependencies {
     annotationProcessor 'org.hibernate:hibernate-jpamodelgen'
     implementation 'mysql:mysql-connector-java'
     testImplementation 'com.h2database:h2'
+
+    implementation 'com.vroong.bootcamp:order-api-java-client:0.0.1-SNAPSHOT'
+    implementation 'org.mock-server:mockserver-netty:5.14.0'
 }
 
 compileJava {
