@@ -54,7 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PersistentEventPublisher {
 
   private final PersistentEventRepository repository;
-  private final MessageProducer producer;
+  private final StreamBridgeMessageProducer producer;
 
   @Transactional
   @Scheduled(fixedDelayString = "PT50S", initialDelayString = "PT10S")
