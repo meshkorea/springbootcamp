@@ -41,9 +41,10 @@ class PaymentServiceTest {
     new MockServerClient("localhost", 65_535)
         .when(request().withMethod("POST").withPath("/checkout"))
         .respond(
-            response()
+            request -> response()
                 .withHeader(new Header("Content-Type", "application/json"))
-                .withBody(mapper.writeValueAsString(Fixtures.aRandomCheckoutPaymentResponse())));
+                .withBody(mapper.writeValueAsString(Fixtures.aRandomCheckoutPaymentResponse()))
+        );
 
     new MockServerClient("localhost", 65_535)
         .when(request().withMethod("POST").withPath("/cancel"))
