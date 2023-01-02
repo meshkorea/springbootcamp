@@ -8,7 +8,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class ApiConfiguration {
 
-
   @Bean
   public WebClient orderClient() {
     return WebClient.builder()

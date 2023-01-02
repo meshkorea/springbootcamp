@@ -5,7 +5,6 @@ import static com.vroong.edge.support.SecurityUtils.getBearerToken;
 import com.vroong.edge.application.OrderClient;
 import com.vroong.order.rest.Order;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -21,7 +20,7 @@ public class OrderWebClient implements OrderClient {
     return getBearerToken()
         .flatMap(jwt -> orderClient.get()
             .uri(uriBuilder -> uriBuilder.path("/api/orders/{orderId}").build(orderId))
-            .header(HttpHeaders.AUTHORIZATION, jwt)
+            .headers(h -> h.setBearerAuth(jwt))
             .retrieve()
             .bodyToMono(Order.class)
         );

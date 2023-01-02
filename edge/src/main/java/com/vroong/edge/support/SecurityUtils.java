@@ -10,6 +10,6 @@ public class SecurityUtils {
     return ReactiveSecurityContextHolder.getContext()
         .map(securityContext -> securityContext.getAuthentication().getPrincipal())
         .cast(Jwt.class)
-        .map(jwt -> "Bearer " + jwt.getTokenValue());
+        .map(jwt -> jwt.getTokenValue());
   }
 }

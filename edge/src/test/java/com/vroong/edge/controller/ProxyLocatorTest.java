@@ -16,6 +16,7 @@ import com.github.tomakehurst.wiremock.WireMockServer;
 import com.vroong.edge.EdgeTestConfiguration;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
@@ -30,6 +31,7 @@ import reactor.core.publisher.Mono;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = EdgeTestConfiguration.class)
+@DisplayName("프록시 테스트")
 class ProxyLocatorTest {
 
   @Autowired
@@ -42,7 +44,7 @@ class ProxyLocatorTest {
 
   @Test
   @WithMockUser
-  void 제품_목록_조회_프록시() {
+  void 제품_목록_조회() {
     ResponseSpec res = webTestClient
         .get()
         .uri("/bootcamp/products")
@@ -54,7 +56,7 @@ class ProxyLocatorTest {
 
   @Test
   @WithMockUser
-  void 주문_생성_프록시() {
+  void 주문_생성() {
     ResponseSpec res = webTestClient
         .post()
         .uri("/bootcamp/orders")
@@ -67,7 +69,7 @@ class ProxyLocatorTest {
 
   @Test
   @WithMockUser
-  void 체크아웃_프록시() {
+  void 체크아웃() {
     ResponseSpec res = webTestClient
         .post()
         .uri("/bootcamp/payments")
@@ -80,7 +82,7 @@ class ProxyLocatorTest {
 
   @Test
   @WithMockUser
-  void 주문_목록_조회_프록시() {
+  void 주문_목록_조회() {
     ResponseSpec res = webTestClient
         .get()
         .uri("/bootcamp/orders")
@@ -92,7 +94,7 @@ class ProxyLocatorTest {
 
   @Test
   @WithMockUser
-  void 주문_변경_프록시() {
+  void 주문_변경() {
     ResponseSpec res = webTestClient
         .patch()
         .uri("/bootcamp/orders/1")
@@ -105,7 +107,7 @@ class ProxyLocatorTest {
 
   @Test
   @WithMockUser
-  void 주문_취소_프록시() {
+  void 주문_취소() {
     ResponseSpec res = webTestClient
         .delete()
         .uri("/bootcamp/orders/1")
@@ -117,7 +119,7 @@ class ProxyLocatorTest {
 
   @Test
   @WithMockUser
-  void 배송_상태_조회_프록시() {
+  void 배송_상태_조회() {
     ResponseSpec res = webTestClient
         .get()
         .uri("/bootcamp/deliveries/1")
