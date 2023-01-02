@@ -1,0 +1,36 @@
+{
+  "orderId": 1,
+  "orderer": {
+    "name": "소농민",
+    "phoneNumber": "010-0000-0000",
+    "address": "영국 런던 어딘가"
+  },
+  "receiver": {
+    "name": "박지성",
+    "phoneNumber": "010-0000-0001",
+    "address": "영국 런던 어딘가"
+  },
+  "orderState": "ORDER_PLACED",
+  "orderLine": {
+    "data": [
+      {
+        "product": {
+          "productId": 1,
+          "name": "축구공",
+          "price": 30000
+        },
+        "quantity": 2
+      },
+      {
+        "product": {
+          "productId": 1,
+          "name": "호미",
+          "price": 5000
+        },
+        "quantity": 3
+      }
+    ]
+  },
+  "deliveryFee": 3500,
+  "totalPrice": 78500
+}

@@ -33,7 +33,7 @@ public class SecurityConfiguration {
         .authorizeExchange(spec -> {
           spec.pathMatchers("/management/health", "/management/health/**", "/management/info").permitAll()
               .pathMatchers("/management/**").authenticated()
-              .pathMatchers("/bootcamp/**").authenticated()
+              .pathMatchers("/bootcamp/**").permitAll()
               .anyExchange().authenticated();
         })
         .oauth2ResourceServer(ServerHttpSecurity.OAuth2ResourceServerSpec::jwt)

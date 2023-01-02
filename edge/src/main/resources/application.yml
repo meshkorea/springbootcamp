@@ -62,7 +62,7 @@ spring:
             - Method=POST
           filters:
             - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
-            - RedirectTo=302, http://localhost:8080/orders
+#            - RedirectTo=302, http://localhost:8080/bootcamp/orders?size=10&page=0
 
 #       주문을 조회한다, 단건 조회는 order api와 payment api를 aggregate
         - id: getOrderList
@@ -78,7 +78,7 @@ spring:
           uri: http://localhost:10001
           predicates:
             - Path=/bootcamp/orders/**
-            - Method=POST
+            - Method=PATCH
           filters:
             - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
 
