@@ -1,5 +1,5 @@
 package com.vroong.edge.controller;
 
-class OrderPaymentControllerTest {
+class OrderDetailControllerTest {
 
 }
