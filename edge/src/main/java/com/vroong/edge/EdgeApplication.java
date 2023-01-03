@@ -10,7 +10,10 @@ import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.info.GitProperties;
+import org.springframework.boot.web.embedded.netty.NettyReactiveWebServerFactory;
+import org.springframework.boot.web.reactive.server.ReactiveWebServerFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class, ErrorMvcAutoConfiguration.class})
 @EnableConfigurationProperties({OAuth2ClientProperties.class})
@@ -47,5 +50,10 @@ public class EdgeApplication {
     final String host = (addr == null) ? "localhost" : addr.getHostName();
 
     return String.format("%s://%s:%s/management/health", scheme, host, serverInfo.getPort());
+  }
+
+  @Bean
+  public ReactiveWebServerFactory reactiveWebServerFactory() {
+    return new NettyReactiveWebServerFactory();
   }
 }
