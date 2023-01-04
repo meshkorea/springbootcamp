@@ -1,5 +1,8 @@
 package com.vroong.edge.controller;
 
+import lombok.Data;
+
+@Data
 public class ProblemDetail {
 
   private String type = "bootcamp/problem-with-message";
