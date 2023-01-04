@@ -1,5 +1,8 @@
 package com.vroong.order.adapter.in.rest.error;
 
+import com.vroong.order.application.port.in.error.ChangeOrderStatusException;
+import com.vroong.order.application.port.in.error.MinOrderPriceException;
+import com.vroong.order.application.port.in.error.OrdererNotMatchedException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -9,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.zalando.problem.DefaultProblem;
 import org.zalando.problem.Problem;
@@ -24,7 +27,7 @@ import org.zalando.problem.violations.ConstraintViolationProblem;
  * Controller advice to translate the server side exceptions to client-friendly json structures.
  * The error response follows RFC7807 - Problem Details for HTTP APIs (https://tools.ietf.org/html/rfc7807).
  */
-@ControllerAdvice
+@RestControllerAdvice
 public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait {
 
   private static final String FIELD_ERRORS_KEY = "fieldErrors";
@@ -94,6 +97,24 @@ public class ExceptionTranslator implements ProblemHandling, SecurityAdviceTrait
   public ResponseEntity<Problem> handleNoSuchElementException(RuntimeException ex, NativeWebRequest request) {
     Problem problem = Problem.builder()
         .withStatus(Status.NOT_FOUND)
+        .with(MESSAGE_KEY, ex.getMessage())
+        .build();
+    return create(ex, problem, request);
+  }
+
+  @ExceptionHandler(value = {OrdererNotMatchedException.class})
+  public ResponseEntity<Problem> handleOrdererNotMatchedException(RuntimeException ex, NativeWebRequest request) {
+    Problem problem = Problem.builder()
+        .withStatus(Status.FORBIDDEN)
+        .with(MESSAGE_KEY, ex.getMessage())
+        .build();
+    return create(ex, problem, request);
+  }
+
+  @ExceptionHandler(value = {MinOrderPriceException.class, ChangeOrderStatusException.class})
+  public ResponseEntity<Problem> handleDomainInvariantException(RuntimeException ex, NativeWebRequest request) {
+    Problem problem = Problem.builder()
+        .withStatus(Status.BAD_REQUEST)
         .with(MESSAGE_KEY, ex.getMessage())
         .build();
     return create(ex, problem, request);

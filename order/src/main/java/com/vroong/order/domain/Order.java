@@ -2,6 +2,9 @@ package com.vroong.order.domain;
 
 import static com.vroong.order.domain.OrderStatus.ORDER_PLACED;
 
+import com.vroong.order.application.port.in.error.ChangeOrderStatusException;
+import com.vroong.order.application.port.in.error.MinOrderPriceException;
+import com.vroong.order.config.Constants.ChangeOrderStatus;
 import com.vroong.shared.AuditableEntity;
 import com.vroong.shared.Money;
 import com.vroong.shared.MoneyConverter;
@@ -36,6 +39,9 @@ public class Order extends AuditableEntity {
 
   @Transient
   public static final Money DEFAULT_DELIVERY_FEE = new Money(3500);
+
+  @Transient
+  public static final int MIN_ORDER_PRICE = 10_000;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -74,8 +80,7 @@ public class Order extends AuditableEntity {
   public static Order placeOrder(
       Orderer orderer,
       Receiver receiver,
-      List<OrderItem> orderLine
-  ) {
+      List<OrderItem> orderLine) {
     final Money productPrice = calcProductPrice(orderLine);
     verifyMinOrderPrice(productPrice);
 
@@ -86,14 +91,14 @@ public class Order extends AuditableEntity {
 
   public void cancelOrder() {
     if (!orderStatus.canChangeOrder()) {
-      throw new IllegalStateException("취소 가능한 상태가 아닙니다.");
+      throw new ChangeOrderStatusException(ChangeOrderStatus.CANCEL_ORDER_MESSAGE);
     }
     this.orderStatus = OrderStatus.ORDER_CANCELED;
   }
 
   public void updateOrder(Receiver receiver, List<OrderItem> orderItems) {
     if (!orderStatus.canChangeOrder()) {
-      throw new IllegalStateException("주문 변경 가능한 상태가 아닙니다.");
+      throw new ChangeOrderStatusException(ChangeOrderStatus.UPDATE_ORDER_MESSAGE);
     }
     final Money productPrice = calcProductPrice(orderItems);
     verifyMinOrderPrice(productPrice);
@@ -134,8 +139,7 @@ public class Order extends AuditableEntity {
       Receiver receiver,
       List<OrderItem> orderItems,
       Money deliveryFee,
-      Money totalPrice
-  ) {
+      Money totalPrice) {
     this.orderer = orderer;
     this.receiver = receiver;
     associateOrderItems(orderItems);
@@ -150,10 +154,8 @@ public class Order extends AuditableEntity {
   }
 
   private static void verifyMinOrderPrice(Money productPrice) {
-    final int minPrice = 10_000;
-
-    if (!productPrice.isGreaterThanOrEqualTo(new Money(minPrice))) {
-      throw new IllegalArgumentException("최소 주문 금액은" + minPrice + "원 입니다.");
+    if (!productPrice.isGreaterThanOrEqualTo(new Money(MIN_ORDER_PRICE))) {
+      throw new MinOrderPriceException(MIN_ORDER_PRICE);
     }
   }
 }

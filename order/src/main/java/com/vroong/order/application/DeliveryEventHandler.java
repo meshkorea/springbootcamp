@@ -3,13 +3,14 @@ package com.vroong.order.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vroong.order.application.port.in.EventHandler;
+import com.vroong.order.application.port.in.error.OrderNotFoundException;
 import com.vroong.order.application.port.out.OrderRepository;
 import com.vroong.order.application.port.out.message.OrderEvent;
 import com.vroong.order.config.Constants;
+import com.vroong.order.config.Constants.OrderNotFound;
 import com.vroong.order.domain.DeliveryEvent;
 import com.vroong.order.domain.DeliveryEvent.DeliveryState;
 import com.vroong.order.domain.Order;
-import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -38,7 +39,7 @@ public class DeliveryEventHandler implements EventHandler {
 
     final Long orderId = deliveryEvent.getOrderId();
     final Order order = orderRepository.findById(orderId)
-        .orElseThrow(() -> new NoSuchElementException("주문이 존재하지 않습니다: " + orderId));
+        .orElseThrow(() -> new OrderNotFoundException(OrderNotFound.MESSAGE, orderId));
 
     final DeliveryState deliveryState = deliveryEvent.getDeliveryState();
     switch (deliveryState) {
