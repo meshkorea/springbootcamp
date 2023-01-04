@@ -15,6 +15,7 @@ public class Constants {
   public static final int TIMEZONE_SEOUL_HOURS = 9;
 
   public static class Profile {
+
     public static final String TEST_PROFILE = "test";
     public static final String LOCAL_PROFILE = "local";
     public static final String DEV_PROFILE = "dev";
@@ -23,6 +24,7 @@ public class Constants {
   }
 
   public static class HeaderKey {
+
     public static final String B3_TRACE_ID = "X-B3-TraceId";
     public static final String B3_SPAN_ID = "X-B3-SpanId";
     public static final String B3_PARENT_ID = "X-B3-ParentSpanId";
@@ -40,6 +42,7 @@ public class Constants {
    * MessageSchema spec: @see https://wiki.mm.meshkorea.net/display/MES/Message+Schema
    */
   public static class MessageKey {
+
     public static final String ID = "messageId";
     public static final String TYPE = "messageType";
     public static final String VERSION = "messageVersion";
@@ -49,10 +52,12 @@ public class Constants {
   }
 
   public static class MessagePolicy {
+
     public static final Long DEFAULT_TIMEOUT = 5000L; // milliseconds
   }
 
   public static class LogKey {
+
     public static final String HTTP_INBOUND_LOGGER = "com.vroong.order.http.api";
     public static final String HTTP_OUTBOUND_LOGGER = "com.vroong.order.http.external";
     public static final String REQUEST = "request";
@@ -65,7 +70,26 @@ public class Constants {
   }
 
   public static class JwtKey {
+
     public static final String USER_ID_CLAIM = "user_name";
+  }
+
+  public static class OrderNotFound {
+
+    public static final String MESSAGE = "존재하지 않는 주문입니다";
+  }
+
+  public static class OrdererNotMatched {
+
+    public static final String CANCEL_ORDER_MESSAGE = "자신의 주문만 취소할 수 있습니다";
+    public static final String UPDATE_ORDER_MESSAGE = "자신의 주문만 변경할 수 있습니다";
+    public static final String GET_ORDER_MESSAGE = "자신의 주문만 조회할 수 있습니다";
+  }
+
+  public static class ChangeOrderStatus {
+
+    public static final String CANCEL_ORDER_MESSAGE = "취소 가능한 상태가 아닙니다";
+    public static final String UPDATE_ORDER_MESSAGE = "변경 가능한 상태가 아닙니다";
   }
 
   private Constants() {
