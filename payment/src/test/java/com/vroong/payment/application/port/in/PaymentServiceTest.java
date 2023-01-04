@@ -44,11 +44,11 @@ import org.springframework.http.ResponseEntity;
 @Slf4j
 class PaymentServiceTest {
 
-  @MockBean PaymentRepository repository;
   @Autowired PaymentService service;
-  @MockBean PersistentEventCreator eventCreator;
-  @MockBean ThirdPartyApi pgApi;
   @MockBean OrderApi orderApi;
+  @MockBean ThirdPartyApi pgApi;
+  @MockBean PaymentRepository repository;
+  @MockBean PersistentEventCreator eventCreator;
 
   ClientAndServer mockServer;
 
