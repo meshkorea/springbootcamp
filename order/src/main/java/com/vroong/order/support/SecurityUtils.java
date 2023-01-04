@@ -74,4 +74,14 @@ public class SecurityUtils {
 
     return false;
   }
+
+  public static String getJwtTokenValue() {
+    final SecurityContext securityContext = SecurityContextHolder.getContext();
+    final Object principal = securityContext.getAuthentication().getPrincipal();
+    if (principal instanceof Jwt jwt) {
+      return jwt.getTokenValue();
+    }
+
+    return "";
+  }
 }

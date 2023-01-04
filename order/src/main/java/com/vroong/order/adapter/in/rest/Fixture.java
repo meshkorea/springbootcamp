@@ -15,12 +15,21 @@ import com.vroong.order.rest.OrderProductDto;
 import com.vroong.order.rest.OrderStateDto;
 import com.vroong.order.rest.PageDto;
 import com.vroong.order.rest.UserInfoDto;
+import com.vroong.product.rest.Product;
 import com.vroong.shared.Money;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Fixture {
+
+  public static Product aOrderItem3Product() {
+    final OrderItem orderItem = aOrderItem3();
+    return new Product()
+        .productId(orderItem.getProductId())
+        .name(orderItem.getProductName())
+        .price(orderItem.getProductPrice().getValue());
+  }
 
   public static OrderListDto aOrderListDto() {
     return new OrderListDto()
@@ -91,24 +100,40 @@ public class Fixture {
 
   public static List<OrderItem> aOrderItemList1() {
     List<OrderItem> orderItemList = new ArrayList<>();
-    orderItemList.add(new OrderItem(1L, null, 1L, "축구공", new Money(30000), 1));
-    orderItemList.add(new OrderItem(2L, null, 2L, "호미", new Money(5000), 2));
+    orderItemList.add(aOrderItem1());
+    orderItemList.add(aOrderItem2());
 
     return orderItemList;
   }
 
   public static List<OrderItem> aOrderItemList2() {
     List<OrderItem> orderItemList = new ArrayList<>();
-    orderItemList.add(new OrderItem(1L, null, 1L, "축구공", new Money(10000), 1));
+    orderItemList.add(aOrderItem3());
 
     return orderItemList;
   }
 
   public static List<OrderItem> aOrderItemList3() {
     List<OrderItem> orderItemList = new ArrayList<>();
-    orderItemList.add(    new OrderItem(2L, null, 2L, "호미", new Money(3333), 3));
+    orderItemList.add(aOrderItem4());
 
     return orderItemList;
+  }
+
+  public static OrderItem aOrderItem1() {
+    return new OrderItem(1L, null, 1L, "축구공", new Money(30000), 1);
+  }
+
+  public static OrderItem aOrderItem2() {
+    return new OrderItem(2L, null, 2L, "호미", new Money(5000), 2);
+  }
+
+  public static OrderItem aOrderItem3() {
+    return new OrderItem(1L, null, 1L, "축구공", new Money(10000), 1);
+  }
+
+  public static OrderItem aOrderItem4() {
+    return new OrderItem(2L, null, 2L, "호미", new Money(3333), 3);
   }
 
   public static Receiver aReceiver() {

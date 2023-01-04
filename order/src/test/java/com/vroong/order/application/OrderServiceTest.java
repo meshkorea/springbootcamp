@@ -15,6 +15,7 @@ import com.vroong.order.WithMockJwtSecurityContextFactory.AuthoritiesType;
 import com.vroong.order.WithMockJwtSecurityContextFactory.ClientIdType;
 import com.vroong.order.adapter.in.rest.Fixture;
 import com.vroong.order.application.port.out.OrderRepository;
+import com.vroong.order.application.port.out.rest.ProductClient;
 import com.vroong.order.domain.Order;
 import com.vroong.order.domain.OrderList;
 import com.vroong.order.domain.OrderStatus;
@@ -47,10 +48,14 @@ class OrderServiceTest {
   @Mock
   PersistentEventCreator eventCreator;
 
+  @Mock
+  ProductClient productClient;
+
   @Test
   void 주문을_성공한다() {
     given(orderRepository.save(any(Order.class))).willReturn(Fixture.aOrder());
     willDoNothing().given(eventCreator).create(any(), any());
+    given(productClient.getProduct(any())).willReturn(Fixture.aOrderItem3Product());
 
     Order newOrder = orderService.createOrder(Fixture.aOrderer(), Fixture.aReceiver(),
         Fixture.aOrderItemList2());
@@ -130,6 +135,7 @@ class OrderServiceTest {
     orderFixture.setCreatedBy(username);
     Money totalPriceBefore = orderFixture.getTotalPrice();
     given(orderRepository.findById(orderId)).willReturn(Optional.of(orderFixture));
+    given(productClient.getProduct(any())).willReturn(Fixture.aOrderItem3Product());
 
     orderService.updateOrder(orderId, Fixture.aReceiver(), Fixture.aOrderItemList2());
 

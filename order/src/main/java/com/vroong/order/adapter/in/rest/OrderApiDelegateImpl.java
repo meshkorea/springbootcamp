@@ -9,10 +9,13 @@ import com.vroong.order.domain.Orderer;
 import com.vroong.order.domain.Receiver;
 import com.vroong.order.rest.OrderApiDelegate;
 import com.vroong.order.rest.OrderDto;
+import com.vroong.order.rest.OrderLineItemDto;
 import com.vroong.order.rest.OrderListDto;
 import com.vroong.order.rest.UserInfoDto;
 import com.vroong.shared.Money;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -26,11 +29,14 @@ public class OrderApiDelegateImpl implements OrderApiDelegate {
   @Override
   public ResponseEntity<OrderDto> createOrder(OrderDto orderDto) {
     final UserInfoDto ordererDto = orderDto.getOrderer();
-    final Orderer orderer = Orderer.of(ordererDto.getName(), ordererDto.getPhoneNumber(), ordererDto.getAddress());
+    final Orderer orderer = Orderer.of(ordererDto.getName(), ordererDto.getPhoneNumber(),
+        ordererDto.getAddress());
 
     final UserInfoDto receiverDto = orderDto.getReceiver();
-    final Receiver receiver = Receiver.of(receiverDto.getName(), receiverDto.getPhoneNumber(), receiverDto.getAddress());
+    final Receiver receiver = Receiver.of(receiverDto.getName(), receiverDto.getPhoneNumber(),
+        receiverDto.getAddress());
 
+//    final Map<Long, Integer> orderLine = getOrderLine(orderDto);
     final List<OrderItem> orderItems = orderDto.getOrderLine().getData().stream()
         .map(orderItemDto -> OrderItem.of(
             orderItemDto.getProduct().getProductId(),
@@ -63,8 +69,10 @@ public class OrderApiDelegateImpl implements OrderApiDelegate {
   @Override
   public ResponseEntity<Void> updateOrder(Long orderId, OrderDto orderDto) {
     final UserInfoDto receiverDto = orderDto.getReceiver();
-    final Receiver receiver = Receiver.of(receiverDto.getName(), receiverDto.getPhoneNumber(), receiverDto.getAddress());
+    final Receiver receiver = Receiver.of(receiverDto.getName(), receiverDto.getPhoneNumber(),
+        receiverDto.getAddress());
 
+//    final Map<Long, Integer> orderLine = getOrderLine(orderDto);
     final List<OrderItem> orderItems = orderDto.getOrderLine().getData().stream()
         .map(orderItemDto -> OrderItem.of(
             orderItemDto.getProduct().getProductId(),
@@ -83,5 +91,13 @@ public class OrderApiDelegateImpl implements OrderApiDelegate {
   public ResponseEntity<Void> cancelOrder(Long orderId) {
     orderUsecase.cancelOrder(orderId);
     return ResponseEntity.ok().build();
+  }
+
+  private Map<Long, Integer> getOrderLine(OrderDto orderDto) {
+    return orderDto.getOrderLine().getData().stream()
+        .collect(Collectors.toMap(
+            orderItemDto -> orderItemDto.getProduct().getProductId(),
+            OrderLineItemDto::getQuantity)
+        );
   }
 }
