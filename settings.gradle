@@ -13,3 +13,7 @@ include('delivery:clients')
 
 include('payment')
 include('payment:clients')
+
+include('edge')
+include('edge:webclient')
+include('edge:resttemplate')

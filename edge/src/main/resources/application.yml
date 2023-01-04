@@ -1,0 +1,125 @@
+server:
+  port: 8080
+  shutdown: graceful
+
+spring:
+  profiles:
+    active: local
+
+  main:
+    web-application-type: reactive
+
+  sleuth:
+    web.additional-skip-pattern: '/management/.*'
+
+  security:
+    oauth2:
+      client:
+        registration:
+          uaa:
+            client-id: internal
+            client-secret: internal
+            scope: web-app
+            authorization-grant-type: client_credentials
+        provider:
+          uaa:
+            token-uri: http://localhost:9999/oauth/token
+            jwk-set-uri: http://localhost:9999/.well-known/jwks.json
+
+  cloud:
+    gateway:
+      default-filters:
+        - TokenRelay
+
+      routes:
+        - id: order
+          uri: http://localhost:10001
+          predicates:
+            - Path=/bootcamp/orders/**
+          filters:
+            - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
+            - name: CircuitBreaker
+              args:
+                name: orderCB
+                fallbackUri: forward:/fallback/default
+
+        - id: product
+          uri: http://localhost:10002
+          predicates:
+            - Path=/bootcamp/products/**
+          filters:
+            - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
+            - name: CircuitBreaker
+              args:
+                name: productCB
+                fallbackUri: forward:/fallback/default
+
+        - id: delivery
+          uri: http://localhost:10003
+          predicates:
+            - Path=/bootcamp/deliveries/**
+          filters:
+            - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
+            - name: CircuitBreaker
+              args:
+                name: deliveryCB
+                fallbackUri: forward:/fallback/default
+
+        - id: payment
+          uri: http://localhost:10004
+          predicates:
+            - Path=/bootcamp/payments
+          filters:
+            - RewritePath=/bootcamp/(?<segment>.*), /api/$\{segment}
+            - name: CircuitBreaker
+              args:
+                name: paymentCB
+                fallbackUri: forward:/fallback/default
+
+management:
+  endpoints:
+    web:
+      base-path: /management
+      exposure:
+        include: ["health", "info"]
+  endpoint:
+    health:
+      show-details: when_authorized
+      probes:
+        enabled: true
+  info:
+    git:
+      mode: simple
+
+resilience4j:
+  timelimiter:
+    configs:
+      default:
+        cancel-running-future: true       # future로 동작하는 API 콜이 timeout시 cancel
+        timeout-duration: 5s              # timeout duration, API 콜을 future로 사용하지 않을 시 동작하지 않음 (WebClient 등)
+
+  circuitbreaker:
+    configs:
+      default:
+        register-health-indicator: true                             # actuator를 통해 circuitbreaker 상태를 노출한다
+#        failure-rate-threshold: 50                                 # default=50, 실패율이 50%를 넘으면 OPEN
+        slow-call-duration-threshold: 3000ms                        # default=60000ms, 느림으로 판단하기 위한 응답 시간 임계값
+        # RestTemplate 설정에서 커넥션/리드 타임아웃을 각 2초로 설정하고 있음
+        slow-call-rate-threshold: 50                                # default=100(%), 느림으로 판단하기 위한 임계값
+#        sliding-window-type: COUNT_BASED                           # default=COUNT_BASED, CLOSED 상태일때 콜 집계 및 평가 방법
+        sliding-window-size: 10                                     # default=100, CLOSED 상태일때 평가할 슬라이딩 윈도우 크기
+        minimum-number-of-calls: 5                                  # default=100, 슬라이딩 윈도우에서 평가를 위한 최소 콜 수 (값이 5라면, 최소 5개의 콜이 쌓여야 평가함; 4개 모두 fail이라도 OPEN 되지 않음에 유의)
+#        permitted-number-of-calls-in-half-open-state: 10           # default=10, HALF-OPEN 상태일때 허용할 프로빙 콜 수
+        automatic-transition-from-open-to-half-open-enabled: true   # default=false, 콜 수와 무관하게 정해진 시간이 지나면 HALF-OPEN 상태로 변경됨
+        wait-duration-in-open-state: 10000ms                        # default=60000ms, OPEN -> HALF-OPEN으로 전환할 때 대기할 시간
+    instances:
+      orderCB:
+        base-config: default
+      productCB:
+        base-config: default
+      deliveryCB:
+        base-config: default
+      paymentCB:
+        base-config: default
+      myCB:
+        base-config: default
