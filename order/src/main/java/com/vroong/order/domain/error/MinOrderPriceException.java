@@ -1,4 +1,4 @@
-package com.vroong.order.application.port.in.error;
+package com.vroong.order.domain.error;
 
 public class MinOrderPriceException extends RuntimeException {
 

@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.vroong.order.adapter.in.rest.Fixture;
+import com.vroong.order.domain.error.ChangeOrderStatusException;
+import com.vroong.order.domain.error.MinOrderPriceException;
 import com.vroong.shared.Money;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +39,7 @@ class OrderTest {
     List<OrderItem> orderItemList = Fixture.aOrderItemList3();
 
     assertThatThrownBy(() -> Order.placeOrder(orderer, receiver, orderItemList))
-        .isInstanceOf(IllegalArgumentException.class);
+        .isInstanceOf(MinOrderPriceException.class);
   }
 
   @Test
@@ -68,7 +70,7 @@ class OrderTest {
     );
 
     assertThatThrownBy(order::cancelOrder)
-        .isInstanceOf(IllegalStateException.class);
+        .isInstanceOf(ChangeOrderStatusException.class);
   }
 
   @Test
@@ -104,7 +106,7 @@ class OrderTest {
     );
 
     assertThatThrownBy(() -> order.updateOrder(Fixture.aReceiver(), Fixture.aOrderItemList2()))
-        .isInstanceOf(IllegalStateException.class);
+        .isInstanceOf(ChangeOrderStatusException.class);
   }
 
   @Test

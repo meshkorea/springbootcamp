@@ -18,8 +18,10 @@ import com.vroong.order.application.port.out.OrderRepository;
 import com.vroong.order.domain.Order;
 import com.vroong.order.domain.OrderList;
 import com.vroong.order.domain.OrderStatus;
+import com.vroong.order.domain.error.OrdererNotMatchedException;
 import com.vroong.shared.Money;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -83,11 +85,11 @@ class OrderServiceTest {
     String username = "user";
     Order orderFixture = Fixture.aOrder();
     orderFixture.setCreatedBy(username);
-    given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
+    given(orderRepository.findById(orderId)).willReturn(Optional.of(orderFixture));
 
     Order order = orderService.getOrder(orderId);
 
-    verify(orderRepository, times(1)).getReferenceById(orderId);
+    verify(orderRepository, times(1)).findById(orderId);
     assertThat(order.getId()).isNotNull();
   }
 
@@ -98,10 +100,10 @@ class OrderServiceTest {
     String resourceUsername = "other_user";
     Order orderFixture = Fixture.aOrder();
     orderFixture.setCreatedBy(resourceUsername);
-    given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
+    given(orderRepository.findById(orderId)).willReturn(Optional.of(orderFixture));
 
     assertThatThrownBy(() -> orderService.getOrder(orderId))
-        .isInstanceOf(IllegalArgumentException.class);
+        .isInstanceOf(OrdererNotMatchedException.class);
   }
 
   @Test
@@ -111,11 +113,11 @@ class OrderServiceTest {
     String resourceUsername = "other_user";
     Order orderFixture = Fixture.aOrder();
     orderFixture.setCreatedBy(resourceUsername);
-    given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
+    given(orderRepository.findById(orderId)).willReturn(Optional.of(orderFixture));
 
     Order order = orderService.getOrder(orderId);
 
-    verify(orderRepository, times(1)).getReferenceById(orderId);
+    verify(orderRepository, times(1)).findById(orderId);
     assertThat(order.getId()).isNotNull();
   }
 
@@ -127,11 +129,11 @@ class OrderServiceTest {
     Order orderFixture = Fixture.aOrder();
     orderFixture.setCreatedBy(username);
     Money totalPriceBefore = orderFixture.getTotalPrice();
-    given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
+    given(orderRepository.findById(orderId)).willReturn(Optional.of(orderFixture));
 
     orderService.updateOrder(orderId, Fixture.aReceiver(), Fixture.aOrderItemList2());
 
-    verify(orderRepository, times(1)).getReferenceById(orderId);
+    verify(orderRepository, times(1)).findById(orderId);
     verify(eventCreator, atLeastOnce()).create(any(), any());
     assertThat(orderFixture.getOrderStatus()).isEqualTo(OrderStatus.ORDER_UPDATED);
     assertThat(orderFixture.getTotalPrice()).isNotEqualTo(totalPriceBefore);
@@ -144,10 +146,10 @@ class OrderServiceTest {
     String resourceUsername = "other_user";
     Order orderFixture = Fixture.aOrder();
     orderFixture.setCreatedBy(resourceUsername);
-    given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
+    given(orderRepository.findById(orderId)).willReturn(Optional.of(orderFixture));
 
     assertThatThrownBy(() -> orderService.updateOrder(orderId, Fixture.aReceiver(), Fixture.aOrderItemList2()))
-        .isInstanceOf(IllegalArgumentException.class);
+        .isInstanceOf(OrdererNotMatchedException.class);
   }
 
   @Test
@@ -157,11 +159,11 @@ class OrderServiceTest {
     String username = "user";
     Order orderFixture = Fixture.aOrder();
     orderFixture.setCreatedBy(username);
-    given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
+    given(orderRepository.findById(orderId)).willReturn(Optional.of(orderFixture));
 
     orderService.cancelOrder(orderId);
 
-    verify(orderRepository, times(1)).getReferenceById(orderId);
+    verify(orderRepository, times(1)).findById(orderId);
     verify(eventCreator, atLeastOnce()).create(any(), any());
     assertThat(orderFixture.getOrderStatus()).isEqualTo(OrderStatus.ORDER_CANCELED);
   }
@@ -173,9 +175,9 @@ class OrderServiceTest {
     String resourceUsername = "other_user";
     Order orderFixture = Fixture.aOrder();
     orderFixture.setCreatedBy(resourceUsername);
-    given(orderRepository.getReferenceById(orderId)).willReturn(orderFixture);
+    given(orderRepository.findById(orderId)).willReturn(Optional.of(orderFixture));
 
     assertThatThrownBy(() -> orderService.cancelOrder(orderId))
-        .isInstanceOf(IllegalArgumentException.class);
+        .isInstanceOf(OrdererNotMatchedException.class);
   }
 }

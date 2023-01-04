@@ -2,8 +2,8 @@ package com.vroong.order.domain;
 
 import static com.vroong.order.domain.OrderStatus.ORDER_PLACED;
 
-import com.vroong.order.application.port.in.error.ChangeOrderStatusException;
-import com.vroong.order.application.port.in.error.MinOrderPriceException;
+import com.vroong.order.domain.error.ChangeOrderStatusException;
+import com.vroong.order.domain.error.MinOrderPriceException;
 import com.vroong.order.config.Constants.ChangeOrderStatus;
 import com.vroong.shared.AuditableEntity;
 import com.vroong.shared.Money;

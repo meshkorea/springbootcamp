@@ -3,7 +3,7 @@ package com.vroong.order.application;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vroong.order.application.port.in.EventHandler;
-import com.vroong.order.application.port.in.error.OrderNotFoundException;
+import com.vroong.order.domain.error.OrderNotFoundException;
 import com.vroong.order.application.port.out.OrderRepository;
 import com.vroong.order.application.port.out.message.OrderEvent;
 import com.vroong.order.config.Constants;

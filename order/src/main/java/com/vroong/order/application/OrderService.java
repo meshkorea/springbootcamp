@@ -1,8 +1,8 @@
 package com.vroong.order.application;
 
 import com.vroong.order.application.port.in.OrderUsecase;
-import com.vroong.order.application.port.in.error.OrderNotFoundException;
-import com.vroong.order.application.port.in.error.OrdererNotMatchedException;
+import com.vroong.order.domain.error.OrderNotFoundException;
+import com.vroong.order.domain.error.OrdererNotMatchedException;
 import com.vroong.order.application.port.out.OrderRepository;
 import com.vroong.order.application.port.out.message.OrderEvent;
 import com.vroong.order.config.Constants.OrderNotFound;
