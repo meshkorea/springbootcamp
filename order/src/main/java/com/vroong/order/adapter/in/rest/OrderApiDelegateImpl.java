@@ -13,7 +13,6 @@ import com.vroong.order.rest.OrderListDto;
 import com.vroong.order.rest.UserInfoDto;
 import com.vroong.shared.Money;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -55,7 +54,8 @@ public class OrderApiDelegateImpl implements OrderApiDelegate {
 
   @Override
   public ResponseEntity<OrderListDto> getOrderList(Integer page, Integer size) {
-    final OrderList orderList = orderUsecase.getOrderList(page, size);
+    // Meshkorea 표준 page 스펙: 1부터 시작
+    final OrderList orderList = orderUsecase.getOrderList(page - 1, size);
 
     return ResponseEntity.ok(OrderDtoMapper.toDto(orderList));
   }

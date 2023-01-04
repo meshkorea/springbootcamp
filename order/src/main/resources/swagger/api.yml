@@ -207,7 +207,7 @@ components:
         type:
           type: string
           format: uri
-          example: template/constraint-violation
+          example: order/constraint-violation
         title:
           type: string
           example: 제출한 요청이 유효하지 않습니다
@@ -341,6 +341,7 @@ components:
         type: integer
         format: int32
         default: 1
+        minimum: 1
 
     SizeParam:
       in: query
@@ -349,6 +350,7 @@ components:
         type: integer
         format: int32
         default: 10
+        minimum: 1
 
     OrderIdParam:
       in: path
