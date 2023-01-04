@@ -1,20 +1,20 @@
 package com.vroong.payment.application.port.in;
 
+import com.vroong.order.rest.Order;
 import com.vroong.order.rest.OrderApi;
 import com.vroong.payment.application.PersistentEventCreator;
 import com.vroong.payment.application.port.out.PaymentRepository;
 import com.vroong.payment.application.port.out.PaymentResponse;
+import com.vroong.payment.application.port.out.rest.ThirdPartyApi;
 import com.vroong.payment.domain.Payment;
+import java.math.BigDecimal;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 @Component
 @RequiredArgsConstructor
@@ -25,26 +25,21 @@ public class PaymentService {
   private final PaymentRepository repository;
   private final PersistentEventCreator eventCreator;
   private final OrderApi orderApi;
-  private final RestTemplate pgRestTemplate;
+  private final ThirdPartyApi pgApi;
 
   public void checkout(Payment payment) {
     // OrderApi 호출, 결제 금액 확인
-    // final Order order = api.getOrder(payment.getOrderId());
-    //
-    // if (order.getTotalPrice() == BigDecimal.ZERO) {
-    //   return;
-    // }
-    //
-    // payment.setAmount(order.getTotalPrice());
+    final Order order = orderApi.getOrder(payment.getOrderId());
+
+    if (order.getTotalPrice() == BigDecimal.ZERO) {
+      throw new IllegalArgumentException("결제 금액이 0원 입니다.");
+    }
+
+    payment.setAmount(order.getTotalPrice());
     repository.save(payment);
 
     // 3rd party(PG) 결제 요청 코드
-    ResponseEntity<PaymentResponse> response =
-        pgRestTemplate.exchange(
-            "http://localhost:65535/checkout",
-            HttpMethod.POST,
-            new HttpEntity<>(payment),
-            PaymentResponse.class);
+    ResponseEntity<PaymentResponse> response = pgApi.checkout(payment);
 
     if (response.getBody() == null) {
       // 응답 데이터 없음
@@ -72,12 +67,7 @@ public class PaymentService {
         .ifPresent(
             payment -> {
               // 3rd party(PG) 결제 취소 요청 코드
-              ResponseEntity<PaymentResponse> response =
-                  pgRestTemplate.exchange(
-                      "http://localhost:65535/cancel",
-                      HttpMethod.POST,
-                      new HttpEntity<>(payment),
-                      PaymentResponse.class);
+              ResponseEntity<PaymentResponse> response = pgApi.cancel(payment);
 
               if (response.getBody() == null) {
                 // 응답 데이터 없음

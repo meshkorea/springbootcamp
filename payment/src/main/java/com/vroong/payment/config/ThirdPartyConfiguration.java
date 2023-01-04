@@ -26,9 +26,11 @@ public class ThirdPartyConfiguration {
     new MockServerClient("localhost", 65_535)
         .when(request().withMethod("POST").withPath("/checkout"))
         .respond(
-            response()
-                .withHeader(new Header("Content-Type", "application/json"))
-                .withBody(mapper.writeValueAsString(Fixtures.aRandomCheckoutPaymentResponse())));
+            request ->
+                response()
+                    .withHeader(new Header("Content-Type", "application/json"))
+                    .withBody(
+                        mapper.writeValueAsString(Fixtures.aRandomCheckoutPaymentResponse())));
 
     new MockServerClient("localhost", 65_535)
         .when(request().withMethod("POST").withPath("/cancel"))

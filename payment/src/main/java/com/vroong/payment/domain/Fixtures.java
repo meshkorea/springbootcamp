@@ -6,6 +6,7 @@ public class Fixtures {
 
   public static Payment aPayment() {
     final Payment payment = new Payment();
+    payment.setId(1L);
     payment.setCardNumber("1234-0000-0000-5678");
     payment.setApprovalNumber("12345678");
     payment.setAmount(new BigDecimal(10_000));

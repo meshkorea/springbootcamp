@@ -37,14 +37,14 @@ spring:
           headers: [ "messageId", "messageType", "messageVersion", "messageSource" ]
           auto-create-topics: false
       bindings:
-        messageChannel:
+        messageConsumer-in-0:
+          group: payment-consumer-group
+          destination: local-order-output
           binder: kafka
+        messageProducer-out-0:
           destination: local-payment-output
-          producer:
-            # @see https://docs.spring.io/spring-cloud-stream-binder-kafka/docs/3.0.10.RELEASE/reference/html/spring-cloud-stream-binder-kafka.html#kafka-producer-properties
-            header-mode: headers
-            partition-key-expression: headers['partitionKey']
-            partition-count: 1
+          header-mode: headers
+          binder: kafka
       default-binder: kafka
 
   security:

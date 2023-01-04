@@ -1,6 +1,8 @@
 package com.vroong.payment.application.port.out;
 
+import com.vroong.order.rest.Order;
 import com.vroong.payment.domain.PaymentStatus;
+import java.math.BigDecimal;
 import java.util.Random;
 
 public class Fixtures {
@@ -33,5 +35,9 @@ public class Fixtures {
   private static PaymentStatus getRandomCheckoutStatus() {
     Random random = new Random();
     return PaymentStatus.fromCode(random.nextInt(2, 4) * 10);
+  }
+
+  public static Order anOrder() {
+    return new Order().orderId(1L).totalPrice(BigDecimal.valueOf(43_500));
   }
 }
