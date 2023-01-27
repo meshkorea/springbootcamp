@@ -13,7 +13,7 @@ import lombok.ToString;
 public class OrderEvent {
 
   private Long orderId;
-  private OrderState orderState;
+  private OrderState orderStatus;
 
   @Getter
   @RequiredArgsConstructor

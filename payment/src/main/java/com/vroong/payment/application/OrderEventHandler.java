@@ -33,7 +33,7 @@ public class OrderEventHandler implements EventHandler {
     }
 
     // ORDER_CANCELED 외 다른 상태에 대해서는 처리할 필요 없음
-    switch (event.getOrderState()) {
+    switch (event.getOrderStatus()) {
       case ORDER_CANCELED -> service.cancelPayment(event.getOrderId());
     }
   }

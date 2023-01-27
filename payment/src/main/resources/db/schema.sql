@@ -30,10 +30,18 @@ CREATE TABLE IF NOT EXISTS payments
     approval_number varchar(40)          NULL     DEFAULT NULL,
     amount          decimal                       DEFAULT 0,
     status          tinyint(10) unsigned NOT NULL DEFAULT '0',
-    orderId         bigint(20)           NOT NULL,
+    order_id        bigint(20)           NOT NULL,
     created_by      varchar(40)          NOT NULL,
     created_at      timestamp(3)         NOT NULL,
     updated_by      varchar(40)          NOT NULL,
     updated_at      timestamp(3)         NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS idempotent_events
+(
+    id          bigint       NOT NULL AUTO_INCREMENT,
+    event_id    varchar(40)  NOT NULL,
+    consumed_at timestamp(3) NOT NULL,
     PRIMARY KEY (id)
 );
